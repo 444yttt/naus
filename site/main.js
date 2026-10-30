@@ -1,13 +1,11 @@
 (() => {
-  const photo = document.getElementById('photo'), center = document.getElementById('center'), bar = document.getElementById('bar');
-  const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+  const center = document.getElementById('center'), bar = document.getElementById('bar');
   const cl = x => Math.max(0, Math.min(1, x));
   const onScroll = () => {
     const s = scrollY / innerHeight;
     center.style.opacity = 1 - cl(s / .6);
     center.style.pointerEvents = s > .4 ? 'none' : '';
     bar.classList.toggle('on-light', s > .92);
-    if (!reduce) photo.style.setProperty('--zoom', 1.04 + cl(s) * .06);
   };
   addEventListener('scroll', onScroll, { passive: true }); onScroll();
   const f = document.getElementById('memo'), out = document.getElementById('out');
