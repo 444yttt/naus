@@ -1,8 +1,8 @@
 NAUS 千鳥ヶ淵リビング Blenderキット（Blender 4.2 LTS 用）
 
 中身
-  build_room.py … 実行すると部屋が組み上がるスクリプト
-  trees.jpg     … 窓の外の景色（スクリプトと同じフォルダに置く）
+  build_room.py … 実行すると部屋が組み上がるスクリプト（いまは構造だけ。窓の外は空のみ）
+  trees.jpg     … 窓の外の景色。あとで使うときは、スクリプト冒頭の WITH_VIEW を True にする
 
 使い方
   1. このフォルダを解凍して、好きな場所に置く（例：ドキュメント\naus_blender）

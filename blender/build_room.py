@@ -2,7 +2,8 @@
 NAUS - Chidorigafuchi living room (Blender 4.2 LTS)
 
 Run: Scripting tab > Open > build_room.py > Run Script (▶).
-Keep trees.jpg in the same folder as this script.
+Structure only by default (WITH_VIEW = False). Set WITH_VIEW = True and put trees.jpg
+next to this script to add the view outside the window.
 Units: metres. Z up. The camera stands at the photo position looking toward the window (+Y).
 Dimensions are estimated from photos.
 """
@@ -19,6 +20,7 @@ OX, OH = 2.62, 2.19   # window opening half width / height
 YB = 9.30             # balcony depth (railing line)
 MULLIONS = [-1.72, -0.56, 0.56, 1.70]
 T = 0.10              # wall thickness
+WITH_VIEW = False     # exterior view image outside the window (off while building the structure)
 
 # ---------------------------------------------------------------- reset scene
 for o in list(bpy.data.objects):
@@ -188,40 +190,44 @@ box("RailGlass", -OX + .05, OX - .05, YB - .006, YB + .006, .05, RH - .05, M["gl
 box("RailBase", -OX, OX, YB - .1, YB + .1, -0.02, .06, M["steel"], C_BAL)
 
 # ---------------------------------------------------------------- exterior view (image) + daylight
-def find_asset(fname):
+def script_dirs():
     cands = []
     try: cands.append(os.path.dirname(os.path.abspath(__file__)))
     except NameError: pass
     for t in bpy.data.texts:
         if t.filepath: cands.append(os.path.dirname(bpy.path.abspath(t.filepath)))
     if bpy.data.filepath: cands.append(os.path.dirname(bpy.data.filepath))
-    for d in cands:
+    return [d for d in cands if d and os.path.isdir(d)]
+
+def find_asset(fname):
+    for d in script_dirs():
         p = os.path.join(d, fname)
         if os.path.exists(p): return p
     return None
 
-D = 45.0
-px = D / 1445.0                       # metres per photo pixel at distance D (1500-px-wide photo space)
-vw, vh = (804 + 520) * px, 420 * px
-vx = ((356 + 1160) / 2 - 750) * px
-vz = EYE + (1000 - (850 + 1270) / 2) * px
-me = bpy.data.meshes.new("ViewBackdrop"); bm = bmesh.new()
-vs = [bm.verts.new((vx + sx * vw / 2, YW + D, vz + sz * vh / 2)) for sx, sz in ((-1, -1), (1, -1), (1, 1), (-1, 1))]
-f = bm.faces.new(vs); uv = bm.loops.layers.uv.new("UVMap")
-for loop, (u, v) in zip(f.loops, ((0, 0), (1, 0), (1, 1), (0, 1))): loop[uv].uv = (u, v)
-bm.to_mesh(me); bm.free()
-mv = bpy.data.materials.new("ViewImage"); mv.use_nodes = True; nt = mv.node_tree
-nt.nodes.remove(nt.nodes["Principled BSDF"])
-em = nt.nodes.new("ShaderNodeEmission"); em.inputs["Strength"].default_value = 1.6
-img_path = find_asset("trees.jpg")
-if img_path:
-    it = nt.nodes.new("ShaderNodeTexImage"); it.image = bpy.data.images.load(img_path)
-    nt.links.new(it.outputs["Color"], em.inputs["Color"])
-else:
-    print("trees.jpg not found next to the script - using a flat sky colour")
-    em.inputs["Color"].default_value = (0.6, 0.8, 0.95, 1)
-nt.links.new(em.outputs["Emission"], nt.nodes["Material Output"].inputs["Surface"])
-me.materials.append(mv); ob = bpy.data.objects.new("ViewBackdrop", me); C_EXT.objects.link(ob)
+if WITH_VIEW:
+    D = 45.0
+    px = D / 1445.0                       # metres per photo pixel at distance D (1500-px-wide photo space)
+    vw, vh = (804 + 520) * px, 420 * px
+    vx = ((356 + 1160) / 2 - 750) * px
+    vz = EYE + (1000 - (850 + 1270) / 2) * px
+    me = bpy.data.meshes.new("ViewBackdrop"); bm = bmesh.new()
+    vs = [bm.verts.new((vx + sx * vw / 2, YW + D, vz + sz * vh / 2)) for sx, sz in ((-1, -1), (1, -1), (1, 1), (-1, 1))]
+    f = bm.faces.new(vs); uv = bm.loops.layers.uv.new("UVMap")
+    for loop, (u, v) in zip(f.loops, ((0, 0), (1, 0), (1, 1), (0, 1))): loop[uv].uv = (u, v)
+    bm.to_mesh(me); bm.free()
+    mv = bpy.data.materials.new("ViewImage"); mv.use_nodes = True; nt = mv.node_tree
+    nt.nodes.remove(nt.nodes["Principled BSDF"])
+    em = nt.nodes.new("ShaderNodeEmission"); em.inputs["Strength"].default_value = 1.6
+    img_path = find_asset("trees.jpg")
+    if img_path:
+        it = nt.nodes.new("ShaderNodeTexImage"); it.image = bpy.data.images.load(img_path)
+        nt.links.new(it.outputs["Color"], em.inputs["Color"])
+    else:
+        print("trees.jpg not found next to the script - using a flat sky colour")
+        em.inputs["Color"].default_value = (0.6, 0.8, 0.95, 1)
+    nt.links.new(em.outputs["Emission"], nt.nodes["Material Output"].inputs["Surface"])
+    me.materials.append(mv); ob = bpy.data.objects.new("ViewBackdrop", me); C_EXT.objects.link(ob)
 
 # soft daylight through the window
 ld = bpy.data.lights.new("WindowDaylight", 'AREA'); ld.shape = 'RECTANGLE'; ld.size = 2 * OX; ld.size_y = OH
@@ -259,7 +265,7 @@ scene.view_settings.exposure = 0.3
 # pack the image into the .blend and save next to the script if possible
 try: bpy.ops.file.pack_all()
 except Exception as e: print("pack_all skipped:", e)
-out_dir = os.path.dirname(img_path) if img_path else None
+dirs = script_dirs(); out_dir = dirs[0] if dirs else None
 if out_dir and not bpy.data.filepath:
     bpy.ops.wm.save_as_mainfile(filepath=os.path.join(out_dir, "naus_living.blend"))
 print("NAUS living room built.")
