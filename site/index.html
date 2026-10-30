@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>NAUS</title>
+<meta name="description" content="家具の選定から手配、搬入調整まで。窓口をひとつに。">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="stage" aria-hidden="true"></canvas>
+<header class="bar">
+  <a class="logo" href="#top">NAUS</a>
+  <nav><a href="#service">サービス</a><a href="#process">流れ</a><a href="#consult">相談</a></nav>
+</header>
+
+<section class="hero" id="top">
+  <p class="tag">美しい家は、美しい家具から</p>
+  <p class="en">Furniture,<br>entirely taken care of.</p>
+  <span class="scroll">SCROLL</span>
+</section>
+
+<section class="light" id="service">
+  <h2>探す、手配する、迎える。<br>窓口は、ひとつ。</h2>
+  <ul class="grid">
+    <li><b>提案</b><p>間取り・予算・好みから、家具の選定と配置を提案します。</p></li>
+    <li><b>手配</b><p>ご承認後、複数ブランドへの発注と納期・配送の調整を代行します。</p></li>
+    <li><b>搬入</b><p>搬入経路や条件の確認、設置位置の伝達まで取りまとめます。</p></li>
+  </ul>
+</section>
+
+<section class="dark" id="process">
+  <h2>ご利用の流れ</h2>
+  <ol class="steps">
+    <li><span>01</span>間取り・好み・予算をお送りください</li>
+    <li><span>02</span>家具と配置の提案をお届けします</li>
+    <li><span>03</span>ご承認後、お支払いと発注に進みます</li>
+    <li><span>04</span>納期・搬入・設置の調整をお任せください</li>
+  </ol>
+</section>
+
+<section class="light" id="consult">
+  <h2>ご相談</h2>
+  <p class="note">この欄はまだ送信されません。入力内容から相談メモを作成します。コピーしてお使いください。</p>
+  <form id="memo">
+    <label>お部屋の種類<input name="room" placeholder="例：リビング、住居全体"></label>
+    <label>ご予算の目安<input name="budget" placeholder="例：1,000万円"></label>
+    <label>ご要望<textarea name="wish" rows="4" placeholder="好み、お困りごとなど"></textarea></label>
+    <button type="submit">相談メモを作成</button>
+  </form>
+  <pre id="out" hidden></pre>
+</section>
+
+<footer>© NAUS</footer>
+<script src="chair.js"></script>
+</body>
+</html>
