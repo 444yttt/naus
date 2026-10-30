@@ -40,7 +40,14 @@
   };
   addEventListener('resize', resize); resize();
   addEventListener('pointermove', e => { tmx = e.clientX / W * 2 - 1; tmy = e.clientY / H * 2 - 1; });
-  const onScroll = () => { prog = Math.min(1, scrollY / (H * .9)); };
+  const cl = x => Math.max(0, Math.min(1, x));
+  let show = 0; const center = document.getElementById('center'), bar = document.getElementById('bar');
+  const onScroll = () => {
+    const s = scrollY / H;
+    show = cl((s - .15) / .5); prog = cl((s - 1.15) / .8);
+    center.style.opacity = 1 - cl(s / .5); center.style.pointerEvents = s > .4 ? 'none' : '';
+    bar.classList.toggle('on-light', s > 1.95);
+  };
   addEventListener('scroll', onScroll, { passive: true }); onScroll();
 
   let visible = true;
@@ -52,8 +59,8 @@
     const t = reduce ? 0 : ms / 1000;
     mx += (tmx - mx) * .05; my += (tmy - my) * .05;
     ctx.clearRect(0, 0, W, H);
-    if (prog >= 1) { if (!reduce) requestAnimationFrame(frame); return; }
-    const S = Math.min(W / 5.4, H / 3.4) * (small ? 1.25 : 1);
+    if (prog >= 1 || show <= 0) { if (!reduce) requestAnimationFrame(frame); return; }
+    const S = Math.min(W / 5.4, H / 3.4) * (small ? 1.25 : 1) * .85;
     const a = .6 + t * .18 + mx * .5, ca = Math.cos(a), sa = Math.sin(a);
     const tilt = -.32 + my * .12, ct = Math.cos(tilt), st = Math.sin(tilt);
     const lx = mx * .8 + .3, ly = -my * .6 - .5, lz = .7;
@@ -74,7 +81,7 @@
     }
     for (let i = 0; i < B; i++) {
       const b = buckets[i]; if (!b.length) continue;
-      ctx.fillStyle = `rgba(234,234,235,${(i + 1) / B})`; ctx.beginPath();
+      ctx.fillStyle = `rgba(46,38,30,${(i + 1) / B * .85 * show})`; ctx.beginPath();
       for (let k = 0; k < b.length; k += 3) { ctx.moveTo(b[k] + b[k + 2], b[k + 1]); ctx.arc(b[k], b[k + 1], b[k + 2], 0, 6.283); }
       ctx.fill();
     }
