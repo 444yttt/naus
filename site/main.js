@@ -10,12 +10,6 @@
     if (!reduce) photo.style.setProperty('--zoom', 1.04 + cl(s) * .06);
   };
   addEventListener('scroll', onScroll, { passive: true }); onScroll();
-  if (!reduce && matchMedia('(pointer:fine)').matches) {
-    addEventListener('pointermove', e => {
-      photo.style.setProperty('--px', ((e.clientX / innerWidth - .5) * -18) + 'px');
-      photo.style.setProperty('--py', ((e.clientY / innerHeight - .5) * -12) + 'px');
-    });
-  }
   const f = document.getElementById('memo'), out = document.getElementById('out');
   f.addEventListener('submit', e => {
     e.preventDefault(); const d = new FormData(f);

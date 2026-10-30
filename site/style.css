@@ -34,3 +34,5 @@ button{justify-self:start;font:inherit;font-family:"Cormorant Garamond",serif;fo
 pre{max-width:560px;margin-top:28px;padding:20px;background:#fff;white-space:pre-wrap;font-family:"Shippori Mincho",serif;font-size:14px;line-height:1.9;color:var(--ink)}
 footer{position:relative;z-index:1;background:var(--ink);color:var(--cream);padding:32px var(--pad);font-size:14px;letter-spacing:.3em;opacity:.9}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+.photo canvas{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .9s}.photo canvas.on{opacity:1}
