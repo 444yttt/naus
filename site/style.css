@@ -6,12 +6,12 @@ background:radial-gradient(120% 80% at 50% 0%,#c9c4bb 0,transparent 60%),linear-
 a{color:inherit;text-decoration:none}
 .bar{position:fixed;z-index:10;inset:0 0 auto 0;display:flex;justify-content:space-between;align-items:center;padding:calc(24px + env(safe-area-inset-top)) calc(var(--pad) + env(safe-area-inset-right)) 0 calc(var(--pad) + env(safe-area-inset-left));transition:color .4s}
 .bar{padding-bottom:14px}.bar.on-light{color:var(--ink);background:var(--sand)}
-.logo{font-size:20px;letter-spacing:.4em}
+.logo{font-family:"Elms Sans",sans-serif;font-weight:300;font-size:18px;letter-spacing:.45em}
 .pill{border:1px solid currentColor;border-radius:99px;padding:4px 20px;font-size:17px;font-style:italic}
 .hero{position:relative;z-index:1;height:100vh;height:100svh}
 .center{position:absolute;left:0;right:0;top:50%;transform:translateY(-54%);text-align:center}
 .center small{display:block;font-style:italic;font-size:clamp(16px,1.6vw,22px);opacity:.85;letter-spacing:.05em;margin-bottom:.3em}
-.center h1{font-family:Jost,"Hiragino Sans",sans-serif;font-weight:200;font-size:clamp(90px,19vw,290px);line-height:.9;letter-spacing:.03em}
+.center h1{font-family:"Elms Sans","Hiragino Sans",sans-serif;font-weight:100;font-size:clamp(90px,19vw,290px);line-height:.9;letter-spacing:.03em}
 .btn{display:inline-block;margin-top:clamp(20px,3vw,40px);background:var(--cream);color:var(--ink);border-radius:99px;padding:12px 28px;font-style:italic;font-size:17px}
 section.light,section.dark{position:relative;z-index:1;padding:clamp(80px,12vw,160px) var(--pad)}
 .light{background:var(--sand);color:var(--ink)}.dark{background:var(--ink);color:var(--cream)}
