@@ -1,0 +1,23 @@
+<!doctype html><meta charset=utf-8><style>
+*{margin:0;box-sizing:border-box}body{width:1440px;height:900px;background:#070707;color:#eaeaeb;font-family:"Noto Sans CJK JP","Hiragino Sans",sans-serif;font-weight:200;position:relative;overflow:hidden}
+canvas{position:absolute;inset:0}
+.logo{position:absolute;left:48px;top:40px;font-size:22px;letter-spacing:.5em;font-weight:300}
+nav{position:absolute;right:48px;top:44px;font-size:12px;letter-spacing:.2em;opacity:.7;display:flex;gap:36px}
+.t{position:absolute;left:48px;bottom:48px;font-size:13px;letter-spacing:.3em;opacity:.8}
+.e{position:absolute;right:48px;bottom:44px;font-size:13px;opacity:.6;letter-spacing:.08em;text-align:right;line-height:1.8}
+.s{position:absolute;left:50%;bottom:20px;transform:translateX(-50%);font-size:10px;letter-spacing:.4em;opacity:.4}
+</style><canvas id=c width=1440 height=900></canvas>
+<div class=logo>NAUS</div><nav><span>サービス</span><span>流れ</span><span>相談</span></nav>
+<div class=t>美しい家は、美しい家具から</div><div class=e>Furniture,<br>entirely taken care of.</div><div class=s>SCROLL</div>
+<script>
+const c=document.getElementById('c').getContext('2d');let seed=3;const r=()=>(seed=(seed*16807)%2147483647)/2147483647;
+// chair as union of boxes in 3D, sampled
+const boxes=[[-1,0,-1,1,.12,1],[-1,.12,-1,1,.9,1],[-1,.9,-1.05,1,2.1,-.8],[-1,1,-1,-.82,1.6,1],[.82,1,-1,1,1.6,1],[-.95,-.9,-.95,-.8,0,-.8],[.8,-.9,-.95,.95,0,-.8],[-.95,-.9,.8,-.8,0,.95],[.8,-.9,.8,.95,0,.95]];
+const pts=[];boxes.forEach(b=>{const v=(b[3]-b[0])*(b[4]-b[1])*(b[5]-b[2]);for(let i=0;i<Math.max(900,v*3200);i++){const f=Math.floor(r()*3),s=r()<.5?0:1;let p=[b[0]+r()*(b[3]-b[0]),b[1]+r()*(b[4]-b[1]),b[2]+r()*(b[5]-b[2])];p[f]=s?b[f+3]:b[f];pts.push(p)}});
+const a=.75,cx=720,cy=470,S=190;
+pts.forEach(p=>{let x=p[0]*Math.cos(a)-p[2]*Math.sin(a),z=p[0]*Math.sin(a)+p[2]*Math.cos(a),y=p[1];
+const ty=-.35;let Y=y*Math.cos(ty)-z*Math.sin(ty),Z=y*Math.sin(ty)+z*Math.cos(ty);
+const sx=cx+x*S,sy=cy-Y*S+60,d=(Z+3)/6;const l=Math.max(.08,Math.min(1,.25+(x*.3+Y*.25)+r()*.15));
+c.fillStyle=`rgba(234,234,235,${l})`;c.beginPath();c.arc(sx+(r()-.5)*2,sy+(r()-.5)*2,.7+d*.9,0,7);c.fill()});
+for(let i=0;i<700;i++){c.fillStyle=`rgba(234,234,235,${r()*.25})`;c.fillRect(r()*1440,r()*900,1.2,1.2)}
+</script>
