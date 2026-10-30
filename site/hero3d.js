@@ -8,7 +8,7 @@ try { renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true, alpha: f
 if (renderer) {
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.15;
-  const scene = new THREE.Scene(); scene.background = new THREE.Color(0xf0f0ec);
+  const scene = new THREE.Scene(); scene.background = new THREE.Color(0xcfe8fb);
   scene.add(buildRoom());
 
   // lighting: cool daylight from the window, warm cove light, soft fill
@@ -23,10 +23,10 @@ if (renderer) {
 
   // exterior: a pre-rendered image of the view (railing and mullions removed), hung far outside the window
   const tr = new THREE.TextureLoader().load('img/trees.jpg'); tr.colorSpace = THREE.SRGBColorSpace;
-  const D = 45, pxW = 1691 * (830 + 520) / (830 + 520) , pxH = 315;   // crop size in photo px (1500-wide space)
-  const view = new THREE.Mesh(new THREE.PlaneGeometry(((830 + 520) / 1445) * D, (pxH / 1445) * D), new THREE.MeshBasicMaterial({ map: tr, toneMapped: false }));
-  view.position.set(((330 + 1160) / 2 - 750) * D / 1445, (1000 - (850 + 1165) / 2) * D / 1445, -D); scene.add(view);
-  const skyBox = new THREE.Mesh(new THREE.PlaneGeometry(400, 200), new THREE.MeshBasicMaterial({ color: 0xf0f0ec, toneMapped: false })); skyBox.position.set(0, 20, -D - 1); scene.add(skyBox);
+  const D = 45, pxH = 420;   // crop height in photo px (1500-wide space)
+  const view = new THREE.Mesh(new THREE.PlaneGeometry(((804 + 520) / 1445) * D, (pxH / 1445) * D), new THREE.MeshBasicMaterial({ map: tr, toneMapped: false }));
+  view.position.set(((356 + 1160) / 2 - 750) * D / 1445, (1000 - (850 + 1270) / 2) * D / 1445, -D); scene.add(view);
+  const skyBox = new THREE.Mesh(new THREE.PlaneGeometry(400, 200), new THREE.MeshBasicMaterial({ color: 0xcfe8fb, toneMapped: false })); skyBox.position.set(0, 20, -D - 1); scene.add(skyBox);
 
   const cam = new THREE.PerspectiveCamera(32, 1, .05, 200); cam.position.set(0, 0, 0);
   const resize = () => { const w = innerWidth, h = innerHeight; renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2)); renderer.setSize(w, h, false);
