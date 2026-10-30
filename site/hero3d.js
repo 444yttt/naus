@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { buildRoom, ROOM, canopyTex } from './room-model.js';
+import { buildRoom, ROOM } from './room-model.js';
 
 const cv = document.getElementById('stage');
 const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
@@ -8,7 +8,7 @@ try { renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true, alpha: f
 if (renderer) {
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.15;
-  const scene = new THREE.Scene(); scene.background = new THREE.Color(0xe4e6df);
+  const scene = new THREE.Scene(); scene.background = new THREE.Color(0xf0f0ec);
   scene.add(buildRoom());
 
   // lighting: cool daylight from the window, warm cove light, soft fill
@@ -21,21 +21,12 @@ if (renderer) {
   box(10, 3, .2, 0xffffff, 0, 0, -9); box(12, .2, 9, 0xff9a50, 0, 1.6, -3);
   const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromScene(env, .04).texture; scene.environmentIntensity = .9;
 
-  // exterior: skyline band from the photo + 3D canopy of trees
-  const sk = new THREE.TextureLoader().load('img/skyline.jpg'); sk.colorSpace = THREE.SRGBColorSpace;
-  const skyW = 940 * 60 / 1445, skyH = 140 * 60 / 1445;
-  const band = new THREE.Mesh(new THREE.PlaneGeometry(skyW, skyH), new THREE.MeshBasicMaterial({ map: sk, toneMapped: false }));
-  band.position.set(-1.2, 5.0, -60); scene.add(band);
-  const sky = new THREE.Mesh(new THREE.PlaneGeometry(260, 80), new THREE.MeshBasicMaterial({ color: 0xe4e6df, toneMapped: false })); sky.position.set(0, 20, -61); scene.add(sky);
-  // treetop canopy: a displaced leafy surface below the eye line, receding to the skyline
-  const cg = new THREE.PlaneGeometry(260, 140, 200, 110); cg.rotateX(-Math.PI / 2);
-  const pos = cg.attributes.position; let sd = 3; const r = () => (sd = sd * 16807 % 2147483647) / 2147483647;
-  const ph = Array.from({ length: 6 }, () => [r() * 6, r() * 6, .3 + r() * .5, .06 + r() * .1]);
-  for (let i = 0; i < pos.count; i++) { const x = pos.getX(i), z = pos.getZ(i); let h = 0; ph.forEach(([a, b, k, f]) => { h += Math.sin(x * f * 1.7 + a) * Math.cos(z * f * 1.3 + b) * k * 1.7; }); pos.setY(i, h + (-3 + .1 * (80 - z - 10))); }
-  cg.computeVertexNormals();
-  const ct = canopyTex(); ct.repeat.set(22, 16);
-  const canopy = new THREE.Mesh(cg, new THREE.MeshLambertMaterial({ map: ct, color: 0xe8f0d8 }));
-  canopy.position.set(0, 0, -80); scene.add(canopy);
+  // exterior: a pre-rendered image of the view (railing and mullions removed), hung far outside the window
+  const tr = new THREE.TextureLoader().load('img/trees.jpg'); tr.colorSpace = THREE.SRGBColorSpace;
+  const D = 45, pxW = 1691 * (830 + 520) / (830 + 520) , pxH = 315;   // crop size in photo px (1500-wide space)
+  const view = new THREE.Mesh(new THREE.PlaneGeometry(((830 + 520) / 1445) * D, (pxH / 1445) * D), new THREE.MeshBasicMaterial({ map: tr, toneMapped: false }));
+  view.position.set(((330 + 1160) / 2 - 750) * D / 1445, (1000 - (850 + 1165) / 2) * D / 1445, -D); scene.add(view);
+  const skyBox = new THREE.Mesh(new THREE.PlaneGeometry(400, 200), new THREE.MeshBasicMaterial({ color: 0xf0f0ec, toneMapped: false })); skyBox.position.set(0, 20, -D - 1); scene.add(skyBox);
 
   const cam = new THREE.PerspectiveCamera(32, 1, .05, 200); cam.position.set(0, 0, 0);
   const resize = () => { const w = innerWidth, h = innerHeight; renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2)); renderer.setSize(w, h, false);
