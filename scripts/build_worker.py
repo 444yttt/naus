@@ -14,16 +14,21 @@ const FILES = new Set(%s);
 const BASE = `https://cdn.jsdelivr.net/gh/444yttt/naus@${SHA}/site`;
 const TYPES = { html: 'text/html; charset=utf-8', css: 'text/css; charset=utf-8', js: 'application/javascript; charset=utf-8', svg: 'image/svg+xml', jpg: 'image/jpeg', png: 'image/png', mp4: 'video/mp4', txt: 'text/plain; charset=utf-8', xml: 'application/xml; charset=utf-8' };
 
-async function serve(p, status = 200) {
-  const r = await fetch(BASE + p, { cf: { cacheEverything: true, cacheTtl: 31536000 } });
+async function serve(p, status = 200, request) {
+  // video needs byte ranges (iOS Safari will not play it otherwise)
+  const range = request && request.headers.get('range');
+  const r = await fetch(BASE + p, { headers: range ? { range } : {}, cf: { cacheEverything: true, cacheTtl: 31536000 } });
   if (!r.ok) return new Response('Not found', { status: 404 });
   const type = TYPES[p.split('.').pop()] || 'application/octet-stream';
-  return new Response(r.body, { status, headers: {
+  const headers = {
     'content-type': type,
     'cache-control': type.startsWith('text/html') ? 'no-cache' : 'public, max-age=86400',
     'x-content-type-options': 'nosniff',
-    'referrer-policy': 'strict-origin-when-cross-origin'
-  } });
+    'referrer-policy': 'strict-origin-when-cross-origin',
+    'accept-ranges': 'bytes'
+  };
+  for (const h of ['content-range', 'content-length']) if (r.headers.get(h)) headers[h] = r.headers.get(h);
+  return new Response(r.body, { status: r.status === 206 ? 206 : status, headers });
 }
 
 export default {
@@ -31,7 +36,7 @@ export default {
     const url = new URL(request.url);
     let p = decodeURIComponent(url.pathname);
     if (p.endsWith('/')) p += 'index.html';
-    if (FILES.has(p)) return serve(p);
+    if (FILES.has(p)) return serve(p, 200, request);
     if (FILES.has(p + '/index.html')) return Response.redirect(url.origin + url.pathname + '/' + url.search, 301);
     return serve('/404.html', 404);
   }
