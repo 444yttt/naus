@@ -67,16 +67,23 @@
     e.preventDefault(); document.body.classList.add('leaving'); setTimeout(() => { location.href = u.href; }, 380);
   }));
 
-  // hero: text lags behind the scroll and fades; header turns light over sand sections
-  const center = document.getElementById('center'), bar = document.getElementById('bar');
+  // hero: text fades and lags behind the scroll (desktop only; on touch devices the
+  // bounce and the collapsing address bar would make it jump, so it only fades there)
+  const center = document.getElementById('center');
   if (center) {
-    const onScroll = () => {
-      const s = scrollY / innerHeight;
+    const fine = matchMedia('(pointer:fine)').matches;
+    let vh = innerHeight, vw = innerWidth;
+    addEventListener('resize', () => { if (innerWidth !== vw) { vw = innerWidth; vh = innerHeight; } });
+    let queued = false;
+    const apply = () => {
+      queued = false;
+      const s = cl(scrollY / vh);
       center.style.opacity = 1 - cl(s / .7);
-      if (!reduce) center.style.transform = `translateY(calc(-54% + ${s * innerHeight * 0.35}px))`;
+      if (fine && !reduce) center.style.transform = `translate3d(0, calc(-54% + ${(s * vh * 0.35).toFixed(1)}px), 0)`;
       center.style.pointerEvents = s > .4 ? 'none' : '';
     };
-    addEventListener('scroll', onScroll, { passive: true }); onScroll();
+    addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(apply); } }, { passive: true });
+    apply();
   }
 
   // consult memo: local only, nothing is sent
