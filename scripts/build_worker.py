@@ -12,7 +12,7 @@ files = sorted('/' + f[len('site/'):] for f in subprocess.check_output(['git', '
 worker = '''const SHA = %s;
 const FILES = new Set(%s);
 const BASE = `https://cdn.jsdelivr.net/gh/444yttt/naus@${SHA}/site`;
-const TYPES = { html: 'text/html; charset=utf-8', css: 'text/css; charset=utf-8', js: 'application/javascript; charset=utf-8', svg: 'image/svg+xml', jpg: 'image/jpeg', png: 'image/png', txt: 'text/plain; charset=utf-8', xml: 'application/xml; charset=utf-8' };
+const TYPES = { html: 'text/html; charset=utf-8', css: 'text/css; charset=utf-8', js: 'application/javascript; charset=utf-8', svg: 'image/svg+xml', jpg: 'image/jpeg', png: 'image/png', mp4: 'video/mp4', txt: 'text/plain; charset=utf-8', xml: 'application/xml; charset=utf-8' };
 
 async function serve(p, status = 200) {
   const r = await fetch(BASE + p, { cf: { cacheEverything: true, cacheTtl: 31536000 } });

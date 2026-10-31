@@ -2,13 +2,53 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<script>document.documentElement.classList.add('js')</script>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>ページが見つかりません｜NAUS</title>
 <meta name="robots" content="noindex">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link href="https://fonts.googleapis.com/css2?family=Elms+Sans:wght@100;300&family=Noto+Sans+JP:wght@300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Elms+Sans:wght@100;300;400&family=Noto+Sans+JP:wght@300&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/style.css">
-<style>body{min-height:100svh;display:grid;place-content:center;text-align:center}h1{font-weight:100;font-size:clamp(56px,10vw,120px)}a{display:inline-block;margin-top:24px;border:1px solid currentColor;border-radius:99px;padding:8px 22px;font-size:13px;letter-spacing:.08em}</style>
+<style>
+html,body{background:var(--ink)}
+.nf{position:relative;min-height:100vh;min-height:100svh;overflow:hidden;color:var(--cream)}
+.nf video,.nf img.poster{position:absolute;left:50%;top:50%;height:min(100svh,100vw*1.6);width:auto;aspect-ratio:1;transform:translate(-50%,-50%);pointer-events:none}
+.nf .side{position:absolute;top:50%;transform:translateY(-50%);font-size:14px;letter-spacing:.06em;z-index:2}
+.nf .l{left:calc(var(--pad) + env(safe-area-inset-left))}
+.nf .l small{display:block;margin-top:8px;font-family:var(--jp);font-size:12px;opacity:.6;letter-spacing:.12em}
+.nf .r{right:calc(var(--pad) + env(safe-area-inset-right))}
+.nf .r a{display:inline-block;border:1px solid currentColor;border-radius:99px;padding:8px 20px;font-size:13px}
+.nf .r a:hover{background:var(--cream);color:var(--ink)}
+.nf .cap{position:absolute;right:calc(var(--pad) + env(safe-area-inset-right));bottom:calc(20px + env(safe-area-inset-bottom));text-align:right;font-size:10px;letter-spacing:.08em;opacity:.35;z-index:2}
+html.js .nf .side,html.js .nf .cap{opacity:0;transition:opacity 1.2s var(--out) .4s}
+html.js .ready .nf .side{opacity:1}html.js .ready .nf .cap{opacity:.35}
+.nf video{opacity:0;transition:opacity 1.6s var(--io)}.nf video.on{opacity:1}
+@media (max-width:700px){
+  .nf .side{top:auto;transform:none}
+  .nf .l{top:calc(96px + env(safe-area-inset-top))}
+  .nf .r{right:auto;left:calc(var(--pad) + env(safe-area-inset-left));bottom:calc(52px + env(safe-area-inset-bottom))}
+  .nf .cap{left:0;right:0;text-align:center}
+}
+</style>
 </head>
-<body><main><h1>404</h1><p>ページが見つかりません</p><a href="/">Back to NAUS</a></main></body>
+<body>
+<div class="sb" aria-hidden="true"></div>
+<header class="bar"><a class="logo" href="/" aria-label="NAUS">NAUS</a></header>
+<main class="nf">
+  <img class="poster" src="/media/venus-naus-poster.jpg" alt="" aria-hidden="true">
+  <video id="v" muted loop playsinline preload="auto" poster="/media/venus-naus-poster.jpg" aria-hidden="true"><source src="/media/venus-naus.mp4" type="video/mp4"></video>
+  <p class="side l">404 Not Found<small>ページが見つかりません</small></p>
+  <p class="side r"><a href="/">Back to NAUS</a></p>
+  <p class="cap">Venus de Milo · SMK Royal Cast Collection (KAS434)</p>
+</main>
+<script>
+(() => {
+  const v = document.getElementById('v');
+  if (matchMedia('(prefers-reduced-motion:reduce)').matches) { v.remove(); return; }
+  v.addEventListener('playing', () => v.classList.add('on'), { once: true });
+  const p = v.play(); if (p) p.catch(() => {});
+})();
+</script>
+<script src="/main.js"></script>
+</body>
 </html>
