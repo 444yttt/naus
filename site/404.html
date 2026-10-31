@@ -12,7 +12,8 @@
 <style>
 html,body{background:var(--ink)}
 .nf{position:relative;min-height:100vh;min-height:100svh;overflow:hidden;color:var(--cream)}
-.nf video,.nf img.poster{position:absolute;left:50%;top:50%;height:min(100svh,100vw*1.6);width:auto;aspect-ratio:1;transform:translate(-50%,-50%);pointer-events:none}
+.nf video,.nf img.poster{position:absolute;left:50%;top:50%;height:min(100svh,100vw*1.6);width:auto;aspect-ratio:1;transform:translate(-50%,-50%);pointer-events:none;mix-blend-mode:screen}
+/* rendered on pure black: screen blending drops the black so only the glyphs sit on the page colour */
 .nf .side{position:absolute;top:50%;transform:translateY(-50%);font-size:14px;letter-spacing:.06em;z-index:2}
 .nf .l{left:calc(var(--pad) + env(safe-area-inset-left))}
 .nf .l small{display:block;margin-top:8px;font-family:var(--jp);font-size:12px;opacity:.6;letter-spacing:.12em}
