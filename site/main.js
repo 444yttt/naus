@@ -86,6 +86,23 @@
     apply();
   }
 
+  // iOS edges: status-bar strip and page edge take the colour of what is at the top/bottom edge
+  const strip = document.querySelector('.sb');
+  if (strip) {
+    const tone = el => !el ? '#c3bdb2' : el.closest('.dark, footer') ? '#2a241d' : el.closest('.light, main') ? '#efebe3' : '#c3bdb2';
+    const at = y => document.elementsFromPoint(innerWidth / 2, y).find(el => !el.closest('.bar, .sb'));
+    let queued = false;
+    const paint = () => {
+      queued = false;
+      const top = parseFloat(getComputedStyle(strip).height) || 0;
+      strip.style.background = tone(at(top + 1));
+      const nearEnd = scrollY + innerHeight > document.documentElement.scrollHeight - innerHeight / 2;
+      document.documentElement.style.background = tone(nearEnd ? document.querySelector('footer, main') : document.querySelector('.hero, main'));
+    };
+    addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(paint); } }, { passive: true });
+    addEventListener('resize', paint); paint();
+  }
+
   // consult memo: local only, nothing is sent
   const f = document.getElementById('memo'), out = document.getElementById('out');
   if (f) f.addEventListener('submit', e => {

@@ -5,6 +5,8 @@ html{scroll-behavior:smooth}
 body{color:var(--cream);font-family:var(--sans);font-weight:300;-webkit-font-smoothing:antialiased;
 background:#c3bdb2}
 html{background:#c3bdb2}
+/* status-bar strip: same colour as the section at the top edge, so iOS shows a clean continuation instead of content bleeding under the clock */
+.sb{position:fixed;z-index:9;left:0;right:0;top:0;height:env(safe-area-inset-top);background:#c3bdb2;pointer-events:none}
 a{color:inherit;text-decoration:none}
 .bar{position:fixed;z-index:10;inset:env(safe-area-inset-top) 0 auto 0;display:flex;justify-content:space-between;align-items:center;padding:24px calc(var(--pad) + env(safe-area-inset-right)) 0 calc(var(--pad) + env(safe-area-inset-left))}
 .bar{padding-bottom:14px}
@@ -34,7 +36,7 @@ label{display:grid;gap:8px;font-size:12px;letter-spacing:.2em}
 input,textarea{font:inherit;font-size:16px;padding:12px 0;border:0;border-bottom:1px solid var(--ink);background:transparent;outline:0;border-radius:0;color:var(--ink)}
 button{justify-self:start;font:inherit;font-size:14px;letter-spacing:.08em;background:var(--ink);color:var(--cream);border:0;border-radius:99px;padding:12px 28px;cursor:pointer}
 pre{max-width:560px;margin-top:28px;padding:20px;background:#fff;white-space:pre-wrap;font-family:var(--sans);font-size:14px;line-height:1.9;color:var(--ink)}
-footer{position:relative;z-index:1;background:var(--ink);color:var(--cream);padding:32px var(--pad);font-size:14px;letter-spacing:.3em;opacity:.9}
+footer{position:relative;z-index:1;background:var(--ink);color:var(--cream);padding:32px var(--pad) calc(32px + env(safe-area-inset-bottom));font-size:14px;letter-spacing:.3em;opacity:.9}
 /* ---- motion ----
    reveal: ease-out-quint, ~1.1s, 80ms stagger / hover: ease-in-out-quad, .5s */
 :root{--out:cubic-bezier(.22,1,.36,1);--io:cubic-bezier(.455,.03,.515,.955)}
