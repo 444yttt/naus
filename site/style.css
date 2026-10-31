@@ -22,7 +22,7 @@ h2 .sub{display:block;font-family:var(--jp);font-weight:300;font-size:clamp(13px
 .grid p,.note{font-size:14px;line-height:2;letter-spacing:.04em}
 .steps{list-style:none;max-width:760px}
 .steps li{display:flex;gap:28px;padding:22px 0;border-top:1px solid rgba(244,241,234,.2);font-size:clamp(14px,1.6vw,18px);letter-spacing:.08em}
-.steps li>span:first-child{font-size:12px;letter-spacing:.1em;opacity:.6}
+.steps li>span:first-child{min-width:18px;font-size:12px;letter-spacing:.1em;opacity:.6}
 .steps em{font-style:normal;font-weight:300;letter-spacing:.04em;min-width:96px;opacity:.95}
 .note{margin:-24px 0 32px;opacity:.75}
 form{max-width:560px;display:grid;gap:20px}
