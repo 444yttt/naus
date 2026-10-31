@@ -79,27 +79,6 @@
     addEventListener('scroll', onScroll, { passive: true }); onScroll();
   }
 
-  // header: transparent over the hero; hides while reading down, returns (frosted, in the
-  // colour of the section underneath) when scrolling up
-  const header = document.querySelector('.bar');
-  if (header) {
-    const zones = [...document.querySelectorAll('.light, .dark, .hero, main')];
-    let last = scrollY;
-    const update = () => {
-      const y = scrollY, mid = header.getBoundingClientRect().height / 2;
-      const z = zones.find(el => { const r = el.getBoundingClientRect(); return r.top <= mid && r.bottom > mid; });
-      const zone = !z ? 'hero' : z.classList.contains('dark') ? 'dark' : (z.classList.contains('light') || z.tagName === 'MAIN') ? 'light' : 'hero';
-      header.dataset.zone = zone; header.dataset.tone = zone === 'light' ? 'ink' : 'cream';
-      header.classList.toggle('solid', y > 40);
-      if (!reduce) {
-        if (y > last + 6 && y > innerHeight * .5) header.classList.add('hide');
-        else if (y < last - 6 || y < innerHeight * .5) header.classList.remove('hide');
-      }
-      last = y;
-    };
-    addEventListener('scroll', update, { passive: true }); addEventListener('resize', update); update();
-  }
-
   // consult memo: local only, nothing is sent
   const f = document.getElementById('memo'), out = document.getElementById('out');
   if (f) f.addEventListener('submit', e => {
