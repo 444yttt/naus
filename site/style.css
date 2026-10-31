@@ -5,10 +5,10 @@ body{color:var(--cream);font-family:var(--sans);font-weight:300;-webkit-font-smo
 background:radial-gradient(120% 80% at 50% 0%,#c9c4bb 0,transparent 60%),linear-gradient(180deg,#b9b2a7 0%,#a29887 55%,#6f6558 100%) fixed,#a29887}
 a{color:inherit;text-decoration:none}
 .bar{position:fixed;z-index:10;inset:0 0 auto 0;display:flex;justify-content:space-between;align-items:center;padding:calc(24px + env(safe-area-inset-top)) calc(var(--pad) + env(safe-area-inset-right)) 0 calc(var(--pad) + env(safe-area-inset-left));transition:color .4s}
-.bar{padding-bottom:14px}.bar.on-light{color:var(--ink);background:var(--sand)}
+.bar{padding-bottom:14px;transition:color .4s,background-color .4s}.bar.on-light{color:var(--ink);background:var(--sand)}
 .logo{font-weight:300;font-size:18px;letter-spacing:.45em}
 .pill{border:1px solid currentColor;border-radius:99px;padding:6px 20px;font-size:13px;letter-spacing:.08em}
-.hero{position:relative;z-index:1;height:100vh;height:100svh}
+.hero{position:relative;z-index:1;height:100vh;height:100svh;overflow:hidden}
 .center{position:absolute;left:0;right:0;top:50%;transform:translateY(-54%);text-align:center}
 .center small{display:block;font-family:"Cormorant Garamond",serif;font-style:italic;font-size:clamp(16px,1.6vw,22px);opacity:.85;letter-spacing:.05em;margin-bottom:.3em}
 .center h1{font-weight:100;font-size:clamp(90px,19vw,290px);line-height:.9;letter-spacing:.03em}
@@ -31,6 +31,44 @@ input,textarea{font:inherit;font-size:16px;padding:12px 0;border:0;border-bottom
 button{justify-self:start;font:inherit;font-size:14px;letter-spacing:.08em;background:var(--ink);color:var(--cream);border:0;border-radius:99px;padding:12px 28px;cursor:pointer}
 pre{max-width:560px;margin-top:28px;padding:20px;background:#fff;white-space:pre-wrap;font-family:var(--sans);font-size:14px;line-height:1.9;color:var(--ink)}
 footer{position:relative;z-index:1;background:var(--ink);color:var(--cream);padding:32px var(--pad);font-size:14px;letter-spacing:.3em;opacity:.9}
+/* ---- motion ---- */
+:root{--ease:cubic-bezier(.2,.7,.2,1)}
+.hero::before{content:"";position:absolute;inset:-30%;background:radial-gradient(40% 35% at 50% 50%,rgba(255,250,240,.28),transparent 70%);animation:drift 22s var(--ease) infinite alternate;pointer-events:none}
+@keyframes drift{0%{transform:translate(-14%,-10%)}50%{transform:translate(10%,6%)}100%{transform:translate(-4%,14%)}}
+.cue{position:absolute;left:50%;bottom:28px;width:1px;height:56px;background:rgba(244,241,234,.25);overflow:hidden}
+.cue::after{content:"";position:absolute;left:0;top:-40%;width:100%;height:40%;background:var(--cream);animation:cue 2.4s var(--ease) infinite}
+@keyframes cue{0%{top:-40%}100%{top:100%}}
+.center{will-change:transform,opacity}
+.btn,.pill,button{transition:background-color .45s var(--ease),color .45s var(--ease),letter-spacing .45s var(--ease)}
+.btn:hover{background:var(--ink);color:var(--cream)}
+.pill:hover{letter-spacing:.16em}
+button:hover{background:#000;letter-spacing:.14em}
+input,textarea{background:linear-gradient(currentColor,currentColor) 0 100%/0 1px no-repeat;transition:background-size .6s var(--ease)}
+input:focus,textarea:focus{background-size:100% 1px}
+.grid b,.steps li{border-top:0;position:relative}
+.grid b::before,.steps li::before{content:"";position:absolute;left:0;top:0;width:100%;height:1px;background:currentColor;transform-origin:left;transition:transform 1.2s var(--ease) calc(var(--d,0) * 120ms)}
+.steps li::before{background:rgba(244,241,234,.2)}
+html.js .grid li:not(.in) b::before,html.js .steps li:not(.in)::before{transform:scaleX(0)}
+html.js .reveal{opacity:0;transform:translateY(28px);transition:opacity 1.1s var(--ease) calc(var(--d,0) * 120ms),transform 1.1s var(--ease) calc(var(--d,0) * 120ms)}
+html.js .reveal.in{opacity:1;transform:none}
+html.js body{opacity:0;transition:opacity .7s var(--ease)}
+html.js body.ready{opacity:1}
+html.js body.leaving{opacity:0;transition-duration:.35s}
+html.js .bar{transform:translateY(-12px);opacity:0;transition:transform 1s var(--ease) .2s,opacity 1s var(--ease) .2s,color .4s,background-color .4s}
+html.js .ready .bar{transform:none;opacity:1}
+.ch{display:inline-block}
+html.js [data-split] .ch{opacity:0;filter:blur(14px);transform:translateY(.12em);transition:opacity 1.4s var(--ease),filter 1.4s var(--ease),transform 1.4s var(--ease);transition-delay:calc(.35s + var(--i) * 110ms)}
+html.js .ready [data-split] .ch{opacity:1;filter:none;transform:none}
+html.js .center small,html.js .center .btn{opacity:0;transform:translateY(14px);transition:opacity 1.2s var(--ease),transform 1.2s var(--ease)}
+html.js .center small{transition-delay:.25s}
+html.js .center .btn{transition-delay:1.1s}
+html.js .ready .center small,html.js .ready .center .btn{opacity:1;transform:none}
+html.js .center .btn{transition:opacity 1.2s var(--ease) 1.1s,transform 1.2s var(--ease) 1.1s,background-color .45s var(--ease),color .45s var(--ease)}
+@media (prefers-reduced-motion:reduce){
+  .hero::before,.cue::after{animation:none}
+  html.js body,html.js .bar,html.js .reveal,html.js [data-split] .ch,html.js .center small,html.js .center .btn{opacity:1!important;transform:none!important;filter:none!important;transition:none!important}
+  html.js .grid li b::before,html.js .steps li::before{transform:none!important;transition:none!important}
+}
 @media (max-width:600px){.steps li{flex-wrap:wrap;gap:6px 16px}.steps .t{flex-basis:100%;padding-left:32px;opacity:.85}}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 
