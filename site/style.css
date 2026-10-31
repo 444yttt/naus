@@ -111,7 +111,67 @@ input:focus,textarea:focus{background-size:100% 1px}
 body{transition:opacity .4s var(--io)}
 body.leaving{opacity:0}
 
+/* ---- consult form: one question at a time (after the survey) ---- */
+.cf{max-width:620px;position:relative}
+.cf-top{display:flex;align-items:center;gap:18px;margin-bottom:clamp(28px,4vw,44px)}
+.cf-count{font-size:12px;letter-spacing:.14em;opacity:.6;min-width:58px}
+.cf-bar{flex:1;height:1px;background:rgba(42,36,29,.15);position:relative;overflow:hidden}
+.cf-bar span{position:absolute;inset:0;background:var(--ink);transform-origin:left;transform:scaleX(var(--p,.2));transition:transform .9s var(--out)}
+.cf-stage{min-height:300px}
+.cf-step{border:0;padding:0;margin:0;min-width:0}
+.cf-step legend{display:block;padding:0;margin-bottom:26px;font-family:var(--jp);font-weight:300;font-size:clamp(20px,2.4vw,26px);letter-spacing:.06em;line-height:1.6}
+.cf-label{display:block;font-family:var(--sans);font-size:11px;letter-spacing:.22em;opacity:.55;margin-bottom:10px}
+.cf-opt{font-size:12px;opacity:.55;margin-left:12px;letter-spacing:.1em}
+.cf-step.arrive{animation:cf-arrive .8s var(--out) both}
+.cf-step.leave{opacity:0;transform:translateY(-12px);transition:opacity .2s ease,transform .25s var(--out)}
+.cf-step.leave.back{transform:translateY(12px)}
+.cf-step.arrive.back{animation-name:cf-arrive-back}
+@keyframes cf-arrive{from{opacity:0;transform:translateY(16px);filter:blur(3px)}to{opacity:1;transform:none;filter:none}}
+@keyframes cf-arrive-back{from{opacity:0;transform:translateY(-16px);filter:blur(3px)}to{opacity:1;transform:none;filter:none}}
+.cf-choices{display:grid}
+.cf-choices button{position:relative;display:flex;align-items:center;gap:14px;min-height:52px;padding:12px 2px;border:0;border-radius:0;background:none;color:var(--ink);opacity:.55;font:inherit;font-family:var(--jp);font-size:15px;letter-spacing:.06em;text-align:left;cursor:pointer;justify-self:stretch;transition:opacity .55s var(--out)}
+.cf-choices button::after{content:"";position:absolute;left:20px;right:0;bottom:4px;height:1px;background:linear-gradient(90deg,var(--ink),transparent);transform-origin:left;transform:scaleX(0);transition:transform .75s var(--out)}
+.cf-choices button i{width:6px;height:6px;flex:0 0 6px;border-radius:50%;background:var(--ink);opacity:0;transform:scale(.2);transition:opacity .6s var(--out),transform .6s var(--out)}
+.cf-choices button:hover{opacity:.85;background:none}
+.cf-choices button[aria-checked="true"]{opacity:1}
+.cf-choices button[aria-checked="true"]::after{transform:scaleX(1)}
+.cf-choices button[aria-checked="true"] i{opacity:1;transform:none}
+.cf-amount{display:flex;align-items:baseline;justify-content:center;height:1.2em;font-weight:100;font-size:clamp(56px,9vw,92px);line-height:1;letter-spacing:-.01em;margin:6px 0 26px}
+.cf-dash{opacity:.3}
+.cf-digit{display:inline-block;width:.58em;height:1.05em;overflow:hidden;mask-image:linear-gradient(transparent,#000 14%,#000 86%,transparent);-webkit-mask-image:linear-gradient(transparent,#000 14%,#000 86%,transparent)}
+.cf-strip{display:flex;flex-direction:column;line-height:1.05em;text-align:center;transition:transform .58s cubic-bezier(.16,1,.3,1)}
+.cf-punct{display:inline-block;width:.24em;text-align:center}
+.cf-unit{font-size:.26em;font-weight:300;margin-left:.3em;font-family:var(--jp);letter-spacing:.05em;animation:cf-fadein .6s var(--out) both}
+@keyframes cf-fadein{from{opacity:0;filter:blur(3px)}to{opacity:1;filter:none}}
+.cf-slider{display:flex;align-items:center;gap:10px}
+.cf-nudge{width:44px;height:44px;flex:0 0 44px;border:0;background:none;color:var(--ink);font:inherit;font-size:20px;font-weight:200;cursor:pointer;opacity:.65;padding:0;transition:opacity .4s}
+.cf-nudge:hover{opacity:1;background:none}
+.cf input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:28px;background:linear-gradient(var(--ink),var(--ink)) 0 50%/var(--fill,0%) 1px no-repeat,linear-gradient(rgba(42,36,29,.18),rgba(42,36,29,.18)) 0 50%/100% 1px no-repeat;padding:0;border:0;cursor:pointer;transition:background-size .4s var(--out)}
+.cf input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--sand);border:1px solid var(--ink);transition:transform .4s var(--out)}
+.cf input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--sand);border:1px solid var(--ink)}
+.cf input[type=range]:active::-webkit-slider-thumb{transform:scale(1.25)}
+.cf-ends{display:flex;justify-content:space-between;font-size:11px;letter-spacing:.06em;opacity:.5;margin:6px 54px 0}
+.cf-undecided{display:block;margin:22px auto 0;border:0;border-bottom:1px solid transparent;border-radius:0;padding:4px 2px;background:none;color:var(--ink);font:inherit;font-family:var(--jp);font-size:13px;opacity:.6;cursor:pointer;transition:opacity .4s,border-color .4s}
+.cf-undecided:hover{background:none;opacity:1}
+.cf-undecided[aria-pressed="true"]{opacity:1;border-color:var(--ink)}
+.cf textarea{width:100%;resize:vertical;line-height:1.9}
+.cf label{margin-bottom:22px}
+.cf-privacy{font-family:var(--jp);font-size:12px;opacity:.6;line-height:1.9;letter-spacing:.04em}
+.cf-done{text-align:left;padding-top:20px}
+.cf-done-title{font-family:var(--jp);font-weight:300;font-size:clamp(22px,2.6vw,28px);letter-spacing:.06em;margin:4px 0 14px}
+.cf-done-text{font-family:var(--jp);font-size:14px;line-height:2;opacity:.75}
+.cf-msg{min-height:22px;margin:16px 0 0;font-family:var(--jp);font-size:12px;letter-spacing:.06em;color:#8a3b2a}
+.cf-nav{display:flex;justify-content:space-between;align-items:center;margin-top:18px}
+.cf-nav .cf-next{margin-left:auto}
+.cf-back{justify-self:start;background:none!important;color:var(--ink)!important;border:0;padding:12px 4px;opacity:.6}
+.cf-back:hover{opacity:1}
+.cf-next[disabled]{opacity:.5;cursor:default}
+.cf-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+html:not(.js) .cf-step[hidden]{display:block}
+
 @media (prefers-reduced-motion:reduce){
+  .cf-step.arrive,.cf-step.leave{animation:none;transition:none;opacity:1;transform:none;filter:none}
+  .cf-strip{transition:none}
   .hero::before,.cue::after{animation:none}
   html.js [data-split] .ch,html.js .reveal .mi,html.js .fade,html.js .center small,html.js .center .btn,html.js .bar{opacity:1!important;transform:none!important;transition:none!important}
   html.js .grid li b::before,html.js .steps li::before,.roll>span{transform:none!important;transition:none!important}

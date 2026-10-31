@@ -38,7 +38,7 @@
   });
 
   // buttons: label rolls up on hover
-  document.querySelectorAll('.btn, .pill, button').forEach(b => {
+  document.querySelectorAll('.btn, .pill').forEach(b => {
     const t = b.textContent.trim(); b.textContent = '';
     const r = document.createElement('span'); r.className = 'roll';
     r.innerHTML = '<span></span><span aria-hidden="true"></span>';
@@ -103,11 +103,98 @@
     addEventListener('resize', paint); paint();
   }
 
-  // consult memo: local only, nothing is sent
-  const f = document.getElementById('memo'), out = document.getElementById('out');
-  if (f) f.addEventListener('submit', e => {
-    e.preventDefault(); const d = new FormData(f);
-    out.textContent = `【NAUS 相談メモ】\nお部屋：${d.get('room') || '未入力'}\nご予算の目安：${d.get('budget') || '未入力'}\nご要望：${d.get('wish') || '未入力'}`;
-    out.hidden = false;
-  });
+  // consult form: one question at a time, sent to /api/consult
+  const cf = document.getElementById('cf');
+  if (cf) {
+    const steps = [...cf.querySelectorAll('.cf-step')], order = ['room', 'timing', 'budget', 'wish', 'contact'];
+    const $ = id => document.getElementById(id);
+    const next = $('cf-next'), back = $('cf-back'), msg = $('cf-msg');
+    const data = { room: '', timing: '', budget: '', wish: '', name: '', email: '' };
+    const KEY = 'naus-consult-draft';
+    let i = 0, busy = false;
+    try { Object.assign(data, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (e) {}
+    const save = () => { try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) {} };
+
+    // choices: a dot appears and an underline is drawn under the picked one
+    cf.querySelectorAll('.cf-choices').forEach(group => {
+      const key = group.closest('.cf-step').dataset.step;
+      const paint = () => group.querySelectorAll('button').forEach(b => b.setAttribute('aria-checked', String(b.dataset.v === data[key])));
+      group.addEventListener('click', e => {
+        const b = e.target.closest('button'); if (!b) return;
+        data[key] = b.dataset.v; paint(); save(); msg.textContent = '';
+      });
+      paint();
+    });
+
+    // budget: rolling digits like the survey's amount readout
+    const SCALE = [300, 500, 700, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4000], range = $('cf-range'), out = $('cf-amount'), und = $('cf-undecided');
+    const label = n => n === SCALE.length - 1 ? '4,000万円以上' : SCALE[n].toLocaleString('en-US') + '万円';
+    let shown = '';
+    const roll = text => {
+      if (!/\d/.test(text)) { out.innerHTML = '<span class="cf-dash">—</span>'; shown = ''; return; }
+      const [num, unit] = [text.replace(/[^\d,]/g, ''), text.replace(/[\d,]/g, '')];
+      if (!shown || shown.replace(/[^\d,]/g, '').length !== num.length) {
+        out.innerHTML = [...num].map(ch => ch === ',' ? '<span class="cf-punct">,</span>' : '<span class="cf-digit"><span class="cf-strip">' + Array.from({ length: 10 }, (_, k) => '<span>' + k + '</span>').join('') + '</span></span>').join('') + '<span class="cf-unit">' + unit + '</span>';
+        out.querySelectorAll('.cf-strip').forEach(s => { s.style.transition = 'none'; s.style.transform = 'translateY(0)'; void s.offsetHeight; s.style.transition = ''; });
+      } else out.querySelector('.cf-unit').textContent = unit;
+      const strips = out.querySelectorAll('.cf-strip'); let d = 0;
+      [...num].forEach(ch => { if (ch !== ',') strips[d++].style.transform = 'translateY(' + (-1.05 * +ch) + 'em)'; });
+      out.setAttribute('aria-label', text); shown = text;
+    };
+    const setBudget = n => {
+      n = Math.max(0, Math.min(SCALE.length - 1, n)); range.value = n;
+      range.style.setProperty('--fill', n / (SCALE.length - 1) * 100 + '%');
+      data.budget = label(n); und.setAttribute('aria-pressed', 'false'); roll(data.budget); save(); msg.textContent = '';
+    };
+    range.addEventListener('input', () => setBudget(+range.value));
+    range.addEventListener('pointerdown', () => { if (!data.budget || data.budget === 'まだ決めていない') setBudget(+range.value); });
+    cf.querySelectorAll('.cf-nudge').forEach(b => b.addEventListener('click', () => setBudget((data.budget && data.budget !== 'まだ決めていない' ? +range.value : 0) + (data.budget && data.budget !== 'まだ決めていない' ? +b.dataset.d : 0))));
+    und.addEventListener('click', () => { const on = data.budget !== 'まだ決めていない'; data.budget = on ? 'まだ決めていない' : ''; und.setAttribute('aria-pressed', String(on)); roll(''); range.style.setProperty('--fill', '0%'); save(); msg.textContent = ''; });
+    if (data.budget && data.budget !== 'まだ決めていない') { const n = SCALE.findIndex((_, k) => label(k) === data.budget); if (n >= 0) setBudget(n); } else if (data.budget) und.setAttribute('aria-pressed', 'true');
+
+    // text fields
+    ['wish', 'name', 'email'].forEach(k => { const el = cf.elements[k]; el.value = data[k] || ''; el.addEventListener('input', () => { data[k] = el.value; save(); msg.textContent = ''; }); });
+
+    const view = (n, dir) => {
+      const from = steps.find(s => !s.hidden), to = cf.querySelector('[data-step="' + (order[n] || 'done') + '"]');
+      const show = () => {
+        if (from) { from.hidden = true; from.classList.remove('leave', 'back'); }
+        to.hidden = false; to.classList.remove('arrive', 'back'); void to.offsetWidth; to.classList.add('arrive'); if (dir < 0) to.classList.add('back');
+        i = n; const done = n >= order.length;
+        $('cf-count').textContent = done ? 'DONE' : String(n + 1).padStart(2, '0') + ' / ' + String(order.length).padStart(2, '0');
+        $('cf-bar').parentElement.style.setProperty('--p', done ? 1 : (n + 1) / order.length);
+        $('cf-bar').style.setProperty('--p', done ? 1 : (n + 1) / order.length);
+        back.hidden = n === 0 || done; next.hidden = done;
+        next.textContent = n === order.length - 1 ? 'Send' : 'Next';
+        busy = false;
+      };
+      if (from && from !== to && !reduce) { busy = true; from.classList.add('leave'); if (dir < 0) from.classList.add('back'); setTimeout(show, 200); } else show();
+    };
+    const check = () => {
+      const k = order[i];
+      if (k === 'room' && !data.room) return 'お部屋を選んでください';
+      if (k === 'timing' && !data.timing) return '時期を選んでください';
+      if (k === 'budget' && !data.budget) return 'スライダーで選ぶか、まだ決めていないを選んでください';
+      if (k === 'contact') {
+        if (!data.name.trim()) return 'お名前を入力してください';
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email.trim())) return 'メールアドレスを確認してください';
+      }
+      return '';
+    };
+    back.addEventListener('click', () => { if (!busy) view(i - 1, -1); });
+    cf.addEventListener('submit', async e => {
+      e.preventDefault(); if (busy) return;
+      const err = check(); if (err) { msg.textContent = err; return; }
+      if (i < order.length - 1) { view(i + 1, 1); return; }
+      busy = true; next.disabled = true; next.textContent = 'Sending'; msg.textContent = '';
+      try {
+        const r = await fetch('/api/consult', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ...data, website: cf.elements.website.value }) });
+        const j = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(j.error || '送信できませんでした、時間をおいてもう一度お試しください');
+        try { localStorage.removeItem(KEY); } catch (e) {}
+        next.disabled = false; busy = false; view(order.length, 1);
+      } catch (x) { msg.textContent = x.message; next.disabled = false; next.textContent = 'Send'; busy = false; }
+    });
+    view(0, 1);
+  }
 })();

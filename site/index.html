@@ -60,14 +60,68 @@
 
 <section class="light" id="consult">
   <h2>Consult<span class="sub">まずは、部屋の話から</span></h2>
-  <p class="note">入力内容は送信されず相談メモにまとまるので、コピーしてお使いください</p>
-  <form id="memo">
-    <label>お部屋の種類<input name="room" placeholder="例：リビング、住居全体"></label>
-    <label>ご予算の目安<input name="budget" placeholder="例：1,000万円"></label>
-    <label>ご要望<textarea name="wish" rows="4" placeholder="好み、お困りごとなど"></textarea></label>
-    <button type="submit">相談メモを作成</button>
+  <form id="cf" class="cf" novalidate>
+    <div class="cf-top"><span class="cf-count" id="cf-count">01 / 05</span><span class="cf-bar"><span id="cf-bar"></span></span></div>
+    <div class="cf-stage" id="cf-stage">
+
+      <fieldset class="cf-step" data-step="room" data-required>
+        <legend><span class="cf-label">YOUR SPACE</span>整えたいお部屋</legend>
+        <div class="cf-choices" role="radiogroup">
+          <button type="button" role="radio" data-v="住まい全体"><i></i>住まい全体</button>
+          <button type="button" role="radio" data-v="リビング・ダイニング"><i></i>リビング・ダイニング</button>
+          <button type="button" role="radio" data-v="寝室・書斎"><i></i>寝室・書斎</button>
+          <button type="button" role="radio" data-v="その他・未定"><i></i>その他・未定</button>
+        </div>
+      </fieldset>
+
+      <fieldset class="cf-step" data-step="timing" data-required hidden>
+        <legend><span class="cf-label">TIMING</span>家具を揃えたい時期</legend>
+        <div class="cf-choices" role="radiogroup">
+          <button type="button" role="radio" data-v="3か月以内"><i></i>3か月以内</button>
+          <button type="button" role="radio" data-v="半年以内"><i></i>半年以内</button>
+          <button type="button" role="radio" data-v="1年以内"><i></i>1年以内</button>
+          <button type="button" role="radio" data-v="未定"><i></i>まだ決まっていない</button>
+        </div>
+      </fieldset>
+
+      <fieldset class="cf-step" data-step="budget" data-required hidden>
+        <legend><span class="cf-label">BUDGET</span>家具のご予算</legend>
+        <output class="cf-amount" id="cf-amount" aria-live="off"><span class="cf-dash">—</span></output>
+        <div class="cf-slider">
+          <button type="button" class="cf-nudge" data-d="-1" aria-label="一段階下げる">−</button>
+          <input type="range" id="cf-range" min="0" max="10" step="1" value="0" aria-label="家具のご予算">
+          <button type="button" class="cf-nudge" data-d="1" aria-label="一段階上げる">+</button>
+        </div>
+        <div class="cf-ends"><span>300万円</span><span>4,000万円以上</span></div>
+        <button type="button" class="cf-undecided" id="cf-undecided">まだ決めていない</button>
+      </fieldset>
+
+      <fieldset class="cf-step" data-step="wish" hidden>
+        <legend><span class="cf-label">YOUR STORY</span>ご要望やお困りごと<span class="cf-opt">任意</span></legend>
+        <textarea name="wish" rows="5" maxlength="1500" placeholder="好きな雰囲気、気になっているブランド、搬入の不安など"></textarea>
+      </fieldset>
+
+      <fieldset class="cf-step" data-step="contact" data-required hidden>
+        <legend><span class="cf-label">CONTACT</span>ご連絡先</legend>
+        <label>お名前<input name="name" autocomplete="name" maxlength="80" placeholder="例：山田 花子"></label>
+        <label>メールアドレス<input name="email" type="email" autocomplete="email" inputmode="email" maxlength="200" placeholder="例：hanako@example.com"></label>
+        <p class="cf-privacy">いただいた内容は、ご相談への返信と提案のためにのみ使います</p>
+      </fieldset>
+
+      <div class="cf-step cf-done" data-step="done" hidden>
+        <span class="cf-label">THANK YOU</span>
+        <p class="cf-done-title">ご相談を受け付けました</p>
+        <p class="cf-done-text">内容を確認のうえ、ご入力のメールアドレスへご連絡します</p>
+      </div>
+
+    </div>
+    <p class="cf-msg" id="cf-msg" role="alert"></p>
+    <div class="cf-nav">
+      <button type="button" class="cf-back" id="cf-back" hidden>Back</button>
+      <button type="submit" class="cf-next" id="cf-next">Next</button>
+    </div>
+    <div class="cf-hp" aria-hidden="true"><label>Website<input name="website" tabindex="-1" autocomplete="off"></label></div>
   </form>
-  <pre id="out" hidden></pre>
 </section>
 
 <footer class="foot">
