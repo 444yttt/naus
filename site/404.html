@@ -46,7 +46,9 @@ html.js .ready .nf .side{opacity:1}html.js .ready .nf .cap{opacity:.35}
 (() => {
   const v = document.getElementById('v');
   if (matchMedia('(prefers-reduced-motion:reduce)').matches) { v.remove(); return; }
-  v.addEventListener('playing', () => v.classList.add('on'), { once: true });
+  v.removeAttribute('poster');
+  // the still underneath is only a placeholder; drop it once the video shows, or both would blend through
+  v.addEventListener('playing', () => { v.classList.add('on'); setTimeout(() => { const img = document.querySelector('.nf .poster'); if (img) img.remove(); }, 1600); }, { once: true });
   const p = v.play(); if (p) p.catch(() => {});
 })();
 </script>
