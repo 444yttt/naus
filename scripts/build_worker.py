@@ -5,7 +5,8 @@ Usage: python3 scripts/build_worker.py
 import base64, json, os
 
 ROOT = os.path.join(os.path.dirname(__file__), '..', 'site')
-MIME = {'.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'application/javascript; charset=utf-8'}
+MIME = {'.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'application/javascript; charset=utf-8',
+        '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.txt': 'text/plain; charset=utf-8', '.xml': 'application/xml; charset=utf-8'}
 
 files = {}
 for d, _, names in os.walk(ROOT):
