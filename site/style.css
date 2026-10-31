@@ -36,7 +36,29 @@ label{display:grid;gap:8px;font-size:12px;letter-spacing:.2em}
 input,textarea{font:inherit;font-size:16px;padding:12px 0;border:0;border-bottom:1px solid var(--ink);background:transparent;outline:0;border-radius:0;color:var(--ink)}
 button{justify-self:start;font:inherit;font-size:14px;letter-spacing:.08em;background:var(--ink);color:var(--cream);border:0;border-radius:99px;padding:12px 28px;cursor:pointer}
 pre{max-width:560px;margin-top:28px;padding:20px;background:#fff;white-space:pre-wrap;font-family:var(--sans);font-size:14px;line-height:1.9;color:var(--ink)}
-footer{position:relative;z-index:1;background:var(--ink);color:var(--cream);padding:32px var(--pad) calc(32px + env(safe-area-inset-bottom));font-size:14px;letter-spacing:.3em;opacity:.9}
+footer{position:relative;z-index:1;background:var(--ink);color:var(--cream);padding:40px var(--pad) calc(36px + env(safe-area-inset-bottom));font-size:13px;letter-spacing:.06em}
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:24px}
+.foot nav{display:flex;flex-wrap:wrap;gap:12px 28px}
+.foot nav a{opacity:.75;transition:opacity .4s var(--io)}.foot nav a:hover{opacity:1}
+.foot span{opacity:.5;letter-spacing:.2em}
+/* sub pages */
+.page{background:var(--sand);color:var(--ink)}
+.page main{padding:clamp(120px,16vw,200px) var(--pad) clamp(80px,10vw,140px);max-width:900px}
+.page h1{font-weight:100;font-size:clamp(56px,10vw,120px);letter-spacing:.03em;line-height:1}
+.page .st{font-size:14px;letter-spacing:.08em;margin:20px 0 48px;opacity:.7}
+.page main p{font-size:15px;line-height:2.1;letter-spacing:.04em;margin-bottom:32px}
+.page .lead{font-size:clamp(16px,1.6vw,19px)}
+.page dl{display:grid;grid-template-columns:140px 1fr;gap:0;font-size:14px;line-height:1.9;border-top:1px solid var(--ink)}
+.page dt,.page dd{padding:14px 0;border-bottom:1px solid rgba(42,36,29,.2)}.page dt{letter-spacing:.2em}
+.page dl.faq{grid-template-columns:1fr}
+.page dl.faq dt{border:0;padding:26px 0 6px;font-size:15px;letter-spacing:.06em}
+.page dl.faq dd{padding:0 0 26px;opacity:.8}
+.blk{margin-top:clamp(56px,8vw,96px)}
+.blk h2{font-size:clamp(30px,4.2vw,52px);margin-bottom:28px}
+.blk ul{list-style:none;border-top:1px solid rgba(42,36,29,.25)}
+.blk li{padding:14px 0;border-bottom:1px solid rgba(42,36,29,.15);font-size:14px;letter-spacing:.04em}
+.more{display:flex;gap:12px;margin-top:56px}
+@media(max-width:600px){.page dl:not(.faq){grid-template-columns:1fr}.page dl:not(.faq) dt{border:0;padding-bottom:0}}
 /* ---- motion ----
    reveal: ease-out-quint, ~1.1s, 80ms stagger / hover: ease-in-out-quad, .5s */
 :root{--out:cubic-bezier(.22,1,.36,1);--io:cubic-bezier(.455,.03,.515,.955)}

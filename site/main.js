@@ -32,7 +32,7 @@
     m.append(i); h.replaceChild(m, t); h.classList.add('reveal');
     const sub = h.querySelector('.sub'); if (sub) { sub.classList.add('fade'); sub.style.setProperty('--d', 3); }
   });
-  document.querySelectorAll('.grid li, .steps li, .note, form, main > p, main > .st, dl > *').forEach(el => {
+  document.querySelectorAll('.grid li, .steps li, .note, form, main > p, main > .st, dl > *, .blk > p, .blk li').forEach(el => {
     el.classList.add('fade', 'reveal');
     el.style.setProperty('--d', [...el.parentElement.children].indexOf(el) % 6);
   });
