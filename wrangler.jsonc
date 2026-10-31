@@ -1,0 +1,10 @@
+{
+  // Static site served by Cloudflare Workers (assets only, no Worker script)
+  "name": "naus-site",
+  "compatibility_date": "2026-10-31",
+  "assets": {
+    "directory": "./site",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  }
+}
