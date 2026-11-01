@@ -129,11 +129,11 @@ body.leaving{opacity:0}
 @keyframes cf-arrive{from{opacity:0;transform:translateY(16px);filter:blur(3px)}to{opacity:1;transform:none;filter:none}}
 @keyframes cf-arrive-back{from{opacity:0;transform:translateY(-16px);filter:blur(3px)}to{opacity:1;transform:none;filter:none}}
 .cf-choices{display:grid}
-.cf-choices button{position:relative;display:flex;align-items:center;gap:14px;min-height:52px;padding:12px 2px;border:0;border-radius:0;background:none;color:var(--ink);opacity:.55;font:inherit;font-family:var(--jp);font-size:15px;letter-spacing:.06em;text-align:left;cursor:pointer;justify-self:stretch;transition:opacity .55s var(--out)}
-.cf-choices button::after{content:"";position:absolute;left:20px;right:0;bottom:4px;height:1px;background:linear-gradient(90deg,var(--ink),transparent);transform-origin:left;transform:scaleX(0);transition:transform .75s var(--out)}
-.cf-choices button i{width:6px;height:6px;flex:0 0 6px;border-radius:50%;background:var(--ink);opacity:0;transform:scale(.2);transition:opacity .6s var(--out),transform .6s var(--out)}
+.cf-choices button{position:relative;display:flex;align-items:center;gap:14px;min-height:56px;padding:14px 2px;border:0;border-radius:0;background:none;color:var(--ink);opacity:.45;font:inherit;font-family:var(--jp);font-size:15px;letter-spacing:.06em;text-align:left;cursor:pointer;justify-self:stretch;transition:opacity .55s var(--out)}
+.cf-choices button::after{content:"";position:absolute;left:21px;right:0;bottom:6px;height:1px;background:linear-gradient(90deg,var(--ink) 40%,transparent);transform-origin:left;transform:scaleX(0);transition:transform .75s var(--out)}
+.cf-choices button i{width:7px;height:7px;flex:0 0 7px;border-radius:50%;background:var(--ink);opacity:0;transform:scale(.2);transition:opacity .6s var(--out),transform .6s var(--out)}
 .cf-choices button:hover{opacity:.85;background:none}
-.cf-choices button[aria-checked="true"]{opacity:1}
+.cf-choices button[aria-checked="true"]{opacity:1;font-weight:400}
 .cf-choices button[aria-checked="true"]::after{transform:scaleX(1)}
 .cf-choices button[aria-checked="true"] i{opacity:1;transform:none}
 .cf-amount{display:flex;align-items:baseline;justify-content:center;height:1.2em;font-weight:100;font-size:clamp(56px,9vw,92px);line-height:1;letter-spacing:-.01em;margin:6px 0 26px}
