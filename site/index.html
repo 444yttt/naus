@@ -61,7 +61,7 @@
 <section class="light" id="consult">
   <h2>Consult<span class="sub">まずは、部屋の話から</span></h2>
   <form id="cf" class="cf" novalidate>
-    <div class="cf-top"><span class="cf-count" id="cf-count">01 / 05</span><span class="cf-bar"><span id="cf-bar"></span></span></div>
+    <div class="cf-top"><span class="cf-count" id="cf-count">01 / 06</span><span class="cf-bar"><span id="cf-bar"></span></span></div>
     <div class="cf-stage" id="cf-stage">
 
       <fieldset class="cf-step" data-step="room" data-required>
@@ -94,6 +94,24 @@
         </div>
         <div class="cf-ends"><span>300万円</span><span>4,000万円以上</span></div>
         <button type="button" class="cf-undecided" id="cf-undecided">まだ決めていない</button>
+      </fieldset>
+
+      <fieldset class="cf-step" data-step="plan" hidden>
+        <legend><span class="cf-label">FLOOR PLAN</span>間取り図と、気になる場所<span class="cf-opt">任意</span></legend>
+        <div class="pl" id="pl">
+          <label class="pl-drop" id="pl-drop">
+            <input type="file" id="pl-file" accept="image/*">
+            <span class="pl-icon" aria-hidden="true"></span>
+            <span class="pl-t">間取り図の画像を選ぶ</span>
+            <span class="pl-s">写真やスクリーンショットで大丈夫です</span>
+          </label>
+          <div class="pl-board" id="pl-board" hidden>
+            <div class="pl-canvas" id="pl-canvas"><img id="pl-img" alt="アップロードした間取り図"></div>
+            <p class="pl-hint" id="pl-hint">図の上をタップして、気になる場所に印を付けてください</p>
+            <ol class="pl-list" id="pl-list"></ol>
+            <button type="button" class="pl-change" id="pl-change">画像を選び直す</button>
+          </div>
+        </div>
       </fieldset>
 
       <fieldset class="cf-step" data-step="wish" hidden>
