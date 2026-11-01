@@ -9,16 +9,23 @@ ROOT = os.path.join(os.path.dirname(__file__), '..')
 sha = sys.argv[1] if len(sys.argv) > 1 else subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
 files = sorted('/' + f[len('site/'):] for f in subprocess.check_output(['git', 'ls-files', 'site'], cwd=ROOT, text=True).split())
 
-worker = r'''const SHA = %s;
-const FILES = new Set(%s);
-const BASE = `https://cdn.jsdelivr.net/gh/444yttt/naus@${SHA}/site`;
+worker = r'''// The commit to serve lives in KV (CONFIG, key "sha") so a release is a single KV write; %s is the fallback
+const FALLBACK_SHA = %s;
 const TYPES = { html: 'text/html; charset=utf-8', css: 'text/css; charset=utf-8', js: 'application/javascript; charset=utf-8', svg: 'image/svg+xml', jpg: 'image/jpeg', png: 'image/png', mp4: 'video/mp4', txt: 'text/plain; charset=utf-8', xml: 'application/xml; charset=utf-8' };
+let BASE = '', checked = 0;
+async function base(env) {
+  if (!BASE || Date.now() - checked > 30000) {
+    const sha = (env.CONFIG && await env.CONFIG.get('sha')) || FALLBACK_SHA;
+    BASE = `https://cdn.jsdelivr.net/gh/444yttt/naus@${sha}/site`; checked = Date.now();
+  }
+  return BASE;
+}
 
-async function serve(p, status = 200, request) {
+async function serve(env, p, status = 200, request) {
   // video needs byte ranges (iOS Safari will not play it otherwise)
   const range = request && request.headers.get('range');
-  const r = await fetch(BASE + p, { headers: range ? { range } : {}, cf: { cacheEverything: true, cacheTtl: 31536000 } });
-  if (!r.ok) return new Response('Not found', { status: 404 });
+  const r = await fetch((await base(env)) + p, { headers: range ? { range } : {}, cf: { cacheEverything: true, cacheTtl: 31536000 } });
+  if (!r.ok) return null;
   const type = TYPES[p.split('.').pop()] || 'application/octet-stream';
   const headers = {
     'content-type': type,
@@ -83,13 +90,15 @@ export default {
       catch (e) { console.error('consult failed', e); return json({ error: '送信できませんでした、時間をおいてもう一度お試しください' }, 500); }
     }
     let p = decodeURIComponent(url.pathname);
+    if (p.includes('..')) return (await serve(env, '/404.html', 404)) || new Response('Not found', { status: 404 });
     if (p.endsWith('/')) p += 'index.html';
-    if (FILES.has(p)) return serve(p, 200, request);
-    if (FILES.has(p + '/index.html')) return Response.redirect(url.origin + url.pathname + '/' + url.search, 301);
-    return serve('/404.html', 404);
+    const hit = /\.[a-z0-9]+$/.test(p) ? await serve(env, p, 200, request) : null;
+    if (hit) return hit;
+    if (!/\.[a-z0-9]+$/.test(p) && await serve(env, p + '/index.html')) return Response.redirect(url.origin + url.pathname + '/' + url.search, 301);
+    return (await serve(env, '/404.html', 404)) || new Response('Not found', { status: 404 });
   }
 };
-''' % (json.dumps(sha), json.dumps(files))
+''' % (sha[:10], json.dumps(sha))
 
 out = os.path.join(ROOT, 'dist')
 os.makedirs(out, exist_ok=True)
