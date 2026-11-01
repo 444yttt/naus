@@ -106,10 +106,10 @@
   // consult form: one question at a time, sent to /api/consult
   const cf = document.getElementById('cf');
   if (cf) {
-    const steps = [...cf.querySelectorAll('.cf-step')], order = ['room', 'timing', 'budget', 'plan', 'wish', 'contact'];
+    const steps = [...cf.querySelectorAll('.cf-step')], order = ['room', 'timing', 'budget', 'plan', 'taste', 'story', 'contact'];
     const $ = id => document.getElementById(id);
     const next = $('cf-next'), back = $('cf-back'), msg = $('cf-msg');
-    const data = { room: '', timing: '', budget: '', wish: '', name: '', email: '' };
+    const data = { room: '', timing: '', budget: '', materials: [], styles: [], concerns: [], links: '', wish: '', name: '', email: '' };
     const KEY = 'naus-consult-draft';
     let i = 0, busy = false;
     try { Object.assign(data, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (e) {}
@@ -171,10 +171,10 @@
       });
       $('pl-hint').textContent = plan.pins.length >= MAXPINS ? '印は' + MAXPINS + 'か所までです' : '図の上をタップして、気になる場所に印を付けてください';
     };
-    const shrink = f => new Promise((ok, ng) => {
+    const shrink = (f, max = 1800) => new Promise((ok, ng) => {
       const url = URL.createObjectURL(f), im = new Image();
       im.onload = () => {
-        const s = Math.min(1, 1800 / Math.max(im.naturalWidth, im.naturalHeight)), c = document.createElement('canvas');
+        const s = Math.min(1, max / Math.max(im.naturalWidth, im.naturalHeight)), c = document.createElement('canvas');
         c.width = Math.round(im.naturalWidth * s); c.height = Math.round(im.naturalHeight * s);
         const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(im, 0, 0, c.width, c.height);
         URL.revokeObjectURL(url); ok(c.toDataURL('image/jpeg', .82));
@@ -206,7 +206,40 @@
     $('pl-change').addEventListener('click', () => { file.value = ''; file.click(); });
 
     // text fields
-    ['wish', 'name', 'email'].forEach(k => { const el = cf.elements[k]; el.value = data[k] || ''; el.addEventListener('input', () => { data[k] = el.value; save(); msg.textContent = ''; }); });
+    // taste and concerns: tap to toggle (swatch tiles and word chips)
+    cf.querySelectorAll('.sw-grid, .chips').forEach(group => {
+      const key = group.dataset.key; if (!Array.isArray(data[key])) data[key] = [];
+      const paint = () => group.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(data[key].includes(b.dataset.v))));
+      group.addEventListener('click', e => {
+        const b = e.target.closest('button'); if (!b) return;
+        const v = b.dataset.v; data[key] = data[key].includes(v) ? data[key].filter(x => x !== v) : [...data[key], v];
+        paint(); save();
+      });
+      paint();
+    });
+
+    // reference photos: up to 3, shrunk on the device like the floor plan
+    const refs = [], MAXREFS = 3, refBox = $('refs'), refAdd = $('ref-add'), refFile = $('ref-file');
+    const drawRefs = () => {
+      refBox.querySelectorAll('.ref').forEach(r => r.remove());
+      refs.forEach((src, k) => {
+        const d = document.createElement('div'); d.className = 'ref';
+        d.innerHTML = '<img alt="参考写真"><button type="button" aria-label="写真を外す">×</button>';
+        d.querySelector('img').src = src;
+        d.querySelector('button').addEventListener('click', () => { refs.splice(k, 1); drawRefs(); });
+        refBox.insertBefore(d, refAdd);
+      });
+      refAdd.hidden = refs.length >= MAXREFS;
+    };
+    refFile.addEventListener('change', async () => {
+      for (const f of [...refFile.files].slice(0, MAXREFS - refs.length)) {
+        if (!/^image\//.test(f.type)) continue;
+        try { refs.push(await shrink(f, 1400)); } catch (x) { msg.textContent = x.message; }
+      }
+      refFile.value = ''; drawRefs();
+    });
+
+    ['links', 'wish', 'name', 'email'].forEach(k => { const el = cf.elements[k]; el.value = data[k] || ''; el.addEventListener('input', () => { data[k] = el.value; save(); msg.textContent = ''; }); });
 
     const view = (n, dir) => {
       const from = steps.find(s => !s.hidden), to = cf.querySelector('[data-step="' + (order[n] || 'done') + '"]');
@@ -241,7 +274,7 @@
       if (i < order.length - 1) { view(i + 1, 1); return; }
       busy = true; next.disabled = true; next.textContent = 'Sending'; msg.textContent = '';
       try {
-        const r = await fetch('/api/consult', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ...data, plan: plan.image, pins: plan.image ? plan.pins.map(p => ({ x: p.x, y: p.y, note: p.note.trim().slice(0, 120) })) : [], website: cf.elements.website.value }) });
+        const r = await fetch('/api/consult', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ...data, refs, plan: plan.image, pins: plan.image ? plan.pins.map(p => ({ x: p.x, y: p.y, note: p.note.trim().slice(0, 120) })) : [], website: cf.elements.website.value }) });
         const j = await r.json().catch(() => ({}));
         if (!r.ok) throw new Error(j.error || '送信できませんでした、時間をおいてもう一度お試しください');
         try { localStorage.removeItem(KEY); } catch (e) {}

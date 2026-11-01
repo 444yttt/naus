@@ -21,7 +21,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","name":"NAUS","url":"https://naus.studio/","image":"https://naus.studio/og.jpg","description":"家具の選定とレイアウト提案、複数ブランドへの発注代行、搬入条件の確認を一括で行うサービス","areaServed":"JP","serviceType":"家具の選定・手配代行"}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300&family=Elms+Sans:wght@100;300;400&family=Noto+Sans+JP:wght@100;300;400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=9ddca01ba1">
+<link rel="stylesheet" href="style.css?v=6ac9accfde">
 </head>
 <body>
 <div class="sb" aria-hidden="true"></div>
@@ -61,7 +61,7 @@
 <section class="light" id="consult">
   <h2>Consult<span class="sub">まずは、部屋の話から</span></h2>
   <form id="cf" class="cf" novalidate>
-    <div class="cf-top"><span class="cf-count" id="cf-count">01 / 06</span><span class="cf-bar"><span id="cf-bar"></span></span></div>
+    <div class="cf-top"><span class="cf-count" id="cf-count">01 / 07</span><span class="cf-bar"><span id="cf-bar"></span></span></div>
     <div class="cf-stage" id="cf-stage">
 
       <fieldset class="cf-step" data-step="room" data-required>
@@ -114,9 +114,22 @@
         </div>
       </fieldset>
 
-      <fieldset class="cf-step" data-step="wish" hidden>
-        <legend><span class="cf-label">YOUR STORY</span>ご要望やお困りごと<span class="cf-opt">任意</span></legend>
-        <textarea name="wish" rows="5" maxlength="1500" placeholder="好きな雰囲気、気になっているブランド、搬入の不安など"></textarea>
+      <fieldset class="cf-step" data-step="taste" hidden>
+        <legend><span class="cf-label">YOUR TASTE</span>惹かれる素材と雰囲気<span class="cf-opt">任意・複数選択</span></legend>
+        <p class="cf-sub">素材</p>
+        <div class="sw-grid" data-key="materials"><button type="button" class="sw" aria-pressed="false" data-v="ウォールナット"><img src="/media/swatch/walnut.jpg" alt="" loading="lazy" width="160" height="160"><span>ウォールナット</span></button><button type="button" class="sw" aria-pressed="false" data-v="オーク"><img src="/media/swatch/oak.jpg" alt="" loading="lazy" width="160" height="160"><span>オーク</span></button><button type="button" class="sw" aria-pressed="false" data-v="ブラックレザー"><img src="/media/swatch/black-leather.jpg" alt="" loading="lazy" width="160" height="160"><span>ブラックレザー</span></button><button type="button" class="sw" aria-pressed="false" data-v="キャメルレザー"><img src="/media/swatch/camel-leather.jpg" alt="" loading="lazy" width="160" height="160"><span>キャメルレザー</span></button><button type="button" class="sw" aria-pressed="false" data-v="リネン"><img src="/media/swatch/linen.jpg" alt="" loading="lazy" width="160" height="160"><span>リネン</span></button><button type="button" class="sw" aria-pressed="false" data-v="ブークレ"><img src="/media/swatch/boucle.jpg" alt="" loading="lazy" width="160" height="160"><span>ブークレ</span></button><button type="button" class="sw" aria-pressed="false" data-v="トラバーチン"><img src="/media/swatch/travertine.jpg" alt="" loading="lazy" width="160" height="160"><span>トラバーチン</span></button><button type="button" class="sw" aria-pressed="false" data-v="真鍮"><img src="/media/swatch/brass.jpg" alt="" loading="lazy" width="160" height="160"><span>真鍮</span></button><button type="button" class="sw" aria-pressed="false" data-v="スチール"><img src="/media/swatch/steel.jpg" alt="" loading="lazy" width="160" height="160"><span>スチール</span></button></div>
+        <p class="cf-sub">雰囲気</p>
+        <div class="chips" data-key="styles"><button type="button" class="chip" aria-pressed="false" data-v="ミニマル">ミニマル</button><button type="button" class="chip" aria-pressed="false" data-v="モダン">モダン</button><button type="button" class="chip" aria-pressed="false" data-v="ヴィンテージ">ヴィンテージ</button><button type="button" class="chip" aria-pressed="false" data-v="北欧">北欧</button><button type="button" class="chip" aria-pressed="false" data-v="和">和</button><button type="button" class="chip" aria-pressed="false" data-v="ナチュラル">ナチュラル</button><button type="button" class="chip" aria-pressed="false" data-v="ラグジュアリー">ラグジュアリー</button><button type="button" class="chip" aria-pressed="false" data-v="インダストリアル">インダストリアル</button></div>
+      </fieldset>
+
+      <fieldset class="cf-step" data-step="story" hidden>
+        <legend><span class="cf-label">YOUR STORY</span>気になっていること<span class="cf-opt">任意</span></legend>
+        <div class="chips" data-key="concerns"><button type="button" class="chip" aria-pressed="false" data-v="搬入できるか不安">搬入できるか不安</button><button type="button" class="chip" aria-pressed="false" data-v="家族の好みがまとまらない">家族の好みがまとまらない</button><button type="button" class="chip" aria-pressed="false" data-v="納期をそろえたい">納期をそろえたい</button><button type="button" class="chip" aria-pressed="false" data-v="今ある家具も活かしたい">今ある家具も活かしたい</button><button type="button" class="chip" aria-pressed="false" data-v="ペットや子どもがいる">ペットや子どもがいる</button><button type="button" class="chip" aria-pressed="false" data-v="実物を見て選びたい">実物を見て選びたい</button><button type="button" class="chip" aria-pressed="false" data-v="照明やカーテンも相談したい">照明やカーテンも相談したい</button></div>
+        <p class="cf-sub">参考になる写真やリンク</p>
+        <div class="refs" id="refs"><label class="ref-add" id="ref-add"><input type="file" id="ref-file" accept="image/*" multiple><span>＋</span><small>写真を追加</small></label></div>
+        <input name="links" maxlength="600" placeholder="InstagramやPinterestなどのリンク">
+        <p class="cf-sub">ほかに伝えたいこと</p>
+        <textarea name="wish" rows="3" maxlength="1500" placeholder="好きなお店や、今の部屋で困っていることなど"></textarea>
       </fieldset>
 
       <fieldset class="cf-step" data-step="contact" data-required hidden>
@@ -147,6 +160,6 @@
   <span>© NAUS</span>
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
-<script src="main.js?v=cef59450cd"></script>
+<script src="main.js?v=ba0de59c49"></script>
 </body>
 </html>

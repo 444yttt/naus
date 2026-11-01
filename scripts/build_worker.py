@@ -41,19 +41,24 @@ async function consult(request, env) {
   const origin = request.headers.get('origin');
   if (origin && new URL(origin).host !== new URL(request.url).host) return json({ error: 'Forbidden' }, 403);
   const raw = await request.text();
-  if (raw.length > 4000000) return json({ error: '画像が大きすぎます' }, 413);
+  if (raw.length > 9000000) return json({ error: '画像が大きすぎます' }, 413);
   let d; try { d = JSON.parse(raw); } catch { return json({ error: '送信内容を読み取れませんでした' }, 400); }
   if (d.website) return json({ ok: true });
   const row = { room: clip(d.room, 40), timing: clip(d.timing, 40), budget: clip(d.budget, 40), wish: clip(d.wish, 1500), name: clip(d.name, 80), email: clip(d.email, 200) };
   if (!row.room || !row.timing || !row.budget || !row.name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(row.email)) return json({ error: '未入力の項目があります' }, 400);
   // floor plan: a JPEG made on the device (max 1800px), kept private in KV; pins are fractions of the image size
+  const jpeg = (v, max) => {
+    const m = typeof v === 'string' && /^data:image\/jpeg;base64,([A-Za-z0-9+/=]+)$/.exec(v);
+    if (!m) return null;
+    const b = Uint8Array.from(atob(m[1]), c => c.charCodeAt(0));
+    return b.length <= max && b[0] === 0xff && b[1] === 0xd8 ? b : null;
+  };
   let planBytes = null;
-  if (typeof d.plan === 'string' && d.plan) {
-    const m = /^data:image\/jpeg;base64,([A-Za-z0-9+/=]+)$/.exec(d.plan);
-    if (!m) return json({ error: '画像を読み取れませんでした' }, 400);
-    planBytes = Uint8Array.from(atob(m[1]), c => c.charCodeAt(0));
-    if (planBytes.length > 2800000 || planBytes[0] !== 0xff || planBytes[1] !== 0xd8) return json({ error: '画像を読み取れませんでした' }, 400);
-  }
+  if (typeof d.plan === 'string' && d.plan) { planBytes = jpeg(d.plan, 2800000); if (!planBytes) return json({ error: '画像を読み取れませんでした' }, 400); }
+  const refImgs = Array.isArray(d.refs) ? d.refs.slice(0, 3).map(r => jpeg(r, 1500000)) : [];
+  if (refImgs.includes(null)) return json({ error: '画像を読み取れませんでした' }, 400);
+  const pick = (v, n) => Array.isArray(v) ? v.slice(0, 12).map(x => clip(x, 40)).filter(Boolean).slice(0, n) : [];
+  const list = v => { const a = pick(v, 12); return a.length ? JSON.stringify(a) : null; };
   const num = v => typeof v === 'number' && v >= 0 && v <= 1 ? Math.round(v * 1000) / 1000 : null;
   const pins = planBytes && Array.isArray(d.pins) ? d.pins.slice(0, 8).map(p => ({ x: num(p && p.x), y: num(p && p.y), note: clip(p && p.note, 120) })).filter(p => p.x !== null && p.y !== null) : [];
   const ip = request.headers.get('cf-connecting-ip') || '';
@@ -62,8 +67,11 @@ async function consult(request, env) {
   if (recent && recent.n >= 5) return json({ error: '短時間に送信が続いたため受け付けを止めています、しばらくしてからお試しください' }, 429);
   const id = crypto.randomUUID(), planKey = planBytes ? id + '.jpg' : null;
   if (planBytes) await env.PLANS.put(planKey, planBytes, { metadata: { type: 'image/jpeg' } });
-  await env.DB.prepare('INSERT INTO consultations (id, room, timing, budget, wish, name, email, ip_hash, user_agent, plan_key, pins) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
-    .bind(id, row.room, row.timing, row.budget, row.wish, row.name, row.email, hash, clip(request.headers.get('user-agent'), 300), planKey, pins.length ? JSON.stringify(pins) : null).run();
+  const refKeys = [];
+  for (const [k, b] of refImgs.entries()) { const key = `${id}-ref${k + 1}.jpg`; await env.PLANS.put(key, b, { metadata: { type: 'image/jpeg' } }); refKeys.push(key); }
+  await env.DB.prepare('INSERT INTO consultations (id, room, timing, budget, wish, name, email, ip_hash, user_agent, plan_key, pins, materials, styles, concerns, links, ref_keys) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
+    .bind(id, row.room, row.timing, row.budget, row.wish, row.name, row.email, hash, clip(request.headers.get('user-agent'), 300), planKey, pins.length ? JSON.stringify(pins) : null,
+      list(d.materials), list(d.styles), list(d.concerns), clip(d.links, 600) || null, refKeys.length ? JSON.stringify(refKeys) : null).run();
   return json({ ok: true }, 201);
 }
 
