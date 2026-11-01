@@ -104,3 +104,4 @@ out = os.path.join(ROOT, 'dist')
 os.makedirs(out, exist_ok=True)
 open(os.path.join(out, 'worker.js'), 'w', encoding='utf-8').write(worker)
 print('dist/worker.js', len(worker), 'bytes, sha', sha[:10], ',', len(files), 'files')
+# Release: after pushing, write the commit to KV namespace "naus-site-config" key "sha" (the Worker picks it up within ~30s).
