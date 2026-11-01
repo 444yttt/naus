@@ -11,7 +11,7 @@ files = sorted('/' + f[len('site/'):] for f in subprocess.check_output(['git', '
 
 worker = r'''// The commit to serve lives in KV (CONFIG, key "sha") so a release is a single KV write; %s is the fallback
 const FALLBACK_SHA = %s;
-const TYPES = { html: 'text/html; charset=utf-8', css: 'text/css; charset=utf-8', js: 'application/javascript; charset=utf-8', svg: 'image/svg+xml', jpg: 'image/jpeg', png: 'image/png', mp4: 'video/mp4', txt: 'text/plain; charset=utf-8', xml: 'application/xml; charset=utf-8' };
+const TYPES = { html: 'text/html; charset=utf-8', css: 'text/css; charset=utf-8', js: 'application/javascript; charset=utf-8', svg: 'image/svg+xml', jpg: 'image/jpeg', png: 'image/png', ico: 'image/x-icon', webmanifest: 'application/manifest+json', mp4: 'video/mp4', txt: 'text/plain; charset=utf-8', xml: 'application/xml; charset=utf-8' };
 let BASE = '', checked = 0;
 async function base(env) {
   if (!BASE || Date.now() - checked > 30000) {

@@ -174,8 +174,8 @@ html:not(.js) .cf-step[hidden]{display:block}
 .cf-step input[name=links]{width:100%;margin-top:14px}
 .sw-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px 14px}
 .sw{position:relative;display:grid;gap:10px;padding:0;border:0;background:none!important;color:var(--ink)!important;font:inherit;text-align:left;cursor:pointer}
-.sw img{width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;display:block;transition:transform 1s var(--out),opacity .5s var(--io);opacity:.92}
-.sw::before{content:"";position:absolute;left:-5px;right:-5px;top:-5px;aspect-ratio:4/5;width:calc(100% + 10px);height:auto;border:1px solid var(--ink);opacity:0;transform:scale(.97);transition:opacity .5s var(--out),transform .6s var(--out);pointer-events:none;box-sizing:border-box}
+.sw img{width:100%;height:auto;aspect-ratio:1;object-fit:cover;display:block;transition:transform 1s var(--out),opacity .5s var(--io);opacity:.92}
+.sw::before{content:"";position:absolute;left:-5px;right:-5px;top:-5px;aspect-ratio:1;width:calc(100% + 10px);height:auto;border:1px solid var(--ink);opacity:0;transform:scale(.97);transition:opacity .5s var(--out),transform .6s var(--out);pointer-events:none;box-sizing:border-box}
 .sw span{display:grid;gap:3px;font-family:var(--jp);font-size:11px;letter-spacing:.06em;opacity:.55;transition:opacity .4s}
 .sw em{font-style:normal;font-family:var(--sans);font-size:10px;letter-spacing:.14em;text-transform:uppercase}
 .sw span::before{content:"";position:absolute;margin:4px 0 0 -12px;width:5px;height:5px;border-radius:50%;background:var(--ink);opacity:0;transition:opacity .4s}
