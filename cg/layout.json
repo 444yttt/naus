@@ -1,0 +1,97 @@
+{
+ "_note": "Trial-CG furniture layout. Metres, floor frame measured from the photos: origin = inner corner of the column between the two window walls, +x toward the city-side window (W2), +y toward the Tokyo Tower window (W1). rot = degrees, 0 = item's front faces -y (away from W1).",
+ "plan_scale_m_per_px": 0.0109,
+ "room": {
+  "W2_glass_x": 0.89,
+  "W1_glass_y": 0.87,
+  "right_wall_x": -4.69,
+  "top_wall_y": -4.83,
+  "kitchen_counter": [
+   [
+    -3.6,
+    -4.83
+   ],
+   [
+    -1.1,
+    -4.45
+   ]
+  ]
+ },
+ "options": {
+  "B": {
+   "title": "B ダイニングを都心側の窓沿いに／ソファはTV壁に正対(推奨)",
+   "items": [
+    {
+     "type": "dining_table",
+     "w": 1.0,
+     "d": 2.4,
+     "x": -0.95,
+     "y": -3.45,
+     "rot": 0
+    },
+    {
+     "type": "chairs",
+     "n_side": 3,
+     "ends": false,
+     "of": 0
+    },
+    {
+     "type": "rug",
+     "w": 2.6,
+     "d": 2.0,
+     "x": -3.4,
+     "y": -1.15,
+     "rot": -90
+    },
+    {
+     "type": "sofa",
+     "w": 2.6,
+     "d": 1.0,
+     "x": -2.55,
+     "y": -1.15,
+     "rot": -90
+    },
+    {
+     "type": "coffee_table",
+     "w": 1.2,
+     "d": 0.6,
+     "x": -3.55,
+     "y": -1.15,
+     "rot": -90
+    },
+    {
+     "type": "tv_eclipse65",
+     "w": 1.61,
+     "d": 0.5,
+     "x": -4.42,
+     "y": -1.15,
+     "rot": 90
+    },
+    {
+     "type": "speaker_beolab28",
+     "w": 0.27,
+     "d": 0.27,
+     "x": -4.45,
+     "y": -0.15,
+     "rot": 90
+    },
+    {
+     "type": "speaker_beolab28",
+     "w": 0.27,
+     "d": 0.27,
+     "x": -4.45,
+     "y": -2.15,
+     "rot": 90
+    },
+    {
+     "type": "lounge_chair",
+     "w": 0.85,
+     "d": 0.85,
+     "x": -0.5,
+     "y": -0.15,
+     "rot": 225
+    }
+   ]
+  }
+ }
+}
