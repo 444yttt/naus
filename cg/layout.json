@@ -90,8 +90,8 @@
     }
    ]
   },
-  "I": {
-   "title": "I:BeoLab 28(シルバー×ナチュラルオーク)、Audo Plinth + B&O スマートスピーカー",
+  "J": {
+   "title": "J:ソファをTVへ30cm寄せ、Plinth Cubic・Tall を窓際の角へ(Tall の上に B&O)",
    "items": [
     {
      "type": "dining_table_round",
@@ -138,7 +138,7 @@
      "model": "eave86_config2",
      "w": 2.47,
      "d": 0.86,
-     "x": -2.0,
+     "x": -2.3,
      "y": -0.6,
      "rot": -90
     },
@@ -147,7 +147,7 @@
      "model": null,
      "w": 0.6,
      "d": 0.6,
-     "x": -3.18,
+     "x": -3.48,
      "y": -0.6,
      "rot": 0
     },
@@ -167,7 +167,7 @@
      "d": 0.253,
      "x": -4.45,
      "y": -1.6,
-     "rot": -246.0
+     "rot": -242.9
     },
     {
      "type": "beolab28",
@@ -176,32 +176,42 @@
      "d": 0.253,
      "x": -4.45,
      "y": 0.4,
-     "rot": 66.0
+     "rot": 62.9
     },
     {
      "type": "plinth",
-     "model": "audo_plinth_low",
-     "label": "Plinth Low 100×60(サイズ・石は仮)",
-     "w": 1.0,
-     "d": 0.6,
-     "x": -4.39,
-     "y": -2.85,
-     "rot": 90
+     "model": "audo_plinth_cubic",
+     "label": "Cubic",
+     "w": 0.4,
+     "d": 0.4,
+     "x": 0.54,
+     "y": -4.42,
+     "rot": 0
+    },
+    {
+     "type": "plinth",
+     "model": "audo_plinth_tall",
+     "label": "Tall",
+     "w": 0.3,
+     "d": 0.3,
+     "x": -0.06,
+     "y": -4.47,
+     "rot": 0
     },
     {
      "type": "smart_speaker",
      "model": null,
-     "w": 0.25,
-     "d": 0.25,
-     "x": -4.39,
-     "y": -3.1,
+     "w": 0.2,
+     "d": 0.2,
+     "x": -0.06,
+     "y": -4.47,
      "rot": 0
     }
    ]
   }
  },
  "listening_point": [
-  -2.2,
+  -2.5,
   -0.6
  ]
 }

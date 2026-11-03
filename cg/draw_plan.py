@@ -41,7 +41,7 @@ for it in order:
         if it['type'] == 'pendant':
             for a0 in range(0, 360, 30): d.arc((X - r, Y - r, X + r, Y + r), a0, a0 + 15, fill=(60, 60, 60, 255), width=3)
         else: d.ellipse((X - r, Y - r, X + r, Y + r), fill=fill, outline=(40, 30, 20, 255))
-        d.text((X + r + 4, Y + (14 if it['type'] == 'pendant' else -10)), lab, fill=(30, 30, 30), font=fs)
+        d.text((X + r + 4, Y + (14 if it['type'] in ('pendant', 'smart_speaker') else -10)), lab, fill=(30, 30, 30), font=fs)
         continue
     if it['type'] == 'coffee_table_round':
         X, Y = Q(it['x'], it['y']); r = it['w'] / 2 / s * k
