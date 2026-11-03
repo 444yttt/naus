@@ -1,5 +1,5 @@
 {
- "_note": "Trial-CG furniture layout. Metres, floor frame measured from the photos: origin = inner corner of the column between the two window walls, +x toward the city-side window (W2), +y toward the Tokyo Tower window (W1). Furniture direction reset 2026-11-03; items are added one by one as the client chooses them.",
+ "_note": "Trial-CG furniture layout. Metres, floor frame measured from the photos: origin = inner corner of the column between the two window walls, +x toward the city-side window (W2), +y toward the Tokyo Tower window (W1). Furniture direction reset 2026-11-03; items are added one by one as the client chooses them. rot (deg): local +v (an item's back) points to angle rot+90 in the floor frame; chairs face the table centre.",
  "plan_scale_m_per_px": 0.0109,
  "room": {
   "W2_glass_x": 0.89,
@@ -18,8 +18,8 @@
   ]
  },
  "options": {
-  "C": {
-   "title": "C ダイニング:Audo Androgyne Ø150(位置は案)",
+  "D": {
+   "title": "D:Androgyne Ø150(サンド×ナチュラル)+ Ready ×3 + Eave 86 構成2(位置は案)",
    "items": [
     {
      "type": "dining_table_round",
@@ -28,7 +28,47 @@
      "d": 1.5,
      "x": -1.15,
      "y": -2.75,
-     "rot": 0
+     "rot": 0,
+     "finish": {
+      "base": "natural_oak",
+      "top": "sand_kunis_breccia"
+     }
+    },
+    {
+     "type": "chair",
+     "model": "ready_chair",
+     "w": 0.474,
+     "d": 0.53,
+     "x": -0.665,
+     "y": -1.91,
+     "rot": -30
+    },
+    {
+     "type": "chair",
+     "model": "ready_chair",
+     "w": 0.474,
+     "d": 0.53,
+     "x": -2.12,
+     "y": -2.75,
+     "rot": 90
+    },
+    {
+     "type": "chair",
+     "model": "ready_chair",
+     "w": 0.474,
+     "d": 0.53,
+     "x": -0.665,
+     "y": -3.59,
+     "rot": 210
+    },
+    {
+     "type": "sofa",
+     "model": "eave86_config2",
+     "w": 2.47,
+     "d": 0.86,
+     "x": -2.4,
+     "y": -0.72,
+     "rot": 180
     }
    ]
   }
