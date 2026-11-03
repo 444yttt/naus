@@ -366,6 +366,25 @@ def carrie(models_dir, finish='brushed_brass'):
     return normalise(objs, 'Carrie')
 
 
+def hashira_portable(models_dir, finish='raw'):
+    """Audo Hashira Table Lamp Portable (Norm Architects), official 3D (mm): raw paper-weave shade on a dark oak foot."""
+    objs = import_obj(os.path.join(models_dir, 'x', 'hashira_p', 'Hashira_Table_Lamp_Portable_3D', 'OBJ', 'Hashira _Table_Lamp_Portable.OBJ'), 0.001)
+    shade = fabric('HashiraRaw' if finish == 'raw' else 'HashiraWhite', (214, 204, 182) if finish == 'raw' else (236, 234, 228), 700)
+    foot = oak('DarkStainedOak', **DARK_OAK)
+    for o in objs:
+        bb = [o.matrix_world @ Vector(c) for c in o.bound_box]; zmax = max(v.z for v in bb); rad = (max(v.x for v in bb) - min(v.x for v in bb)) / 2
+        o.data.materials.clear(); o.data.materials.append(shade if zmax > -0.07 and rad > 0.044 else foot)
+    return normalise(objs, 'HashiraPortable')
+
+
+def column_portable(models_dir, finish='aluminium'):
+    """Audo Column Table Lamp Portable (Norm Architects), official 3D (m): aluminium or bronzed."""
+    objs = import_obj(os.path.join(models_dir, 'x', 'column_p', '3D', 'Column_Table_Lamp.obj'), 1.0)
+    m = plain('ColumnAlu', (196, 198, 200), 0.3, 1.0) if finish == 'aluminium' else plain('ColumnBronze', (92, 72, 58), 0.35, 1.0)
+    for o in objs: o.data.materials.clear(); o.data.materials.append(m)
+    return normalise(objs, 'ColumnPortable')
+
+
 def homeview(models_dir):
     """Apple HomeView, tabletop (Apple's own AR model from apple.com, authored in cm)."""
     before = set(bpy.data.objects); bpy.ops.wm.usd_import(filepath=os.path.join(models_dir, 'homeview', 'apple-homeview.usdz'), scale=0.01)
@@ -375,4 +394,5 @@ def homeview(models_dir):
 LIBRARY = {'androgyne_150': lambda d: androgyne(d, '150'), 'androgyne_120': lambda d: androgyne(d, '120'),
            'ready_chair': lambda d: ready_chair(d), 'eave86_config2': eave86_config2, 'audo_androgyne_lounge': androgyne_lounge,
            'audo_plinth_tall': lambda d: plinth(d, 'tall'), 'audo_plinth_cubic': lambda d: plinth(d, 'cubic'),
-           'beolab28_floor_silver_oak': beolab28, 'beosound_balance_natural_oak': beosound_balance, 'lg_g5_55': lambda d: lg_g5(d, '55'), 'lg_g5_65': lambda d: lg_g5(d, '65'), 'audo_carrie_brushed_brass': carrie, 'apple_homeview': homeview}
+           'beolab28_floor_silver_oak': beolab28, 'beosound_balance_natural_oak': beosound_balance, 'lg_g5_55': lambda d: lg_g5(d, '55'), 'lg_g5_65': lambda d: lg_g5(d, '65'), 'audo_carrie_brushed_brass': carrie, 'audo_hashira_portable_raw': hashira_portable, 'audo_column_portable_aluminium': column_portable,
+           'audo_column_portable_bronze': lambda d: column_portable(d, 'bronze'), 'apple_homeview': homeview}
