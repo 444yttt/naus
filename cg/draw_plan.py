@@ -10,7 +10,7 @@ Q = lambda x, y: ((P(x, y)[0] - dx) * k, (P(x, y)[1] - dy) * k)
 d = ImageDraw.Draw(im, 'RGBA'); f = ImageFont.truetype('/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc', 22); fs = ImageFont.truetype('/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc', 17)
 STY = {'dining_table_round': ((214, 200, 180, 240), 'Androgyne Ø150'), 'dining_table': ((150, 110, 70, 230), 'ダイニング 240×100'), 'sofa': ((128, 116, 104, 235), 'Eave 86 構成2 247×86'), 'coffee_table': ((60, 50, 44, 230), 'ローテーブル'),
        'rug': ((200, 190, 170, 120), ''), 'tv_eclipse65': ((20, 20, 20, 240), 'B&O Eclipse 65'), 'speaker_beolab28': ((40, 40, 40, 240), ''),
-       'lounge_chair': ((90, 60, 45, 230), 'ラウンジチェア'), 'chair': ((196, 150, 104, 235), '')}
+       'lounge_chair': ((90, 60, 45, 230), 'ラウンジチェア'), 'chair': ((196, 150, 104, 235), ''), 'tv': ((25, 25, 25, 240), 'TV 65型(仮)'), 'coffee_table_round': ((150, 125, 100, 235), 'Ø60(仮)')}
 def rect(x, y, w, dd, rot, fill, label='', back=False):
     a = math.radians(rot); c, sn = math.cos(a), math.sin(a)
     pts = [(x + c * u - sn * v, y + sn * u + c * v) for u, v in ((-w / 2, -dd / 2), (w / 2, -dd / 2), (w / 2, dd / 2), (-w / 2, dd / 2))]
@@ -36,13 +36,18 @@ for it in order:
                 else: rect(table['x'], table['y'] + side * (td / 2 + .3), .5, .5, 0, STY['chair'][0])
         continue
     fill, lab = STY[it['type']]
+    if it['type'] == 'coffee_table_round':
+        X, Y = Q(it['x'], it['y']); r = it['w'] / 2 / s * k
+        d.ellipse((X - r, Y - r, X + r, Y + r), fill=fill, outline=(40, 30, 20, 255)); tw = d.textlength(lab, font=fs)
+        d.rectangle((X - tw / 2 - 3, Y - 11, X + tw / 2 + 3, Y + 11), fill=(255, 255, 255, 200)); d.text((X - tw / 2, Y - 10), lab, fill=(30, 30, 30), font=fs)
+        continue
     if it['type'] == 'dining_table_round':
         X, Y = Q(it['x'], it['y']); r = it['w'] / 2 / s * k
         d.ellipse((X - r - .85 / s * k, Y - r - .85 / s * k, X + r + .85 / s * k, Y + r + .85 / s * k), outline=(150, 60, 40, 255), width=2)
         d.ellipse((X - r, Y - r, X + r, Y + r), fill=fill, outline=(40, 30, 20, 255)); tw = d.textlength(lab, font=fs)
         d.rectangle((X - tw / 2 - 3, Y - 11, X + tw / 2 + 3, Y + 11), fill=(255, 255, 255, 200)); d.text((X - tw / 2, Y - 10), lab, fill=(30, 30, 30), font=fs)
         continue
-    rect(it['x'], it['y'], it['w'], it['d'], it['rot'], fill, lab, back=it['type'] in ('chair', 'sofa'))
+    rect(it['x'], it['y'], it['w'], it['d'], it['rot'], fill, lab, back=it['type'] in ('chair', 'sofa', 'tv'))
 for v, c in cams.items():
     X, Y = Q(*c['cam']); d.ellipse((X - 9, Y - 9, X + 9, Y + 9), fill=(220, 40, 40, 255)); d.text((X + 12, Y - 12), {'v1': '写真1・2', 'v2': '', 'v3': '写真3'}[v], fill=(200, 30, 30), font=fs)
 d.rectangle((0, 0, im.size[0], 40), fill=(255, 255, 255, 230)); d.text((10, 8), L['options'][opt]['title'], fill=(20, 20, 20), font=f)

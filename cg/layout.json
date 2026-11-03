@@ -18,37 +18,37 @@
   ]
  },
  "options": {
-  "D": {
-   "title": "D:Androgyne Ø150(サンド×ナチュラル)+ Ready ×3 + Eave 86 構成2(位置は案)",
+  "E": {
+   "title": "E:ダイニングを窓寄り、ソファを右壁、TVとコーヒーテーブル(TV・テーブルは仮の大きさ)",
    "items": [
     {
      "type": "dining_table_round",
      "model": "androgyne_150",
-     "w": 1.5,
-     "d": 1.5,
-     "x": -1.15,
-     "y": -2.75,
-     "rot": 0,
      "finish": {
       "base": "natural_oak",
       "top": "sand_kunis_breccia"
-     }
+     },
+     "w": 1.5,
+     "d": 1.5,
+     "x": -0.35,
+     "y": -2.75,
+     "rot": 0
     },
     {
      "type": "chair",
      "model": "ready_chair",
      "w": 0.474,
      "d": 0.53,
-     "x": -0.665,
-     "y": -1.91,
-     "rot": -30
+     "x": -0.35,
+     "y": -1.78,
+     "rot": 0
     },
     {
      "type": "chair",
      "model": "ready_chair",
      "w": 0.474,
      "d": 0.53,
-     "x": -2.12,
+     "x": -1.32,
      "y": -2.75,
      "rot": 90
     },
@@ -57,18 +57,36 @@
      "model": "ready_chair",
      "w": 0.474,
      "d": 0.53,
-     "x": -0.665,
-     "y": -3.59,
-     "rot": 210
+     "x": -0.35,
+     "y": -3.72,
+     "rot": 180
     },
     {
      "type": "sofa",
      "model": "eave86_config2",
      "w": 2.47,
      "d": 0.86,
-     "x": -2.4,
-     "y": -0.72,
-     "rot": 180
+     "x": -4.26,
+     "y": -0.75,
+     "rot": 90
+    },
+    {
+     "type": "coffee_table_round",
+     "model": null,
+     "w": 0.6,
+     "d": 0.6,
+     "x": -3.1,
+     "y": -0.75,
+     "rot": 0
+    },
+    {
+     "type": "tv",
+     "model": null,
+     "w": 1.45,
+     "d": 0.35,
+     "x": -1.5,
+     "y": -0.75,
+     "rot": -90
     }
    ]
   }
