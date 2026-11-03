@@ -348,14 +348,22 @@ def _flatten(before):
     return meshes
 
 
-def lg_g5_55(models_dir):
-    """LG OLED evo G5 55\" (LG's own AR model of OLED55G5, wall version, 1222 x 703 x 28 mm). Screen faces -Y."""
-    before = set(bpy.data.objects); bpy.ops.import_scene.gltf(filepath=os.path.join(models_dir, 'lg', 'g5_55.glb'))
+def lg_g5(models_dir, size='65'):
+    """LG OLED evo G5 (LG's own AR model, wall version: 55\" 1222 x 703 x 28 mm). Screen faces -Y."""
+    before = set(bpy.data.objects); bpy.ops.import_scene.gltf(filepath=os.path.join(models_dir, 'lg', 'g5_%s.glb' % size))
     objs = _flatten(before); glass = plain('OLEDOff', (6, 6, 7), 0.05, coat=1.0)
     for o in objs:
         if 'Screen' in o.name:                                   # the AR model ships an artwork on screen; show it switched off
             for i in range(len(o.data.materials)): o.data.materials[i] = glass
-    return normalise(objs, 'LG_G5_55')
+    return normalise(objs, 'LG_G5_' + size)
+
+
+def carrie(models_dir, finish='brushed_brass'):
+    """Audo Carrie LED (rechargeable portable lamp by Norm Architects), official 3D (mm), brushed brass."""
+    objs = import_obj(os.path.join(models_dir, 'x', 'carrie', '3D', 'Carrie_LED.obj'), 0.001)
+    brass = plain('BrushedBrass', (176, 140, 86), 0.32, 1.0)
+    for o in objs: o.data.materials.clear(); o.data.materials.append(brass)
+    return normalise(objs, 'Carrie')
 
 
 def homeview(models_dir):
@@ -367,4 +375,4 @@ def homeview(models_dir):
 LIBRARY = {'androgyne_150': lambda d: androgyne(d, '150'), 'androgyne_120': lambda d: androgyne(d, '120'),
            'ready_chair': lambda d: ready_chair(d), 'eave86_config2': eave86_config2, 'audo_androgyne_lounge': androgyne_lounge,
            'audo_plinth_tall': lambda d: plinth(d, 'tall'), 'audo_plinth_cubic': lambda d: plinth(d, 'cubic'),
-           'beolab28_floor_silver_oak': beolab28, 'beosound_balance_natural_oak': beosound_balance, 'lg_g5_55': lg_g5_55, 'apple_homeview': homeview}
+           'beolab28_floor_silver_oak': beolab28, 'beosound_balance_natural_oak': beosound_balance, 'lg_g5_55': lambda d: lg_g5(d, '55'), 'lg_g5_65': lambda d: lg_g5(d, '65'), 'audo_carrie_brushed_brass': carrie, 'apple_homeview': homeview}

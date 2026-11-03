@@ -10,7 +10,7 @@ Q = lambda x, y: ((P(x, y)[0] - dx) * k, (P(x, y)[1] - dy) * k)
 d = ImageDraw.Draw(im, 'RGBA'); f = ImageFont.truetype('/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc', 22); fs = ImageFont.truetype('/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc', 17)
 STY = {'dining_table_round': ((214, 200, 180, 240), 'Androgyne Ø150'), 'dining_table': ((150, 110, 70, 230), 'ダイニング 240×100'), 'sofa': ((128, 116, 104, 235), 'Eave 86 構成2 247×86'), 'coffee_table': ((214, 200, 180, 240), ''),
        'rug': ((206, 196, 178, 150), ''), 'speaker': ((45, 42, 40, 245), ''), 'beolab28': ((190, 192, 196, 250), 'BeoLab 28'), 'plinth': ((206, 190, 168, 245), ''), 'smart_speaker': ((196, 150, 104, 250), 'Beosound Balance'), 'sideboard': ((176, 140, 100, 235), '棚(仮)'), 'floor_lamp': ((250, 236, 190, 240), '照明'), 'plant': ((110, 140, 95, 235), '植物'), 'pendant': ((0, 0, 0, 0), 'ペンダント'), 'tv_eclipse65': ((20, 20, 20, 240), 'B&O Eclipse 65'), 'speaker_beolab28': ((40, 40, 40, 240), ''),
-       'lounge_chair': ((90, 60, 45, 230), 'ラウンジチェア'), 'chair': ((196, 150, 104, 235), ''), 'tv': ((25, 25, 25, 240), 'TV'), 'homeview': ((40, 40, 40, 250), 'HomeView'), 'coffee_table_round': ((150, 125, 100, 235), 'Ø60(仮)')}
+       'lounge_chair': ((90, 60, 45, 230), 'ラウンジチェア'), 'chair': ((196, 150, 104, 235), ''), 'tv': ((25, 25, 25, 240), 'TV'), 'homeview': ((40, 40, 40, 250), 'HomeView'), 'table_lamp': ((176, 140, 86, 250), 'Carrie'), 'coffee_table_round': ((150, 125, 100, 235), 'Ø60(仮)')}
 def rect(x, y, w, dd, rot, fill, label='', back=False):
     a = math.radians(rot); c, sn = math.cos(a), math.sin(a)
     pts = [(x + c * u - sn * v, y + sn * u + c * v) for u, v in ((-w / 2, -dd / 2), (w / 2, -dd / 2), (w / 2, dd / 2), (-w / 2, dd / 2))]
@@ -36,7 +36,7 @@ for it in order:
                 else: rect(table['x'], table['y'] + side * (td / 2 + .3), .5, .5, 0, STY['chair'][0])
         continue
     fill, lab = STY[it['type']]
-    if it['type'] in ('floor_lamp', 'plant', 'pendant', 'beolab28', 'smart_speaker'):
+    if it['type'] in ('floor_lamp', 'plant', 'pendant', 'beolab28', 'smart_speaker', 'table_lamp'):
         X, Y = Q(it['x'], it['y']); r = it['w'] / 2 / s * k
         if it['type'] == 'pendant':
             for a0 in range(0, 360, 30): d.arc((X - r, Y - r, X + r, Y + r), a0, a0 + 15, fill=(60, 60, 60, 255), width=3)
@@ -56,7 +56,7 @@ for it in order:
         continue
     if it['type'] in ('rug', 'plinth', 'coffee_table', 'tv'): lab = it.get('label', lab)
     if it['type'] == 'tv' and it.get('model'):
-        X, Y = Q(it['x'] + 0.12, it['y'] - it['w'] / 2 - 0.05); d.text((X - 150, Y - 26), 'LG G5 55型(壁掛け)', fill=(30, 30, 30), font=fs)
+        X, Y = Q(it['x'] + 0.12, it['y'] - it['w'] / 2 - 0.05); d.text((X - 150, Y - 26), 'LG G5 %s型(壁掛け)' % it['model'][-2:], fill=(30, 30, 30), font=fs)
     rect(it['x'], it['y'], it['w'], it['d'], it['rot'], fill, lab, back=it['type'] in ('chair', 'sofa', 'tv', 'speaker', 'sideboard', 'homeview'))
 lp = L.get('listening_point')
 if lp and any(i['type'] in ('speaker', 'beolab28') for i in items):
