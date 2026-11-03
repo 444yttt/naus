@@ -90,8 +90,8 @@
     }
    ]
   },
-  "J": {
-   "title": "J:ソファをTVへ30cm寄せ、Plinth Cubic・Tall を窓際の角へ(Tall の上に B&O)",
+  "K": {
+   "title": "K:Plinth を Tall(角)・Cubic の順に密着、コーヒーテーブルを Androgyne Lounge 120×45 に",
    "items": [
     {
      "type": "dining_table_round",
@@ -143,13 +143,14 @@
      "rot": -90
     },
     {
-     "type": "coffee_table_round",
-     "model": null,
-     "w": 0.6,
-     "d": 0.6,
-     "x": -3.48,
+     "type": "coffee_table",
+     "model": "audo_androgyne_lounge",
+     "label": "Androgyne Lounge 120×45",
+     "w": 1.2,
+     "d": 0.45,
+     "x": -3.355,
      "y": -0.6,
-     "rot": 0
+     "rot": 90
     },
     {
      "type": "tv",
@@ -184,7 +185,7 @@
      "label": "Cubic",
      "w": 0.4,
      "d": 0.4,
-     "x": 0.54,
+     "x": 0.24,
      "y": -4.42,
      "rot": 0
     },
@@ -194,7 +195,7 @@
      "label": "Tall",
      "w": 0.3,
      "d": 0.3,
-     "x": -0.06,
+     "x": 0.59,
      "y": -4.47,
      "rot": 0
     },
@@ -203,7 +204,7 @@
      "model": null,
      "w": 0.2,
      "d": 0.2,
-     "x": -0.06,
+     "x": 0.59,
      "y": -4.47,
      "rot": 0
     }

@@ -8,7 +8,7 @@ im = Image.open(plan).convert('RGB').crop((30, 600, 650, 1427)); dx, dy = 30, 60
 im = im.resize((im.size[0] * 2, im.size[1] * 2)); k = 2
 Q = lambda x, y: ((P(x, y)[0] - dx) * k, (P(x, y)[1] - dy) * k)
 d = ImageDraw.Draw(im, 'RGBA'); f = ImageFont.truetype('/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc', 22); fs = ImageFont.truetype('/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc', 17)
-STY = {'dining_table_round': ((214, 200, 180, 240), 'Androgyne Ø150'), 'dining_table': ((150, 110, 70, 230), 'ダイニング 240×100'), 'sofa': ((128, 116, 104, 235), 'Eave 86 構成2 247×86'), 'coffee_table': ((60, 50, 44, 230), 'ローテーブル'),
+STY = {'dining_table_round': ((214, 200, 180, 240), 'Androgyne Ø150'), 'dining_table': ((150, 110, 70, 230), 'ダイニング 240×100'), 'sofa': ((128, 116, 104, 235), 'Eave 86 構成2 247×86'), 'coffee_table': ((214, 200, 180, 240), ''),
        'rug': ((206, 196, 178, 150), ''), 'speaker': ((45, 42, 40, 245), ''), 'beolab28': ((190, 192, 196, 250), 'BeoLab 28'), 'plinth': ((206, 190, 168, 245), ''), 'smart_speaker': ((60, 60, 60, 250), 'B&O'), 'sideboard': ((176, 140, 100, 235), '棚(仮)'), 'floor_lamp': ((250, 236, 190, 240), '照明'), 'plant': ((110, 140, 95, 235), '植物'), 'pendant': ((0, 0, 0, 0), 'ペンダント'), 'tv_eclipse65': ((20, 20, 20, 240), 'B&O Eclipse 65'), 'speaker_beolab28': ((40, 40, 40, 240), ''),
        'lounge_chair': ((90, 60, 45, 230), 'ラウンジチェア'), 'chair': ((196, 150, 104, 235), ''), 'tv': ((25, 25, 25, 240), 'TV 65型(仮)'), 'coffee_table_round': ((150, 125, 100, 235), 'Ø60(仮)')}
 def rect(x, y, w, dd, rot, fill, label='', back=False):
@@ -54,7 +54,7 @@ for it in order:
         d.ellipse((X - r, Y - r, X + r, Y + r), fill=fill, outline=(40, 30, 20, 255)); tw = d.textlength(lab, font=fs)
         d.rectangle((X - tw / 2 - 3, Y - 11, X + tw / 2 + 3, Y + 11), fill=(255, 255, 255, 200)); d.text((X - tw / 2, Y - 10), lab, fill=(30, 30, 30), font=fs)
         continue
-    if it['type'] in ('rug', 'plinth'): lab = it.get('label', '')
+    if it['type'] in ('rug', 'plinth', 'coffee_table'): lab = it.get('label', '')
     rect(it['x'], it['y'], it['w'], it['d'], it['rot'], fill, lab, back=it['type'] in ('chair', 'sofa', 'tv', 'speaker', 'sideboard'))
 lp = L.get('listening_point')
 if lp and any(i['type'] in ('speaker', 'beolab28') for i in items):
