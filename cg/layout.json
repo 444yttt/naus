@@ -91,7 +91,7 @@
    ]
   },
   "K": {
-   "title": "K:Plinth を Tall(角)・Cubic の順に密着、コーヒーテーブルを Androgyne Lounge 120×45 に",
+   "title": "K:Plinth Tall(角)+ Cubic、Tall の上に Beosound Balance、コーヒーテーブル Androgyne Lounge 120×45",
    "items": [
     {
      "type": "dining_table_round",
@@ -201,7 +201,7 @@
     },
     {
      "type": "smart_speaker",
-     "model": null,
+     "model": "beosound_balance_natural_oak",
      "w": 0.2,
      "d": 0.2,
      "x": 0.59,
