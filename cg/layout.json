@@ -89,6 +89,146 @@
      "rot": 90
     }
    ]
+  },
+  "G": {
+   "title": "G:ダイニングを上へ、リビング一式を45°回転、スピーカーと装飾(機種未定は仮の大きさ)",
+   "items": [
+    {
+     "type": "dining_table_round",
+     "model": "androgyne_150",
+     "finish": {
+      "base": "natural_oak",
+      "top": "sand_kunis_breccia"
+     },
+     "w": 1.5,
+     "d": 1.5,
+     "x": -0.35,
+     "y": -3.05,
+     "rot": 0
+    },
+    {
+     "type": "chair",
+     "model": "ready_chair",
+     "w": 0.474,
+     "d": 0.53,
+     "x": -0.35,
+     "y": -2.08,
+     "rot": 0
+    },
+    {
+     "type": "chair",
+     "model": "ready_chair",
+     "w": 0.474,
+     "d": 0.53,
+     "x": -1.32,
+     "y": -3.05,
+     "rot": 90
+    },
+    {
+     "type": "chair",
+     "model": "ready_chair",
+     "w": 0.474,
+     "d": 0.53,
+     "x": -0.35,
+     "y": -4.02,
+     "rot": 180
+    },
+    {
+     "type": "rug",
+     "model": null,
+     "label": "ラグ 170×240(仮)",
+     "w": 2.4,
+     "d": 1.7,
+     "x": -2.958,
+     "y": -0.862,
+     "rot": 45
+    },
+    {
+     "type": "tv",
+     "model": null,
+     "w": 1.45,
+     "d": 0.35,
+     "x": -4.015,
+     "y": 0.195,
+     "rot": 45
+    },
+    {
+     "type": "sofa",
+     "model": "eave86_config2",
+     "w": 2.47,
+     "d": 0.86,
+     "x": -2.102,
+     "y": -1.718,
+     "rot": -135
+    },
+    {
+     "type": "coffee_table_round",
+     "model": null,
+     "w": 0.6,
+     "d": 0.6,
+     "x": -2.936,
+     "y": -0.884,
+     "rot": 0
+    },
+    {
+     "type": "speaker",
+     "model": null,
+     "w": 0.25,
+     "d": 0.3,
+     "x": -3.028,
+     "y": 0.552,
+     "rot": 20.7
+    },
+    {
+     "type": "speaker",
+     "model": null,
+     "w": 0.25,
+     "d": 0.3,
+     "x": -4.372,
+     "y": -0.792,
+     "rot": 69.3
+    },
+    {
+     "type": "floor_lamp",
+     "model": null,
+     "w": 0.4,
+     "d": 0.4,
+     "x": -1.006,
+     "y": -0.622,
+     "rot": 0
+    },
+    {
+     "type": "plant",
+     "model": null,
+     "w": 0.5,
+     "d": 0.5,
+     "x": 0.55,
+     "y": -0.45,
+     "rot": 0
+    },
+    {
+     "type": "pendant",
+     "model": null,
+     "w": 0.5,
+     "d": 0.5,
+     "x": -0.35,
+     "y": -3.05,
+     "rot": 0
+    },
+    {
+     "type": "sideboard",
+     "model": null,
+     "w": 1.6,
+     "d": 0.4,
+     "x": -4.49,
+     "y": -2.75,
+     "rot": 90
+    }
+   ]
   }
- }
+ },
+ "listening_point": [
+  -2.215,
+  -1.605
+ ]
 }

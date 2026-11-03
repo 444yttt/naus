@@ -9,7 +9,7 @@ im = im.resize((im.size[0] * 2, im.size[1] * 2)); k = 2
 Q = lambda x, y: ((P(x, y)[0] - dx) * k, (P(x, y)[1] - dy) * k)
 d = ImageDraw.Draw(im, 'RGBA'); f = ImageFont.truetype('/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc', 22); fs = ImageFont.truetype('/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc', 17)
 STY = {'dining_table_round': ((214, 200, 180, 240), 'Androgyne Ø150'), 'dining_table': ((150, 110, 70, 230), 'ダイニング 240×100'), 'sofa': ((128, 116, 104, 235), 'Eave 86 構成2 247×86'), 'coffee_table': ((60, 50, 44, 230), 'ローテーブル'),
-       'rug': ((200, 190, 170, 120), ''), 'tv_eclipse65': ((20, 20, 20, 240), 'B&O Eclipse 65'), 'speaker_beolab28': ((40, 40, 40, 240), ''),
+       'rug': ((206, 196, 178, 150), ''), 'speaker': ((45, 42, 40, 245), ''), 'sideboard': ((176, 140, 100, 235), '棚 160×40(仮)'), 'floor_lamp': ((250, 236, 190, 240), '照明'), 'plant': ((110, 140, 95, 235), '植物'), 'pendant': ((0, 0, 0, 0), 'ペンダント'), 'tv_eclipse65': ((20, 20, 20, 240), 'B&O Eclipse 65'), 'speaker_beolab28': ((40, 40, 40, 240), ''),
        'lounge_chair': ((90, 60, 45, 230), 'ラウンジチェア'), 'chair': ((196, 150, 104, 235), ''), 'tv': ((25, 25, 25, 240), 'TV 65型(仮)'), 'coffee_table_round': ((150, 125, 100, 235), 'Ø60(仮)')}
 def rect(x, y, w, dd, rot, fill, label='', back=False):
     a = math.radians(rot); c, sn = math.cos(a), math.sin(a)
@@ -36,6 +36,13 @@ for it in order:
                 else: rect(table['x'], table['y'] + side * (td / 2 + .3), .5, .5, 0, STY['chair'][0])
         continue
     fill, lab = STY[it['type']]
+    if it['type'] in ('floor_lamp', 'plant', 'pendant'):
+        X, Y = Q(it['x'], it['y']); r = it['w'] / 2 / s * k
+        if it['type'] == 'pendant':
+            for a0 in range(0, 360, 30): d.arc((X - r, Y - r, X + r, Y + r), a0, a0 + 15, fill=(60, 60, 60, 255), width=3)
+        else: d.ellipse((X - r, Y - r, X + r, Y + r), fill=fill, outline=(40, 30, 20, 255))
+        d.text((X + r + 4, Y + (14 if it['type'] == 'pendant' else -10)), lab, fill=(30, 30, 30), font=fs)
+        continue
     if it['type'] == 'coffee_table_round':
         X, Y = Q(it['x'], it['y']); r = it['w'] / 2 / s * k
         d.ellipse((X - r, Y - r, X + r, Y + r), fill=fill, outline=(40, 30, 20, 255)); tw = d.textlength(lab, font=fs)
@@ -47,7 +54,13 @@ for it in order:
         d.ellipse((X - r, Y - r, X + r, Y + r), fill=fill, outline=(40, 30, 20, 255)); tw = d.textlength(lab, font=fs)
         d.rectangle((X - tw / 2 - 3, Y - 11, X + tw / 2 + 3, Y + 11), fill=(255, 255, 255, 200)); d.text((X - tw / 2, Y - 10), lab, fill=(30, 30, 30), font=fs)
         continue
-    rect(it['x'], it['y'], it['w'], it['d'], it['rot'], fill, lab, back=it['type'] in ('chair', 'sofa', 'tv'))
+    if it['type'] == 'rug': lab = it.get('label', '')
+    rect(it['x'], it['y'], it['w'], it['d'], it['rot'], fill, lab, back=it['type'] in ('chair', 'sofa', 'tv', 'speaker', 'sideboard'))
+lp = L.get('listening_point')
+if lp and any(i['type'] == 'speaker' for i in items):
+    X, Y = Q(*lp)
+    for sp in [i for i in items if i['type'] == 'speaker']: d.line((X, Y, *Q(sp['x'], sp['y'])), fill=(60, 90, 160, 200), width=2)
+    d.ellipse((X - 6, Y - 6, X + 6, Y + 6), fill=(60, 90, 160, 255)); d.text((X + 10, Y + 4), '聴く位置', fill=(40, 70, 140), font=fs)
 for v, c in cams.items():
     X, Y = Q(*c['cam']); d.ellipse((X - 9, Y - 9, X + 9, Y + 9), fill=(220, 40, 40, 255)); d.text((X + 12, Y - 12), {'v1': '写真1・2', 'v2': '', 'v3': '写真3'}[v], fill=(200, 30, 30), font=fs)
 d.rectangle((0, 0, im.size[0], 40), fill=(255, 255, 255, 230)); d.text((10, 8), L['options'][opt]['title'], fill=(20, 20, 20), font=f)
