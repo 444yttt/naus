@@ -206,5 +206,165 @@ def ready_chair(models_dir, colour=(203, 199, 186)):
     return ob, dim
 
 
+def boucle(name, colour):
+    """Chunky bouclé (Safire-like): loop bumps from small Voronoi cells, two-tone yarn, very matte."""
+    m = bpy.data.materials.get(name)
+    if m: return m
+    m = bpy.data.materials.new(name); m.use_nodes = True; nt = m.node_tree; N = nt.nodes.new; L = nt.links.new
+    b = nt.nodes['Principled BSDF']; tc = N('ShaderNodeTexCoord')
+    v = N('ShaderNodeTexVoronoi'); v.feature = 'SMOOTH_F1'; v.inputs['Scale'].default_value = 260; L(tc.outputs['Object'], v.inputs['Vector'])
+    n = N('ShaderNodeTexNoise'); n.inputs['Scale'].default_value = 420; n.inputs['Detail'].default_value = 4; L(tc.outputs['Object'], n.inputs['Vector'])
+    mix = N('ShaderNodeMix'); mix.data_type = 'RGBA'; mix.inputs[6].default_value = (*srgb(colour), 1)
+    mix.inputs[7].default_value = (*srgb(tuple(min(255, c * 1.35) for c in colour)), 1)
+    th = N('ShaderNodeMapRange'); th.inputs['From Min'].default_value = 0.45; th.inputs['From Max'].default_value = 0.75
+    L(n.outputs['Fac'], th.inputs['Value']); L(th.outputs['Result'], mix.inputs[0]); L(mix.outputs[2], b.inputs['Base Color'])
+    b.inputs['Roughness'].default_value = 0.95; b.inputs['Sheen Weight'].default_value = 0.15; b.inputs['Sheen Roughness'].default_value = 0.6
+    b.inputs['Sheen Tint'].default_value = (*srgb(tuple(min(255, c * 1.3) for c in colour)), 1)
+    h = N('ShaderNodeMath'); h.operation = 'ADD'; L(v.outputs['Distance'], h.inputs[0]); L(n.outputs['Fac'], h.inputs[1])
+    bump = N('ShaderNodeBump'); bump.inputs['Strength'].default_value = 0.8; bump.inputs['Distance'].default_value = 0.002
+    L(h.outputs[0], bump.inputs['Height']); L(bump.outputs['Normal'], b.inputs['Normal'])
+    return m
+
+
+def plain(name, colour, rough=0.5, metallic=0.0, coat=0.0):
+    m = bpy.data.materials.get(name)
+    if m: return m
+    m = bpy.data.materials.new(name); m.use_nodes = True; b = m.node_tree.nodes['Principled BSDF']
+    b.inputs['Base Color'].default_value = (*srgb(colour), 1); b.inputs['Roughness'].default_value = rough
+    b.inputs['Metallic'].default_value = metallic; b.inputs['Coat Weight'].default_value = coat
+    return m
+
+
+def _front_to_minus_y(ob, high=0.5):
+    """Rotation (Z) that turns a seat so its back (the high part) points to +Y, snapped to 90 degrees."""
+    from mathutils import Matrix
+    hv = [v.co for v in ob.data.vertices if v.co.z > high]; back = sum(hv, Vector()) / len(hv)
+    a = math.atan2(back.y, back.x) - math.radians(90); a = round(a / (math.pi / 2)) * (math.pi / 2)
+    return Matrix.Rotation(-a, 4, 'Z')
+
+
+def eave86_config2(models_dir, colour=(118, 106, 94)):
+    """Audo Eave Modular Sofa 86, configuration 2 = Corner + Open Section + Corner (official 3D, cm).
+    Audo publishes one corner file; the other end is its mirror image. Upholstered in a Safire-like bouclé."""
+    from mathutils import Matrix
+    root = os.path.join(models_dir, 'x')
+    cloth = boucle('Safire001', colour); glide = plain('Glide', (30, 30, 30), 0.6)
+    def module(path, name, rot=None):
+        objs = import_obj(path, 0.01)
+        for o in objs:
+            o.data.materials.clear(); o.data.materials.append(cloth if 'M17050' in o.name and 'Glide' not in o.name else glide)
+        ob, dim = normalise(objs, name); rot = rot or _front_to_minus_y(ob); ob.data.transform(rot)
+        ob, dim = normalise([ob], name); return ob, dim, rot
+    # both files share Audo's CAD frame: take the facing from the symmetric open section and apply it to the corner too
+    mid, dm, rot = module(os.path.join(root, 'Eave_Modular_86_Open_Section', '3D', 'Eave Modular 86, Open Section.obj'), 'EaveOpen')
+    left, dl, _ = module(os.path.join(root, 'Eave_Modular_86_Corner', '3D', 'Eave Modular 86, Corner.obj'), 'EaveCornerL', rot)
+    # make sure the arm of this corner is on its -x side
+    arm = [v.co.x for v in left.data.vertices if v.co.z > 0.5 and v.co.y < -0.1]
+    if arm and sum(arm) / len(arm) > 0: left.data.transform(Matrix.Scale(-1, 4, (1, 0, 0))); left.data.flip_normals()
+    right = left.copy(); right.data = left.data.copy(); bpy.context.collection.objects.link(right)
+    right.data.transform(Matrix.Scale(-1, 4, (1, 0, 0))); right.data.flip_normals()
+    left.location.x = -(dm.x / 2 + dl.x / 2); right.location.x = dm.x / 2 + dl.x / 2
+    for o in (left, mid, right): o.select_set(True)
+    return normalise([left, mid, right], 'Eave86_Config2')
+
+
+def androgyne_lounge(models_dir):
+    """Audo Androgyne Lounge Table 120x45 (official 3D, cm): Kunis Breccia top, natural oak base, brass glides."""
+    objs = import_obj(os.path.join(models_dir, 'x', 'Androgyne_Lounge_Table_3D', '3D', 'Androgyne_Lounge_Table.obj'), 0.01)
+    wood = oak('NaturalOak', **NATURAL_OAK); stone = breccia(); brass = plain('Brass', (190, 150, 95), 0.3, 1.0); hw = metal('Hardware')
+    for o in objs:
+        o.data.materials.clear()
+        o.data.materials.append(stone if 'Stone' in o.name else wood if 'Leg' in o.name else brass if 'Glide' in o.name else hw)
+    return normalise(objs, 'AndrogyneLounge')
+
+
+def plinth(models_dir, kind):
+    """Audo Plinth Tall / Cubic (official 3D, mm) in Kunis Breccia."""
+    f = {'tall': ('Plinth_Tall_3D', 'Plinth_High.obj'), 'cubic': ('Plinth_Cubic_3D', 'Plinth_Square.obj')}[kind]
+    objs = import_obj(os.path.join(models_dir, 'x', f[0], '3D', f[1]), 0.001); stone = breccia()
+    for o in objs: o.data.materials.clear(); o.data.materials.append(stone)
+    return normalise(objs, 'Plinth_' + kind)
+
+
+def lathe(name, profile, mats, segments=96):
+    """Revolve a list of (radius, z, material_index) points (metres) about Z."""
+    import bmesh
+    me = bpy.data.meshes.new(name); bm = bmesh.new()
+    rings = []
+    for r, z, mi in profile:
+        ring = [bm.verts.new((r * math.cos(2 * math.pi * k / segments), r * math.sin(2 * math.pi * k / segments), z)) for k in range(segments)]
+        rings.append((ring, mi))
+    for (a, _), (b_, mi) in zip(rings, rings[1:]):
+        for k in range(segments):
+            f = bm.faces.new((a[k], a[(k + 1) % segments], b_[(k + 1) % segments], b_[k])); f.material_index = mi; f.smooth = True
+    for ring, mi in (rings[0], rings[-1]):
+        if ring[0].co.xy.length > 1e-6:
+            f = bm.faces.new(ring); f.material_index = mi
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces); bm.to_mesh(me); bm.free()
+    ob = bpy.data.objects.new(name, me); bpy.context.collection.objects.link(ob)
+    for m in mats: me.materials.append(m)
+    return ob
+
+
+def beosound_balance(models_dir=None):
+    """B&O Beosound Balance, natural oak (no public 3D: modelled from B&O's dimensions 20x20x38 cm and front pack shot)."""
+    wood = oak('BeoOak', stain=(1.0, 0.93, 0.84), stain_mix=1.0); cloth = fabric('BalanceFabric', (150, 140, 128), 1400)
+    bronze = plain('BalanceBronze', (196, 160, 122), 0.35, 1.0)
+    P = [(0.083, 0, 0), (0.095, 0.006, 0), (0.095, 0.124, 0), (0.088, 0.126, 0), (0.066, 0.126, 2), (0.066, 0.13, 2),
+         (0.082, 0.138, 2), (0.092, 0.15, 2), (0.0965, 0.157, 1), (0.0965, 0.368, 1), (0.0965, 0.37, 2), (0.0965, 0.38, 2),
+         (0.091, 0.38, 2), (0.091, 0.372, 1), (0.0, 0.372, 1)]
+    return lathe('BeosoundBalance', P, [wood, cloth, bronze]), Vector((0.193, 0.193, 0.38))
+
+
+def beolab28(models_dir=None):
+    """B&O BeoLab 28 floor stand, natural aluminium with oak lamella cover (no public 3D: modelled from B&O's
+    product sheet 25.3 x 137 x 25.3 cm and product photos)."""
+    alu = plain('NaturalAlu', (200, 200, 198), 0.28, 1.0); black = plain('Rubber', (20, 20, 20), 0.8)
+    wood = oak('BeoOak', stain=(1.0, 0.93, 0.84), stain_mix=1.0); grille = plain('Grille', (35, 35, 35), 0.7)
+    base = lathe('BL28Base', [(0.122, 0, 1), (0.1265, 0.004, 1), (0.1265, 0.008, 0), (0.04, 0.155, 0), (0.0, 0.155, 0)], [alu, black])
+    neck = lathe('BL28Neck', [(0.0, 0.14, 0), (0.03, 0.15, 0), (0.044, 0.18, 0), (0.044, 0.445, 0), (0.0, 0.445, 0)], [alu])
+    parts = [base, neck]
+    W, D, z0, z1 = 0.115, 0.13, 0.44, 1.37
+    bpy.ops.mesh.primitive_cube_add(size=1, location=(0, 0, (z0 + z1) / 2)); body = bpy.context.object
+    body.scale = (W - 0.01, D - 0.012, z1 - z0 - 0.03); bpy.ops.object.transform_apply(scale=True)
+    body.data.materials.append(grille); parts.append(body)
+    bpy.ops.mesh.primitive_cylinder_add(vertices=64, radius=D / 2, depth=0.025, location=(0, 0, z1 - 0.0125)); cap = bpy.context.object
+    cap.scale = (W / D, 1, 1); bpy.ops.object.transform_apply(scale=True); cap.data.materials.append(alu); parts.append(cap)
+    n = 9                                                        # vertical oak lamellas over front and sides
+    for i in range(n):
+        a = math.radians(-80 + 160 * i / (n - 1)); x, y = (W / 2) * math.sin(a), -(D / 2) * math.cos(a)
+        bpy.ops.mesh.primitive_cube_add(size=1, location=(x, y, (z0 + z1 - 0.025) / 2)); l = bpy.context.object
+        l.scale = (0.011, 0.012, z1 - z0 - 0.03); l.rotation_euler.z = a; bpy.ops.object.transform_apply(scale=True, rotation=True)
+        l.data.materials.append(wood); parts.append(l)
+    return normalise(parts, 'BeoLab28')
+
+
+def _flatten(before):
+    """Unparent the meshes an importer just added (keeping their world placement) and drop its empties."""
+    new = [o for o in bpy.data.objects if o not in before]
+    meshes = [o for o in new if o.type == 'MESH']; others = [o for o in new if o.type != 'MESH']
+    for o in meshes: mw = o.matrix_world.copy(); o.parent = None; o.matrix_world = mw
+    for o in others: bpy.data.objects.remove(o)
+    return meshes
+
+
+def lg_g5_55(models_dir):
+    """LG OLED evo G5 55\" (LG's own AR model of OLED55G5, wall version, 1222 x 703 x 28 mm). Screen faces -Y."""
+    before = set(bpy.data.objects); bpy.ops.import_scene.gltf(filepath=os.path.join(models_dir, 'lg', 'g5_55.glb'))
+    objs = _flatten(before); glass = plain('OLEDOff', (6, 6, 7), 0.05, coat=1.0)
+    for o in objs:
+        if 'Screen' in o.name:                                   # the AR model ships an artwork on screen; show it switched off
+            for i in range(len(o.data.materials)): o.data.materials[i] = glass
+    return normalise(objs, 'LG_G5_55')
+
+
+def homeview(models_dir):
+    """Apple HomeView, tabletop (Apple's own AR model from apple.com, authored in cm)."""
+    before = set(bpy.data.objects); bpy.ops.wm.usd_import(filepath=os.path.join(models_dir, 'homeview', 'apple-homeview.usdz'), scale=0.01)
+    return normalise(_flatten(before), 'HomeView')
+
+
 LIBRARY = {'androgyne_150': lambda d: androgyne(d, '150'), 'androgyne_120': lambda d: androgyne(d, '120'),
-           'ready_chair': lambda d: ready_chair(d)}
+           'ready_chair': lambda d: ready_chair(d), 'eave86_config2': eave86_config2, 'audo_androgyne_lounge': androgyne_lounge,
+           'audo_plinth_tall': lambda d: plinth(d, 'tall'), 'audo_plinth_cubic': lambda d: plinth(d, 'cubic'),
+           'beolab28_floor_silver_oak': beolab28, 'beosound_balance_natural_oak': beosound_balance, 'lg_g5_55': lg_g5_55, 'apple_homeview': homeview}

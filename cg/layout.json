@@ -90,8 +90,8 @@
     }
    ]
   },
-  "K": {
-   "title": "K:Plinth Tall(角)+ Cubic、Tall の上に Beosound Balance、コーヒーテーブル Androgyne Lounge 120×45",
+  "L": {
+   "title": "L:TV を LG G5 55型の壁掛けに、ソファ・テーブルを同じ距離だけ移動、キッチンに HomeView",
    "items": [
     {
      "type": "dining_table_round",
@@ -138,28 +138,29 @@
      "model": "eave86_config2",
      "w": 2.47,
      "d": 0.86,
-     "x": -2.3,
+     "x": -2.63,
      "y": -0.6,
      "rot": -90
     },
     {
      "type": "coffee_table",
      "model": "audo_androgyne_lounge",
-     "label": "Androgyne Lounge 120×45",
+     "label": "Lounge 120×45",
      "w": 1.2,
      "d": 0.45,
-     "x": -3.355,
+     "x": -3.685,
      "y": -0.6,
      "rot": 90
     },
     {
      "type": "tv",
-     "model": null,
-     "w": 1.45,
-     "d": 0.35,
-     "x": -4.51,
+     "model": "lg_g5_55",
+     "w": 1.222,
+     "d": 0.028,
+     "x": -4.676,
      "y": -0.6,
-     "rot": 90
+     "rot": 90,
+     "label": ""
     },
     {
      "type": "beolab28",
@@ -168,7 +169,7 @@
      "d": 0.253,
      "x": -4.45,
      "y": -1.6,
-     "rot": -242.9
+     "rot": -238.3
     },
     {
      "type": "beolab28",
@@ -177,7 +178,7 @@
      "d": 0.253,
      "x": -4.45,
      "y": 0.4,
-     "rot": 62.9
+     "rot": 58.3
     },
     {
      "type": "plinth",
@@ -207,12 +208,22 @@
      "x": 0.59,
      "y": -4.47,
      "rot": 0
+    },
+    {
+     "type": "homeview",
+     "model": "apple_homeview",
+     "w": 0.146,
+     "d": 0.141,
+     "x": -3.3,
+     "y": -4.6,
+     "rot": 180,
+     "on": "kitchen_counter"
     }
    ]
   }
  },
  "listening_point": [
-  -2.5,
+  -2.83,
   -0.6
  ]
 }
