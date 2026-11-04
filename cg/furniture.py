@@ -758,6 +758,15 @@ def orange_boxes(models_dir=None):
     return normalise(parts, 'OrangeBoxes')
 
 
+def interconnect(models_dir):
+    """Audo Interconnect Candle Holder (official 3D): a balanced rod with a sphere on a tapered stand, burnished
+    (dark) brass as in Audo's pack shots."""
+    d = os.path.join(models_dir, 'x', 'interconnect'); f = next(os.path.join(r, n) for r, _, fs in os.walk(d) for n in fs if n.lower().endswith('.obj'))
+    objs = import_obj(f, 0.001); m = plain('BurnishedBrass', (70, 60, 48), 0.32, 1.0)
+    for o in objs: o.data.materials.clear(); o.data.materials.append(m)
+    return normalise(objs, 'Interconnect')
+
+
 def homeview(models_dir):
     """Apple HomeView, tabletop (Apple's own AR model from apple.com, authored in cm)."""
     before = set(bpy.data.objects); bpy.ops.wm.usd_import(filepath=os.path.join(models_dir, 'homeview', 'apple-homeview.usdz'), scale=0.01)
@@ -767,7 +776,7 @@ def homeview(models_dir):
 LIBRARY = {'androgyne_150': lambda d: androgyne(d, '150'), 'androgyne_120': lambda d: androgyne(d, '120'),
            'ready_chair': lambda d: ready_chair(d), 'eave86_config2': eave86_config2, 'audo_androgyne_lounge': androgyne_lounge,
            'audo_plinth_tall': lambda d: plinth(d, 'tall'), 'audo_plinth_cubic': lambda d: plinth(d, 'cubic'),
-           'beolab28_floor_silver_oak': beolab28, 'beosound_balance_natural_oak': beosound_balance, 'lg_g5_55': lambda d: lg_g5(d, '55'), 'lg_g5_65': lambda d: lg_g5(d, '65'), 'audo_carrie_brushed_brass': carrie, 'polyhaven_potted_plant_01': potted_plant, 'areca_palm': areca_palm, 'areca_potted': areca_potted, 'prop_orange_boxes': orange_boxes, 'audo_echasse_bowl_large_amber': echasse_bowl, 'audo_echasse_bowl_large_smoke': echasse_bowl, 'audo_houkime_rug_beige_170x240': houkime_rug, 'polyhaven_potted_plant_01_large': lambda d: potted_plant(d, True),
+           'beolab28_floor_silver_oak': beolab28, 'beosound_balance_natural_oak': beosound_balance, 'lg_g5_55': lambda d: lg_g5(d, '55'), 'lg_g5_65': lambda d: lg_g5(d, '65'), 'audo_carrie_brushed_brass': carrie, 'polyhaven_potted_plant_01': potted_plant, 'areca_palm': areca_palm, 'areca_potted': areca_potted, 'prop_orange_boxes': orange_boxes, 'audo_interconnect': interconnect, 'audo_echasse_bowl_large_amber': echasse_bowl, 'audo_echasse_bowl_large_smoke': echasse_bowl, 'audo_houkime_rug_beige_170x240': houkime_rug, 'polyhaven_potted_plant_01_large': lambda d: potted_plant(d, True),
            'tw_place_setting': place_setting, 'tw_table_centre': table_centre, 'tw_books_vase': books_and_vase, 'tw_tray_cups': tray_cups, 'beosound_a9_natural_oak': beosound_a9, 'bolia_eida_100_h28_sand_travertine': lambda d: bolia_eida(d, 1.0, 0.28, 'sand_travertine'),
            'bolia_eida_70_h32_natural_oak': lambda d: bolia_eida(d, 0.7, 0.32, 'natural_oak'), 'gubi_epic_large': lambda d: gubi_epic(d, 'large'), 'gubi_epic_small': lambda d: gubi_epic(d, 'small'), 'audo_brasilia_100_oak_glass': brasilia, 'audo_androgyne_side50': androgyne_side50, 'audo_hashira_portable_raw': hashira_portable, 'audo_column_portable_aluminium': column_portable,
            'audo_column_portable_bronze': lambda d: column_portable(d, 'bronze'), 'apple_homeview': homeview}

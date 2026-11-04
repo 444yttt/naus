@@ -70,13 +70,11 @@ for x in (-1.18, -2.355, -3.53): box('w1_mullion', x - 0.025, x + 0.025, YW, YW 
 for y in (-1.18, -2.355, -3.53): box('w2_mullion', XW, XW + 0.12, y - 0.025, y + 0.025, SILL, HEAD, M_frame, False)
 box('w1_endpost', XR - 0.05, XR + 0.03, YW, YW + 0.12, SILL, HEAD, M_frame, False)
 box('w2_endpost', XW, XW + 0.12, YT - 0.05, YT + 0.03, SILL, HEAD, M_frame, False)
-if view == 'v3':                                     # kitchen view: the island and the kitchen-side wall stand in front of the room
-    # measured in photo 3 (waterfall end, far edge of the worktop, sink run); holdouts hide what is behind them
-    # (a shadow catcher does not occlude, which let the dining table show through the worktop)
-    for nm, x0, x1, y0, y1, z1 in (('v3_island', -3.33, -0.9, -5.21, -4.24, 0.88), ('v3_backrun', -1.68, -0.9, -6.3, -4.24, 0.88),
-                                    ('v3_kwall', -0.9, 0.89, -6.5, -4.40, CEIL)):
-        o = box(nm, x0, x1, y0, y1, 0, z1, M_wall, True, catch)
-        if not calib_mode: o.is_shadow_catcher = False; o.is_holdout = True
+if view == 'v3' and (calib_mode or os.environ.get('ONLY')):
+    # photo 3: the island, kitchen run and wall are cut from the photo itself (v3_matte.png) in merge.py, so in the main
+    # pass they are left out (as boxes they only shaded the floor and rug along the island edge). For the top layer (things
+    # standing on the worktop) the worktop is a shadow catcher, so the objects' own shadows land on it.
+    box('v3_island', -3.33, -0.9, -5.21, -4.24, 0, 0.88, M_wall, True, True)
 if view == 'v3' and not calib_mode:                  # the bright kitchen behind the camera (not modelled): soft fill toward the room
     bpy.ops.object.light_add(type='AREA', location=(C.x, C.y - 1.0, 1.6)); fl_ = bpy.context.object
     fl_.data.shape = 'RECTANGLE'; fl_.data.size, fl_.data.size_y = 3.0, 1.6; fl_.data.energy = float(os.environ.get('FILL', 60))
