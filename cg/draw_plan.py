@@ -10,7 +10,7 @@ Q = lambda x, y: ((P(x, y)[0] - dx) * k, (P(x, y)[1] - dy) * k)
 d = ImageDraw.Draw(im, 'RGBA'); f = ImageFont.truetype('/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc', 22); fs = ImageFont.truetype('/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc', 17)
 STY = {'dining_table_round': ((214, 200, 180, 240), 'Androgyne Ø150'), 'dining_table': ((150, 110, 70, 230), 'ダイニング 240×100'), 'sofa': ((128, 116, 104, 235), 'Eave 86 構成2 247×86'), 'coffee_table': ((214, 200, 180, 240), ''),
        'rug': ((206, 196, 178, 150), ''), 'speaker': ((45, 42, 40, 245), ''), 'beolab28': ((190, 192, 196, 250), 'BeoLab 28'), 'plinth': ((206, 190, 168, 245), ''), 'smart_speaker': ((196, 150, 104, 250), 'Beosound Balance'), 'sideboard': ((176, 140, 100, 235), '棚(仮)'), 'floor_lamp': ((250, 236, 190, 240), '照明'), 'plant': ((110, 140, 95, 235), '植物'), 'pendant': ((0, 0, 0, 0), 'ペンダント'), 'tv_eclipse65': ((20, 20, 20, 240), 'B&O Eclipse 65'), 'speaker_beolab28': ((40, 40, 40, 240), ''),
-       'lounge_chair': ((90, 60, 45, 230), 'ラウンジチェア'), 'chair': ((196, 150, 104, 235), ''), 'tv': ((25, 25, 25, 240), 'TV'), 'homeview': ((40, 40, 40, 250), 'HomeView'), 'table_lamp': ((176, 140, 86, 250), 'Carrie'), 'side_table': ((214, 200, 180, 245), 'Ø50'), 'coffee_table_round': ((150, 125, 100, 235), 'Ø60(仮)')}
+       'lounge_chair': ((90, 60, 45, 230), 'ラウンジチェア'), 'chair': ((196, 150, 104, 235), ''), 'tv': ((25, 25, 25, 240), 'TV'), 'homeview': ((40, 40, 40, 250), 'HomeView'), 'table_lamp': ((176, 140, 86, 250), 'Carrie'), 'side_table': ((226, 218, 202, 235), 'Ø60'), 'coffee_table_round': ((226, 218, 202, 235), 'Ø60(仮)')}
 def rect(x, y, w, dd, rot, fill, label='', back=False):
     a = math.radians(rot); c, sn = math.cos(a), math.sin(a)
     pts = [(x + c * u - sn * v, y + sn * u + c * v) for u, v in ((-w / 2, -dd / 2), (w / 2, -dd / 2), (w / 2, dd / 2), (-w / 2, dd / 2))]
@@ -44,14 +44,14 @@ for it in order:
         d.text((X + r + 4, Y + (14 if it['type'] in ('pendant', 'smart_speaker') else -10)), lab, fill=(30, 30, 30), font=fs)
         continue
     if it['type'] in ('coffee_table_round', 'side_table'):
-        X, Y = Q(it['x'], it['y']); r = it['w'] / 2 / s * k
+        X, Y = Q(it['x'], it['y']); r = it['w'] / 2 / s * k; lab = it.get('label', lab)
         d.ellipse((X - r, Y - r, X + r, Y + r), fill=fill, outline=(40, 30, 20, 255)); tw = d.textlength(lab, font=fs)
         d.rectangle((X - tw / 2 - 3, Y - 11, X + tw / 2 + 3, Y + 11), fill=(255, 255, 255, 200)); d.text((X - tw / 2, Y - 10), lab, fill=(30, 30, 30), font=fs)
         continue
     if it['type'] == 'dining_table_round':
         X, Y = Q(it['x'], it['y']); r = it['w'] / 2 / s * k
         d.ellipse((X - r - .85 / s * k, Y - r - .85 / s * k, X + r + .85 / s * k, Y + r + .85 / s * k), outline=(150, 60, 40, 255), width=2)
-        d.ellipse((X - r, Y - r, X + r, Y + r), fill=fill, outline=(40, 30, 20, 255)); tw = d.textlength(lab, font=fs)
+        d.ellipse((X - r, Y - r, X + r, Y + r), fill=fill, outline=(40, 30, 20, 255)); tw = d.textlength(lab, font=fs); Y += 40   # label below the lamp
         d.rectangle((X - tw / 2 - 3, Y - 11, X + tw / 2 + 3, Y + 11), fill=(255, 255, 255, 200)); d.text((X - tw / 2, Y - 10), lab, fill=(30, 30, 30), font=fs)
         continue
     if it['type'] in ('rug', 'plinth', 'coffee_table', 'tv'): lab = it.get('label', lab)

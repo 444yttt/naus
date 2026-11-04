@@ -146,7 +146,7 @@ def normalise(objs, name):
     hi = Vector((max(v.x for v in bb), max(v.y for v in bb), max(v.z for v in bb)))
     ob.data.transform(__import__('mathutils').Matrix.Translation(-Vector(((lo.x + hi.x) / 2, (lo.y + hi.y) / 2, lo.z))))
     ob.location = (0, 0, 0)
-    bpy.ops.object.shade_auto_smooth(angle=math.radians(35))
+    bpy.ops.object.shade_smooth_by_angle(angle=math.radians(35))   # mesh-level, no geometry-nodes asset needed
     return ob, hi - lo
 
 
@@ -414,6 +414,49 @@ def androgyne_side50(models_dir):
     return normalise(objs, 'AndrogyneSide50')
 
 
+def travertine(name='TravertineNeutralWhite'):
+    """Honed, resin-filled travertine (Gubi 'Neutral White'): fine wavy bedding bands and small pits."""
+    m = bpy.data.materials.get(name)
+    if m: return m
+    m = bpy.data.materials.new(name); m.use_nodes = True; nt = m.node_tree; N = nt.nodes.new; L = nt.links.new
+    b = nt.nodes['Principled BSDF']; tc = N('ShaderNodeTexCoord')
+    warp = N('ShaderNodeTexNoise'); warp.inputs['Scale'].default_value = 4; warp.inputs['Detail'].default_value = 6
+    L(tc.outputs['Object'], warp.inputs['Vector'])
+    vm = N('ShaderNodeMix'); vm.data_type = 'VECTOR'; vm.inputs[0].default_value = 0.06
+    L(tc.outputs['Object'], vm.inputs[4]); L(warp.outputs['Color'], vm.inputs[5])
+    # long, thin bedding strata: noise squashed across the layers, low contrast
+    mp = N('ShaderNodeMapping'); mp.inputs['Scale'].default_value = (1.2, 22, 1.2); L(vm.outputs[1], mp.inputs['Vector'])
+    band = N('ShaderNodeTexNoise'); band.inputs['Scale'].default_value = 2.2; band.inputs['Detail'].default_value = 9; band.inputs['Roughness'].default_value = 0.62
+    L(mp.outputs['Vector'], band.inputs['Vector'])
+    ramp = N('ShaderNodeValToRGB'); e = ramp.color_ramp.elements
+    e[0].position = 0.35; e[0].color = (*srgb((216, 205, 184)), 1); e[1].position = 0.68; e[1].color = (*srgb((234, 228, 214)), 1)
+    L(band.outputs['Fac'], ramp.inputs['Fac'])
+    pits = N('ShaderNodeTexVoronoi'); pits.inputs['Scale'].default_value = 140; L(vm.outputs[1], pits.inputs['Vector'])
+    pm = N('ShaderNodeMapRange'); pm.inputs['From Min'].default_value = 0.03; pm.inputs['From Max'].default_value = 0.09
+    L(pits.outputs['Distance'], pm.inputs['Value'])
+    col = N('ShaderNodeMix'); col.data_type = 'RGBA'; L(pm.outputs['Result'], col.inputs[0])
+    col.inputs[6].default_value = (*srgb((196, 182, 158)), 1); L(ramp.outputs['Color'], col.inputs[7]); L(col.outputs[2], b.inputs['Base Color'])
+    b.inputs['Roughness'].default_value = 0.55
+    bump = N('ShaderNodeBump'); bump.inputs['Strength'].default_value = 0.08; L(pm.outputs['Result'], bump.inputs['Height']); L(bump.outputs['Normal'], b.inputs['Normal'])
+    return m
+
+
+def gubi_epic(models_dir, size='large'):
+    """GUBI Epic coffee table (GamFratesi), travertine Neutral White. No public 3D: built from Gubi's sizes
+    (large Ø110 x H34, small Ø60 x H42) and product photos (3 cm top; hexagonal base about 0.57 / 0.58 of the top
+    across its corners)."""
+    D, H = {'large': (1.10, 0.34), 'small': (0.60, 0.42), 'medium': (0.80, 0.385)}[size]
+    t = 0.03; hexd = D * (0.57 if size == 'large' else 0.58); mat = travertine(); parts = []
+    bpy.ops.mesh.primitive_cylinder_add(vertices=6, radius=hexd / 2, depth=H - t, location=(0, 0, (H - t) / 2)); parts.append(bpy.context.object)
+    bpy.ops.mesh.primitive_cylinder_add(vertices=192, radius=D / 2, depth=t, location=(0, 0, H - t / 2)); parts.append(bpy.context.object)
+    for o in parts:
+        o.data.materials.append(mat)
+        bev = o.modifiers.new('b', 'BEVEL'); bev.width = 0.0015; bev.segments = 2; bev.limit_method = 'ANGLE'
+        bpy.context.view_layer.objects.active = o; bpy.ops.object.modifier_apply(modifier='b')
+    ob, dim = normalise(parts, 'GubiEpic_' + size)
+    return ob, dim
+
+
 def homeview(models_dir):
     """Apple HomeView, tabletop (Apple's own AR model from apple.com, authored in cm)."""
     before = set(bpy.data.objects); bpy.ops.wm.usd_import(filepath=os.path.join(models_dir, 'homeview', 'apple-homeview.usdz'), scale=0.01)
@@ -423,5 +466,5 @@ def homeview(models_dir):
 LIBRARY = {'androgyne_150': lambda d: androgyne(d, '150'), 'androgyne_120': lambda d: androgyne(d, '120'),
            'ready_chair': lambda d: ready_chair(d), 'eave86_config2': eave86_config2, 'audo_androgyne_lounge': androgyne_lounge,
            'audo_plinth_tall': lambda d: plinth(d, 'tall'), 'audo_plinth_cubic': lambda d: plinth(d, 'cubic'),
-           'beolab28_floor_silver_oak': beolab28, 'beosound_balance_natural_oak': beosound_balance, 'lg_g5_55': lambda d: lg_g5(d, '55'), 'lg_g5_65': lambda d: lg_g5(d, '65'), 'audo_carrie_brushed_brass': carrie, 'audo_brasilia_100_oak_glass': brasilia, 'audo_androgyne_side50': androgyne_side50, 'audo_hashira_portable_raw': hashira_portable, 'audo_column_portable_aluminium': column_portable,
+           'beolab28_floor_silver_oak': beolab28, 'beosound_balance_natural_oak': beosound_balance, 'lg_g5_55': lambda d: lg_g5(d, '55'), 'lg_g5_65': lambda d: lg_g5(d, '65'), 'audo_carrie_brushed_brass': carrie, 'gubi_epic_large': lambda d: gubi_epic(d, 'large'), 'gubi_epic_small': lambda d: gubi_epic(d, 'small'), 'audo_brasilia_100_oak_glass': brasilia, 'audo_androgyne_side50': androgyne_side50, 'audo_hashira_portable_raw': hashira_portable, 'audo_column_portable_aluminium': column_portable,
            'audo_column_portable_bronze': lambda d: column_portable(d, 'bronze'), 'apple_homeview': homeview}

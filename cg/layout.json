@@ -381,6 +381,157 @@
      "rot": 0
     }
    ]
+  },
+  "O": {
+   "title": "O:GUBI Epic Ø110 + Ø60 を重ね置き(トラバーチン、ニュートラルホワイト)",
+   "items": [
+    {
+     "type": "dining_table_round",
+     "model": "androgyne_150",
+     "finish": {
+      "base": "natural_oak",
+      "top": "sand_kunis_breccia"
+     },
+     "w": 1.5,
+     "d": 1.5,
+     "x": -0.55,
+     "y": -3.05,
+     "rot": 0
+    },
+    {
+     "type": "chair",
+     "model": "ready_chair",
+     "w": 0.474,
+     "d": 0.53,
+     "x": 0.136,
+     "y": -2.364,
+     "rot": -45
+    },
+    {
+     "type": "chair",
+     "model": "ready_chair",
+     "w": 0.474,
+     "d": 0.53,
+     "x": -1.236,
+     "y": -2.364,
+     "rot": 45
+    },
+    {
+     "type": "chair",
+     "model": "ready_chair",
+     "w": 0.474,
+     "d": 0.53,
+     "x": -1.236,
+     "y": -3.736,
+     "rot": 135
+    },
+    {
+     "type": "sofa",
+     "model": "eave86_config2",
+     "w": 2.47,
+     "d": 0.86,
+     "x": -2.38,
+     "y": -0.6,
+     "rot": -90
+    },
+    {
+     "type": "coffee_table_round",
+     "model": "gubi_epic_large",
+     "label": "Epic Ø110",
+     "w": 1.1,
+     "d": 1.1,
+     "x": -3.76,
+     "y": -0.6,
+     "rot": 0
+    },
+    {
+     "type": "tv",
+     "model": "lg_g5_65",
+     "w": 1.441,
+     "d": 0.026,
+     "x": -4.677,
+     "y": -0.6,
+     "rot": 90,
+     "label": ""
+    },
+    {
+     "type": "beolab28",
+     "model": "beolab28_floor_silver_oak",
+     "w": 0.253,
+     "d": 0.253,
+     "x": -4.45,
+     "y": -1.6,
+     "rot": -240.5
+    },
+    {
+     "type": "beolab28",
+     "model": "beolab28_floor_silver_oak",
+     "w": 0.253,
+     "d": 0.253,
+     "x": -4.45,
+     "y": 0.4,
+     "rot": 60.5
+    },
+    {
+     "type": "plinth",
+     "model": "audo_plinth_cubic",
+     "label": "Cubic",
+     "w": 0.4,
+     "d": 0.4,
+     "x": 0.24,
+     "y": -4.42,
+     "rot": 0
+    },
+    {
+     "type": "plinth",
+     "model": "audo_plinth_tall",
+     "label": "Tall",
+     "w": 0.3,
+     "d": 0.3,
+     "x": 0.59,
+     "y": -4.47,
+     "rot": 0
+    },
+    {
+     "type": "smart_speaker",
+     "model": "beosound_balance_natural_oak",
+     "w": 0.2,
+     "d": 0.2,
+     "x": 0.59,
+     "y": -4.47,
+     "rot": 0
+    },
+    {
+     "type": "homeview",
+     "model": "apple_homeview",
+     "w": 0.146,
+     "d": 0.141,
+     "x": -3.3,
+     "y": -4.6,
+     "rot": 0,
+     "on": "kitchen_counter"
+    },
+    {
+     "type": "table_lamp",
+     "model": "audo_carrie_brushed_brass",
+     "w": 0.153,
+     "d": 0.138,
+     "x": -0.55,
+     "y": -3.05,
+     "rot": 0,
+     "on": "dining_table"
+    },
+    {
+     "type": "side_table",
+     "model": "gubi_epic_small",
+     "label": "Epic Ø60",
+     "w": 0.6,
+     "d": 0.6,
+     "x": -3.392,
+     "y": 0.037,
+     "rot": 0
+    }
+   ]
   }
  },
  "listening_point": [
