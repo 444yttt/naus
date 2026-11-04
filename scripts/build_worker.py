@@ -48,11 +48,11 @@ async function consult(request, env) {
   const origin = request.headers.get('origin');
   if (origin && new URL(origin).host !== new URL(request.url).host) return json({ error: 'Forbidden' }, 403);
   const raw = await request.text();
-  if (raw.length > 9000000) return json({ error: '画像が大きすぎます' }, 413);
-  let d; try { d = JSON.parse(raw); } catch { return json({ error: '送信内容を読み取れませんでした' }, 400); }
+  if (raw.length > 9000000) return json({ error: '画像が大きすぎる' }, 413);
+  let d; try { d = JSON.parse(raw); } catch { return json({ error: '送信内容を読み取れなかった' }, 400); }
   if (d.website) return json({ ok: true });
   const row = { room: clip(d.room, 40), timing: clip(d.timing, 40), budget: clip(d.budget, 40), wish: clip(d.wish, 1500), name: clip(d.name, 80), email: clip(d.email, 200) };
-  if (!row.room || !row.timing || !row.budget || !row.name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(row.email)) return json({ error: '未入力の項目があります' }, 400);
+  if (!row.room || !row.timing || !row.budget || !row.name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(row.email)) return json({ error: '未入力の項目がある' }, 400);
   // floor plan: a JPEG made on the device (max 1800px), kept private in KV; pins are fractions of the image size
   const jpeg = (v, max) => {
     const m = typeof v === 'string' && /^data:image\/jpeg;base64,([A-Za-z0-9+/=]+)$/.exec(v);
@@ -61,9 +61,9 @@ async function consult(request, env) {
     return b.length <= max && b[0] === 0xff && b[1] === 0xd8 ? b : null;
   };
   let planBytes = null;
-  if (typeof d.plan === 'string' && d.plan) { planBytes = jpeg(d.plan, 2800000); if (!planBytes) return json({ error: '画像を読み取れませんでした' }, 400); }
+  if (typeof d.plan === 'string' && d.plan) { planBytes = jpeg(d.plan, 2800000); if (!planBytes) return json({ error: '画像を読み取れなかった' }, 400); }
   const refImgs = Array.isArray(d.refs) ? d.refs.slice(0, 3).map(r => jpeg(r, 1500000)) : [];
-  if (refImgs.includes(null)) return json({ error: '画像を読み取れませんでした' }, 400);
+  if (refImgs.includes(null)) return json({ error: '画像を読み取れなかった' }, 400);
   const pick = (v, n) => Array.isArray(v) ? v.slice(0, 12).map(x => clip(x, 40)).filter(Boolean).slice(0, n) : [];
   const list = v => { const a = pick(v, 12); return a.length ? JSON.stringify(a) : null; };
   const num = v => typeof v === 'number' && v >= 0 && v <= 1 ? Math.round(v * 1000) / 1000 : null;
@@ -71,7 +71,7 @@ async function consult(request, env) {
   const ip = request.headers.get('cf-connecting-ip') || '';
   const hash = [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode('naus-consult:' + ip)))].map(b => b.toString(16).padStart(2, '0')).join('');
   const recent = await env.DB.prepare("SELECT COUNT(*) AS n FROM consultations WHERE ip_hash = ? AND created_at > datetime('now', '-1 hour')").bind(hash).first();
-  if (recent && recent.n >= 5) return json({ error: '短時間に送信が続いたため受け付けを止めています、しばらくしてからお試しください' }, 429);
+  if (recent && recent.n >= 5) return json({ error: '短時間に送信が続いたため、受け付けを止めている。しばらくしてから、もう一度。' }, 429);
   const id = crypto.randomUUID(), planKey = planBytes ? id + '.jpg' : null;
   if (planBytes) await env.PLANS.put(planKey, planBytes, { metadata: { type: 'image/jpeg' } });
   const refKeys = [];
@@ -87,7 +87,7 @@ export default {
     const url = new URL(request.url);
     if (url.pathname === '/api/consult') {
       try { return await consult(request, env); }
-      catch (e) { console.error('consult failed', e); return json({ error: '送信できませんでした、時間をおいてもう一度お試しください' }, 500); }
+      catch (e) { console.error('consult failed', e); return json({ error: '送信できなかった。時間をおいて、もう一度。' }, 500); }
     }
     let p = decodeURIComponent(url.pathname);
     if (p.includes('..')) return (await serve(env, '/404.html', 404)) || new Response('Not found', { status: 404 });
