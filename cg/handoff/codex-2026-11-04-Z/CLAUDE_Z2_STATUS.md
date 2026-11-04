@@ -11,7 +11,8 @@
 ## 結果
 - 原仕様22チェック：**19 PASS / 3 FAIL**（項目6 EamesのROI、14 u2のLinha脚2点が床マスク外、16 p01の離れた床の色）。詳細と理由は `report_Z2.md`。確認率は写実度の百分率ではない。
 - 5視点すべてを原寸で目視（`visual_review_Z2.json`、SHA紐付け）。
-- 納品ZIP：`Harajuku_3LDK_delivery_Z2.zip`（226,416,920 bytes、CRC・展開一致確認済み、`zip_verification_Z2.json`）。このセッションからはGitHub Releaseを作成できなかった（403）ため、会話の添付ファイルで受け渡し。
+- 納品ZIP：`Harajuku_3LDK_delivery_Z2.zip`（226,899,489 bytes、SHA256 0d569a10…fe00c、CRC・展開確認済み）。GitHub Releaseはこのセッションから作成不可（403）のため、ブランチ `harajuku-cg-delivery-z2` に90MBの分割3つと `restore_release.py` を置いた（Codexの引き継ぎと同じ復元形式）。
+- 未達3項目の扱い：項目6は引き継いだ判定式が両立不能（Wより明るい＆写真暗部帯の0.65〜1.35倍）、項目14はアイランドに詰めた脚が写真上のアイランド下端に重なる2点、項目16は固定ROIが家具の推定影（約3.9%）を受けている。いずれも基準は変えずFAILで記録し、補足証拠を `details/` に添付。
 
 ## 注意
 - リポジトリ直下の `cg/`（layout P など）は千鳥ヶ淵リビングの別案件。原宿3LDKとは無関係で、変更していない。
