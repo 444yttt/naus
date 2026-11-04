@@ -2,12 +2,22 @@
   const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
   const cl = x => Math.max(0, Math.min(1, x));
 
-  // smooth scrolling (wheel only; touch keeps native scrolling)
+  // smooth scrolling on a mouse only; touch keeps native scrolling, and the library stays off those phones
   let lenis = null;
-  if (!reduce && window.Lenis) {
+  const armLenis = () => {
+    if (lenis || !window.Lenis) return;
     lenis = new Lenis({ lerp: 0.1, smoothWheel: true });
     const raf = t => { lenis.raf(t); requestAnimationFrame(raf); };
     requestAnimationFrame(raf);
+  };
+  if (!reduce && matchMedia('(pointer:fine)').matches) {
+    if (window.Lenis) armLenis();
+    else {
+      const s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js';
+      s.onload = armLenis;
+      document.head.appendChild(s);
+    }
   }
   document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
     const id = a.getAttribute('href'), el = id.length > 1 && document.querySelector(id);

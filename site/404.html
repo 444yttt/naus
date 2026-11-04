@@ -15,7 +15,7 @@
 <link rel="manifest" href="/site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Elms+Sans:wght@100;300;400&family=Noto+Sans+JP:wght@300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Elms+Sans:wght@100;300;400&family=Noto+Sans+JP:wght@300;400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/style.css?v=889b335058">
 <style>
 html,body{background:#070707}
@@ -34,10 +34,11 @@ html.js .nf .side,html.js .nf .cap{opacity:0;transition:opacity 1.2s var(--out) 
 html.js .ready .nf .side{opacity:1}html.js .ready .nf .cap{opacity:.35}
 .nf video{opacity:0;transition:opacity 1.6s var(--io)}.nf video.on{opacity:1}
 @media (max-width:700px){
+  .nf video,.nf img.poster{top:60%;height:min(58svh,86vw)}
   .nf .side{top:auto;transform:none}
-  .nf .l{top:calc(96px + env(safe-area-inset-top))}
+  .nf .l{top:calc(84px + env(safe-area-inset-top));max-width:16em}
   .nf .r{right:auto;left:calc(var(--pad) + env(safe-area-inset-left));bottom:calc(52px + env(safe-area-inset-bottom))}
-  .nf .cap{left:0;right:0;text-align:center}
+  .nf .cap{left:calc(var(--pad) + env(safe-area-inset-left));right:calc(var(--pad) + env(safe-area-inset-right));text-align:right;bottom:calc(18px + env(safe-area-inset-bottom))}
 }
 </style>
 </head>
@@ -45,8 +46,8 @@ html.js .ready .nf .side{opacity:1}html.js .ready .nf .cap{opacity:.35}
 <div class="sb" aria-hidden="true"></div>
 <header class="bar"><a class="logo" href="/" aria-label="NAUS">NAUS</a></header>
 <main class="nf">
-  <img class="poster" src="/media/venus-naus-poster.jpg" alt="" aria-hidden="true">
-  <video id="v" muted loop playsinline preload="auto" poster="/media/venus-naus-poster.jpg" aria-hidden="true"><source src="/media/venus-naus.mp4" type="video/mp4"></video>
+  <img class="poster" src="/media/venus-naus-poster.jpg" alt="" width="1080" height="1080" decoding="async" aria-hidden="true">
+  <video id="v" muted loop playsinline preload="none" poster="/media/venus-naus-poster.jpg" width="1080" height="1080" aria-hidden="true"><source src="/media/venus-naus.mp4" type="video/mp4"></video>
   <p class="side l">404 Not Found<small>ページが見つかりません</small></p>
   <p class="side r"><a href="/">Back to NAUS</a></p>
   <p class="cap">Venus de Milo · SMK Royal Cast Collection (KAS434)</p>
@@ -61,6 +62,6 @@ html.js .ready .nf .side{opacity:1}html.js .ready .nf .cap{opacity:.35}
   const p = v.play(); if (p) p.catch(() => {});
 })();
 </script>
-<script src="/main.js?v=5d1034f0be"></script>
+<script src="/main.js?v=f7e67e3c01"></script>
 </body>
 </html>
