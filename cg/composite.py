@@ -67,6 +67,11 @@ for x in (-1.18, -2.355, -3.53): box('w1_mullion', x - 0.025, x + 0.025, YW, YW 
 for y in (-1.18, -2.355, -3.53): box('w2_mullion', XW, XW + 0.12, y - 0.025, y + 0.025, SILL, HEAD, M_frame, False)
 box('w1_endpost', XR - 0.05, XR + 0.03, YW, YW + 0.12, SILL, HEAD, M_frame, False)
 box('w2_endpost', XW, XW + 0.12, YT - 0.05, YT + 0.03, SILL, HEAD, M_frame, False)
+if view == 'v3':                                     # kitchen view: the island and the kitchen-side wall stand in front of the room
+    box('v3_island', -3.33, -1.68, -5.21, -4.33, 0, 0.88, M_wall, True, catch)       # measured in photo 3 (waterfall end, sink)
+    box('v3_backrun', -1.68, -1.05, -6.3, -4.33, 0, 0.88, M_wall, True, catch)
+    kw = box('v3_kwall', -0.9, 0.89, -6.5, -4.40, 0, CEIL, M_wall, True, catch)
+    if not calib_mode: kw.is_shadow_catcher = False; kw.is_holdout = True       # only hides what is behind it
 # sky enters only through the two window openings; portals help Cycles find it
 for nm, loc, rot, size in (('portal_w1', ((XR + 0) / 2, YW + 0.15, (SILL + HEAD) / 2), (math.radians(-90), 0, 0), (abs(XR), HEAD - SILL)),
                            ('portal_w2', (XW + 0.15, (YT + 0) / 2, (SILL + HEAD) / 2), (0, math.radians(90), 0), (HEAD - SILL, abs(YT)))):
@@ -93,7 +98,7 @@ if not calib_mode:
     for it in items:
         k = it.get('model')
         if not k or k not in furniture.LIBRARY: continue
-        if it['type'] == 'homeview': continue            # on the kitchen counter, outside photos 1 and 2
+        if it['type'] == 'homeview' and view != 'v3': continue   # on the kitchen island, seen only from the kitchen
         z = 0.0
         if it.get('on') == 'dining_table': z = ON['dining_table']
         if it['type'] == 'smart_speaker': z = ON['plinth_tall']

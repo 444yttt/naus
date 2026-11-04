@@ -9,7 +9,7 @@ img = cv2.resize(img, (W, H), interpolation=cv2.INTER_AREA) if img.shape[:2] != 
 lin = lambda x: np.where(x <= 0.04045, x / 12.92, ((x + 0.055) / 1.055) ** 2.4)
 enc = lambda x: np.where(x <= 0.0031308, 12.92 * x, 1.055 * np.power(np.clip(x, 0, None), 1 / 2.4) - 0.055)
 P = lin(img); rgb, a = comb[..., :3], comb[..., 3:4]
-cat = np.nan_to_num(np.clip(cat, 0, 1.2), nan=1.0)
+cat = np.nan_to_num(np.clip(cat, 0, 1.0), nan=1.0)   # furniture only takes light away
 bgd = P * cat
 if len(sys.argv) > 6:
     from geo import cam
