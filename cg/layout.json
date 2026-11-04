@@ -537,6 +537,16 @@
    "title": "P:Eida を指定どおりに、A9・大ぶりの植物、食器類(仮)",
    "items": [
     {
+     "type": "rug",
+     "model": "audo_houkime_rug_beige_170x240",
+     "label": "Houkime 170×240",
+     "w": 1.7,
+     "d": 2.4,
+     "x": -3.43,
+     "y": -0.6,
+     "rot": 0
+    },
+    {
      "type": "dining_table_round",
      "model": "androgyne_150",
      "finish": {
