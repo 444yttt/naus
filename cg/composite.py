@@ -77,7 +77,7 @@ if view == 'v3' and (calib_mode or os.environ.get('ONLY')):
     box('v3_island', -3.33, -0.9, -5.21, -4.24, 0, 0.88, M_wall, True, True)
 if view == 'v3' and not calib_mode:                  # the bright kitchen behind the camera (not modelled): soft fill toward the room
     bpy.ops.object.light_add(type='AREA', location=(C.x, C.y - 1.0, 1.6)); fl_ = bpy.context.object
-    fl_.data.shape = 'RECTANGLE'; fl_.data.size, fl_.data.size_y = 3.0, 1.6; fl_.data.energy = float(os.environ.get('FILL', 60))
+    fl_.data.shape = 'RECTANGLE'; fl_.data.size, fl_.data.size_y = 3.0, 1.6; fl_.data.energy = float(os.environ.get('FILL', 0))   # was only needed for objects on the worktop
     fl_.rotation_euler = (Vector((C.x, C.y + 3, 0.9)) - fl_.location).to_track_quat('-Z', 'Y').to_euler(); fl_.visible_camera = False
 # sky enters only through the two window openings; portals help Cycles find it
 for nm, loc, rot, size in (('portal_w1', ((XR + 0) / 2, YW + 0.15, (SILL + HEAD) / 2), (math.radians(-90), 0, 0), (abs(XR), HEAD - SILL)),
