@@ -1,0 +1,28 @@
+[
+  {
+    "shot": "n03",
+    "native": [
+      1086,
+      1448
+    ],
+    "unchanged_pixels": 852502,
+    "unchanged_max_err_8bit": 1,
+    "pass_le2": true,
+    "grain_sigma_8bit": 0.6500000087544322,
+    "reflection_fit": "BRDF-derived intrinsic prior consistent with calibrated-branch minimum; environment fit weak",
+    "refl_corr": 0.028341442114511468
+  },
+  {
+    "shot": "n04",
+    "native": [
+      1086,
+      1448
+    ],
+    "unchanged_pixels": 949353,
+    "unchanged_max_err_8bit": 1,
+    "pass_le2": true,
+    "grain_sigma_8bit": 0.6500000087544322,
+    "reflection_fit": "BRDF-derived intrinsic prior consistent with calibrated-branch minimum; environment fit weak",
+    "refl_corr": 0.09305419713603784
+  }
+]
