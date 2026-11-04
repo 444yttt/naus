@@ -182,7 +182,7 @@
         li.querySelector('button').addEventListener('click', () => { plan.pins.splice(k, 1); drawPins(); });
         list.append(li);
       });
-      $('pl-hint').textContent = plan.pins.length >= MAXPINS ? '印は' + MAXPINS + 'か所までです' : '図の上をタップして、気になる場所に印を付けてください';
+      $('pl-hint').textContent = plan.pins.length >= MAXPINS ? '印は' + MAXPINS + 'か所まで' : '図の上をタップして、気になる場所に印を付ける';
     };
     const shrink = (f, max = 1800) => new Promise((ok, ng) => {
       const url = URL.createObjectURL(f), im = new Image();
@@ -197,9 +197,10 @@
     });
     const load = async f => {
       if (!f) return;
-      if (!/^image\//.test(f.type)) { msg.textContent = '画像ファイルを選んでください'; return; }
+      if (!/^image\//.test(f.type)) { msg.textContent = '画像ファイルを選んで'; return; }
       try {
         plan.image = await shrink(f); plan.pins = []; img.src = plan.image;
+        try { await img.decode(); } catch (e) {}
         drop.hidden = true; board.hidden = false; board.classList.remove('arrive'); void board.offsetWidth; board.classList.add('arrive');
         drawPins(); msg.textContent = '';
       } catch (x) { msg.textContent = x.message; }
@@ -271,12 +272,12 @@
     };
     const check = () => {
       const k = order[i];
-      if (k === 'room' && !data.room) return 'お部屋を選んでください';
-      if (k === 'timing' && !data.timing) return '時期を選んでください';
-      if (k === 'budget' && !data.budget) return 'スライダーで選ぶか、まだ決めていないを選んでください';
+      if (k === 'room' && !data.room) return '部屋を選んで';
+      if (k === 'timing' && !data.timing) return '時期を選んで';
+      if (k === 'budget' && !data.budget) return '金額を選ぶか、まだ決めていないを選んで';
       if (k === 'contact') {
-        if (!data.name.trim()) return 'お名前を入力してください';
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email.trim())) return 'メールアドレスを確認してください';
+        if (!data.name.trim()) return '名前を入力して';
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email.trim())) return 'メールアドレスを確認して';
       }
       return '';
     };
@@ -289,7 +290,7 @@
       try {
         const r = await fetch('/api/consult', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ...data, refs, plan: plan.image, pins: plan.image ? plan.pins.map(p => ({ x: p.x, y: p.y, note: p.note.trim().slice(0, 120) })) : [], website: cf.elements.website.value }) });
         const j = await r.json().catch(() => ({}));
-        if (!r.ok) throw new Error(j.error || '送信できませんでした、時間をおいてもう一度お試しください');
+        if (!r.ok) throw new Error(j.error || '送信できなかった。時間をおいて、もう一度。');
         try { localStorage.removeItem(KEY); } catch (e) {}
         next.disabled = false; busy = false; view(order.length, 1);
       } catch (x) { msg.textContent = x.message; next.disabled = false; next.textContent = 'Send'; busy = false; }

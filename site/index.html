@@ -40,7 +40,7 @@
 <section class="hero" id="top">
   <div class="center" id="center">
     <small>Welcome to the</small>
-    <h1><span class="h1-mark" data-split aria-label="NAUS">NAUS</span><span class="vh">｜家具の選定・手配を一括で</span></h1>
+    <h1 aria-label="NAUS｜家具の選定・手配を一括で"><span class="h1-mark" data-split>NAUS</span><span class="vh">｜家具の選定・手配を一括で</span></h1>
     <a class="btn" href="#consult">Enter</a>
   </div>
   <span class="cue" aria-hidden="true"></span>
@@ -72,12 +72,12 @@
 </section>
 
 <section class="dark" id="process">
-  <h2>Process<span class="sub">ご利用の流れ</span></h2>
+  <h2>Process<span class="sub">進め方</span></h2>
   <ol class="steps">
-    <li><span>01</span><em>Brief</em><span class="t">間取りや写真、好み、ご予算を伺います</span></li>
+    <li><span>01</span><em>Brief</em><span class="t">間取りや写真、好み、予算を聞く</span></li>
     <li><span>02</span><em>Proposal</em><span class="t">選んだ品と配置を、一冊の提案書に</span></li>
-    <li><span>03</span><em>Approval</em><span class="t">ご納得いただけたら、お支払いを経て発注へ</span></li>
-    <li><span>04</span><em>Arrival</em><span class="t">各ブランドの納期を追い、配送日を揃えてお届けします</span></li>
+    <li><span>03</span><em>Approval</em><span class="t">納得したら、支払いを経て発注へ</span></li>
+    <li><span>04</span><em>Arrival</em><span class="t">各ブランドの納期を追い、配送日を揃えて届ける</span></li>
   </ol>
 </section>
 
@@ -90,29 +90,29 @@
       <fieldset class="cf-step" data-step="room" data-required>
         <legend><span class="cf-label">YOUR SPACE</span>整えたいお部屋</legend>
         <div class="cf-choices" role="radiogroup">
-          <button type="button" role="radio" data-v="住まい全体"><i></i>住まい全体</button>
-          <button type="button" role="radio" data-v="リビング・ダイニング"><i></i>リビング・ダイニング</button>
-          <button type="button" role="radio" data-v="寝室・書斎"><i></i>寝室・書斎</button>
-          <button type="button" role="radio" data-v="その他・未定"><i></i>その他・未定</button>
+          <button type="button" role="radio" aria-checked="false" data-v="住まい全体"><i></i>住まい全体</button>
+          <button type="button" role="radio" aria-checked="false" data-v="リビング・ダイニング"><i></i>リビング・ダイニング</button>
+          <button type="button" role="radio" aria-checked="false" data-v="寝室・書斎"><i></i>寝室・書斎</button>
+          <button type="button" role="radio" aria-checked="false" data-v="その他・未定"><i></i>その他・未定</button>
         </div>
       </fieldset>
 
       <fieldset class="cf-step" data-step="timing" data-required hidden>
         <legend><span class="cf-label">TIMING</span>家具を揃えたい時期</legend>
         <div class="cf-choices" role="radiogroup">
-          <button type="button" role="radio" data-v="3か月以内"><i></i>3か月以内</button>
-          <button type="button" role="radio" data-v="半年以内"><i></i>半年以内</button>
-          <button type="button" role="radio" data-v="1年以内"><i></i>1年以内</button>
-          <button type="button" role="radio" data-v="未定"><i></i>まだ決まっていない</button>
+          <button type="button" role="radio" aria-checked="false" data-v="3か月以内"><i></i>3か月以内</button>
+          <button type="button" role="radio" aria-checked="false" data-v="半年以内"><i></i>半年以内</button>
+          <button type="button" role="radio" aria-checked="false" data-v="1年以内"><i></i>1年以内</button>
+          <button type="button" role="radio" aria-checked="false" data-v="未定"><i></i>まだ決まっていない</button>
         </div>
       </fieldset>
 
       <fieldset class="cf-step" data-step="budget" data-required hidden>
-        <legend><span class="cf-label">BUDGET</span>家具のご予算</legend>
+        <legend><span class="cf-label">BUDGET</span>家具の予算</legend>
         <output class="cf-amount" id="cf-amount" aria-live="off"><span class="cf-dash">—</span></output>
         <div class="cf-slider">
           <button type="button" class="cf-nudge" data-d="-1" aria-label="一段階下げる">−</button>
-          <input type="range" id="cf-range" min="0" max="10" step="1" value="0" aria-label="家具のご予算">
+          <input type="range" id="cf-range" min="0" max="10" step="1" value="0" aria-label="家具の予算">
           <button type="button" class="cf-nudge" data-d="1" aria-label="一段階上げる">+</button>
         </div>
         <div class="cf-ends"><span>300万円</span><span>4,000万円以上</span></div>
@@ -126,11 +126,11 @@
             <input type="file" id="pl-file" accept="image/*">
             <span class="pl-icon" aria-hidden="true"></span>
             <span class="pl-t">間取り図の画像を選ぶ</span>
-            <span class="pl-s">写真やスクリーンショットで大丈夫です</span>
+            <span class="pl-s">写真やスクリーンショットでよい</span>
           </label>
           <div class="pl-board" id="pl-board" hidden>
-            <div class="pl-canvas" id="pl-canvas"><img id="pl-img" alt="アップロードした間取り図"></div>
-            <p class="pl-hint" id="pl-hint">図の上をタップして、気になる場所に印を付けてください</p>
+            <div class="pl-canvas" id="pl-canvas"><img id="pl-img" alt="アップロードした間取り図" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"></div>
+            <p class="pl-hint" id="pl-hint">図の上をタップして、気になる場所に印を付ける</p>
             <ol class="pl-list" id="pl-list"></ol>
             <button type="button" class="pl-change" id="pl-change">画像を選び直す</button>
           </div>
@@ -150,22 +150,22 @@
         <div class="chips" data-key="concerns"><button type="button" class="chip" aria-pressed="false" data-v="搬入できるか不安">搬入できるか不安</button><button type="button" class="chip" aria-pressed="false" data-v="家族の好みがまとまらない">家族の好みがまとまらない</button><button type="button" class="chip" aria-pressed="false" data-v="納期をそろえたい">納期をそろえたい</button><button type="button" class="chip" aria-pressed="false" data-v="今ある家具も活かしたい">今ある家具も活かしたい</button><button type="button" class="chip" aria-pressed="false" data-v="ペットや子どもがいる">ペットや子どもがいる</button><button type="button" class="chip" aria-pressed="false" data-v="実物を見て選びたい">実物を見て選びたい</button><button type="button" class="chip" aria-pressed="false" data-v="照明やカーテンも相談したい">照明やカーテンも相談したい</button></div>
         <p class="cf-sub">参考になる写真やリンク</p>
         <div class="refs" id="refs"><label class="ref-add" id="ref-add"><input type="file" id="ref-file" accept="image/*" multiple><span>＋</span><small>写真を追加</small></label></div>
-        <input name="links" maxlength="600" placeholder="InstagramやPinterestなどのリンク">
+        <input name="links" maxlength="600" placeholder="InstagramやPinterestなどのリンク" aria-label="参考になるリンク">
         <p class="cf-sub">ほかに伝えたいこと</p>
-        <textarea name="wish" rows="3" maxlength="1500" placeholder="好きなお店や、今の部屋で困っていることなど"></textarea>
+        <textarea name="wish" rows="3" maxlength="1500" placeholder="好きなお店や、今の部屋で困っていることなど" aria-label="ほかに伝えたいこと"></textarea>
       </fieldset>
 
       <fieldset class="cf-step" data-step="contact" data-required hidden>
-        <legend><span class="cf-label">CONTACT</span>ご連絡先</legend>
+        <legend><span class="cf-label">CONTACT</span>連絡先</legend>
         <label>お名前<input name="name" autocomplete="name" maxlength="80" placeholder="例：山田 花子"></label>
         <label>メールアドレス<input name="email" type="email" autocomplete="email" inputmode="email" maxlength="200" placeholder="例：hanako@example.com"></label>
-        <p class="cf-privacy">いただいた内容は、ご相談への返信と提案のためにのみ使います</p>
+        <p class="cf-privacy">受け取った内容は、相談への返信と提案にだけ使う</p>
       </fieldset>
 
       <div class="cf-step cf-done" data-step="done" hidden>
         <span class="cf-label">THANK YOU</span>
-        <p class="cf-done-title">ご相談を受け付けました</p>
-        <p class="cf-done-text">内容を確認のうえ、ご入力のメールアドレスへご連絡します</p>
+        <p class="cf-done-title">相談を受け付けた</p>
+        <p class="cf-done-text">内容を確認し、入力したメールアドレスへ連絡する</p>
       </div>
 
     </div>
@@ -182,6 +182,6 @@
   <nav><a href="/service/">Service</a><a href="/faq/">FAQ</a><a href="/portfolio/">Portfolio</a><a href="/#consult">Consult</a></nav>
   <span>© NAUS</span>
 </footer>
-<script src="main.js?v=f7e67e3c01"></script>
+<script src="main.js?v=9f0e0248ba"></script>
 </body>
 </html>
