@@ -26,7 +26,7 @@ sc = bpy.context.scene; sc.render.engine = 'CYCLES'; sc.cycles.device = 'CPU'
 sc.cycles.samples = spp; sc.cycles.use_denoising = True; sc.cycles.max_bounces = 6
 sc.view_settings.view_transform = 'Standard'; sc.view_settings.look = 'None'
 sc.render.resolution_x, sc.render.resolution_y = int(1932 * scale), int(2576 * scale)
-sc.render.film_transparent = True
+sc.render.film_transparent = True; sc.cycles.film_transparent_glass = True   # the photo shows through glass tops
 sc.render.image_settings.file_format = 'OPEN_EXR'; sc.render.image_settings.color_depth = '32'
 sc.render.image_settings.exr_codec = 'ZIP'
 

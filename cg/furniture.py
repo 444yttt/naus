@@ -385,6 +385,35 @@ def column_portable(models_dir, finish='aluminium'):
     return normalise(objs, 'ColumnPortable')
 
 
+def glass(name='Glass'):
+    m = bpy.data.materials.get(name)
+    if m: return m
+    m = bpy.data.materials.new(name); m.use_nodes = True; b = m.node_tree.nodes['Principled BSDF']
+    b.inputs['Base Color'].default_value = (*srgb((214, 232, 224)), 1); b.inputs['Transmission Weight'].default_value = 1.0
+    b.inputs['Roughness'].default_value = 0.0; b.inputs['IOR'].default_value = 1.52
+    return m
+
+
+def brasilia(models_dir):
+    """Audo Brasilia Lounge Table 100x100 (official 3D, mm): clear glass top on a natural oak frame.
+    The file is one mesh: the 16 mm slab at the top (vertex heights 327-343 mm in the file) is the glass."""
+    objs = import_obj(os.path.join(models_dir, 'x', 'brasilia', 'Brasilia Lounge Table 1000x1000_3D', 'OBJ', 'Brasilia Lounge Table 1000x1000.obj'), 0.001)
+    ob, dim = normalise(objs, 'Brasilia')
+    me = ob.data; me.materials.clear(); me.materials.append(oak('NaturalOak', **NATURAL_OAK)); me.materials.append(glass())
+    zt = max(v.co.z for v in me.vertices)
+    for p in me.polygons: p.material_index = 1 if min(me.vertices[i].co.z for i in p.vertices) > zt - 0.0165 else 0
+    return ob, dim
+
+
+def androgyne_side50(models_dir):
+    """Audo Androgyne Side Table Ø50 (official 3D, mm): Kunis Breccia top, natural oak base."""
+    d = os.path.join(models_dir, 'x', 'andro_side50'); f = next(os.path.join(r, n) for r, _, fs in os.walk(d) for n in fs if n.lower().endswith('.obj'))
+    objs = import_obj(f, 0.001); wood = oak('NaturalOak', **NATURAL_OAK); stone = breccia(); hw = metal('Hardware')
+    for o in objs:
+        o.data.materials.clear(); o.data.materials.append(stone if 'Tabletop' in o.name else wood if 'Leg' in o.name else hw)
+    return normalise(objs, 'AndrogyneSide50')
+
+
 def homeview(models_dir):
     """Apple HomeView, tabletop (Apple's own AR model from apple.com, authored in cm)."""
     before = set(bpy.data.objects); bpy.ops.wm.usd_import(filepath=os.path.join(models_dir, 'homeview', 'apple-homeview.usdz'), scale=0.01)
@@ -394,5 +423,5 @@ def homeview(models_dir):
 LIBRARY = {'androgyne_150': lambda d: androgyne(d, '150'), 'androgyne_120': lambda d: androgyne(d, '120'),
            'ready_chair': lambda d: ready_chair(d), 'eave86_config2': eave86_config2, 'audo_androgyne_lounge': androgyne_lounge,
            'audo_plinth_tall': lambda d: plinth(d, 'tall'), 'audo_plinth_cubic': lambda d: plinth(d, 'cubic'),
-           'beolab28_floor_silver_oak': beolab28, 'beosound_balance_natural_oak': beosound_balance, 'lg_g5_55': lambda d: lg_g5(d, '55'), 'lg_g5_65': lambda d: lg_g5(d, '65'), 'audo_carrie_brushed_brass': carrie, 'audo_hashira_portable_raw': hashira_portable, 'audo_column_portable_aluminium': column_portable,
+           'beolab28_floor_silver_oak': beolab28, 'beosound_balance_natural_oak': beosound_balance, 'lg_g5_55': lambda d: lg_g5(d, '55'), 'lg_g5_65': lambda d: lg_g5(d, '65'), 'audo_carrie_brushed_brass': carrie, 'audo_brasilia_100_oak_glass': brasilia, 'audo_androgyne_side50': androgyne_side50, 'audo_hashira_portable_raw': hashira_portable, 'audo_column_portable_aluminium': column_portable,
            'audo_column_portable_bronze': lambda d: column_portable(d, 'bronze'), 'apple_homeview': homeview}
