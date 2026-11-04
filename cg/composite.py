@@ -1,8 +1,9 @@
 """Render the furniture of a layout option into a calibrated photo (Blender, Cycles).
 
 blender -b -P composite.py -- <view> <option> <mode> <scale> <samples> <out_prefix> [light.json]
-mode: sun | amb  -> lighting-calibration renders of the empty room (floor albedo 1, sun only / sky only)
+mode: sun | amb  -> lighting-calibration renders of the empty room (sun only / sky only)
       final      -> furniture with shadow-catcher room, using the fitted light.json
+      refl       -> the whole scene mirrored below the floor (furniture only visible): the polished tile's reflection
 
 Room geometry (metres, floor frame of layout.json) was measured from the calibrated photos: window glass from
 z 0.07 to 2.40, mullions every 1.17 m, pier between the two window walls. The room surfaces are shadow catchers,
@@ -40,15 +41,17 @@ co.matrix_world = Matrix.Translation(C) @ (R.transposed() @ Matrix.Diagonal((1, 
 def mat(name, rgb, rough=0.6):
     m = bpy.data.materials.new(name); m.use_nodes = True; b = m.node_tree.nodes['Principled BSDF']
     b.inputs['Base Color'].default_value = (*rgb, 1); b.inputs['Roughness'].default_value = rough; return m
-calib_mode = mode in ('sun', 'amb')
+calib_mode = mode in ('sun', 'amb'); refl_mode = mode == 'refl'
 FLOOR_ALB = (0.66, 0.62, 0.53)                      # cream tile (luminance ~0.62); calibration renders use it too
 floor_alb = FLOOR_ALB
-M_floor = mat('floor', floor_alb, 0.35); M_wall = mat('wall', (0.72, 0.69, 0.63)); M_ceil = mat('ceil', (0.8, 0.79, 0.76))
+M_floor = mat('floor', floor_alb, 0.35 if calib_mode else 0.12)    # polished tile: catches the furniture's reflections in the final pass
+if not calib_mode: M_floor.node_tree.nodes['Principled BSDF'].inputs['Coat Weight'].default_value = 0.6; M_floor.node_tree.nodes['Principled BSDF'].inputs['Coat Roughness'].default_value = 0.04
+M_wall = mat('wall', (0.72, 0.69, 0.63)); M_ceil = mat('ceil', (0.8, 0.79, 0.76))
 M_frame = mat('frame', (0.03, 0.03, 0.03), 0.4)
 def box(name, x0, x1, y0, y1, z0, z1, m, camera=True, catcher=False):
     bpy.ops.mesh.primitive_cube_add(size=1, location=((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2))
     o = bpy.context.object; o.name = name; o.scale = (x1 - x0, y1 - y0, z1 - z0); bpy.ops.object.transform_apply(scale=True)
-    o.data.materials.append(m); o.visible_camera = camera; o.is_shadow_catcher = catcher or (not calib_mode); return o
+    o.data.materials.append(m); o.visible_camera = camera and not refl_mode; o.is_shadow_catcher = (catcher or not calib_mode) and not refl_mode; return o
 XR, XW, YT, YW = -4.69, 0.89, -4.83, 0.87          # right wall, W2 glass, top wall, W1 glass
 t = 0.2
 catch = not calib_mode
@@ -96,6 +99,13 @@ if not calib_mode:
         if it['type'] == 'smart_speaker': z = ON['plinth_tall']
         if it['type'] == 'tv': z = 0.55                   # wall mount, bottom edge 55 cm above the floor
         place(k, it, z)
+if refl_mode:
+    # mirror everything (room, lights, furniture) through the floor plane; seen from the real camera this is the image
+    # a perfect mirror floor would show
+    flip = bpy.data.objects.new('mirror', None); sc.collection.objects.link(flip); flip.scale = (1, 1, -1)
+    for o in list(sc.objects):
+        if o not in (flip, co) and o.parent is None: o.parent = flip
+if not calib_mode and not refl_mode:
     vl = sc.view_layers[0]; vl.cycles.use_pass_shadow_catcher = True
     # write the objects (Combined, premultiplied RGBA) and the shadow-catcher factor as separate EXRs
     sc.use_nodes = True; nt = sc.node_tree; rl = nt.nodes['Render Layers']
