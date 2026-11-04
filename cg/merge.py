@@ -22,6 +22,17 @@ if len(sys.argv) > 6:
     d /= np.linalg.norm(d, axis=-1, keepdims=True)
     tz = -C[2] / np.where(d[..., 2] < -1e-6, d[..., 2], -1e-6); X = C[0] + tz * d[..., 0]; Y = C[1] + tz * d[..., 1]
     floor = (d[..., 2] < 0) & (X > -4.69) & (X < 0.89) & (Y > -4.83) & (Y < 0.87) & ~((X > 0) & (Y > 0))
+    if view == 'v3':                                              # the kitchen island and wall stand in front of the floor
+        for x0, x1, y0, y1, z1 in ((-3.33, -1.68, -5.21, -4.33, 0.88), (-1.68, -1.05, -6.3, -4.33, 0.88), (-0.9, 0.89, -6.5, -4.40, 2.65)):
+            with np.errstate(divide='ignore', invalid='ignore'):
+                for ax, a0, a1 in ((0, x0, x1), (1, y0, y1), (2, 0.0, z1)):
+                    for pl in (a0, a1):
+                        t = (pl - C[ax]) / d[..., ax]
+                        P = C[None, None, :] + t[..., None] * d
+                        o = [i for i in range(3) if i != ax]; lim = ((x0, x1), (y0, y1), (0.0, z1))
+                        inside = (t > 0) & (t < tz)
+                        for i in o: inside &= (P[..., i] >= lim[i][0]) & (P[..., i] <= lim[i][1])
+                        floor &= ~inside
     cos = np.clip(-d[..., 2], 0, 1)
     F = np.minimum(1.5 * (0.06 + (1 - 0.06) * (1 - cos) ** 5), 0.6)  # Schlick for glazed tile plus its polish coat; the
     k = (F * floor)[..., None]                                       # photo shows the window frames clearly in the floor

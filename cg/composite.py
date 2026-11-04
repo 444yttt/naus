@@ -26,7 +26,10 @@ sc = bpy.context.scene; sc.render.engine = 'CYCLES'; sc.cycles.device = 'CPU'
 sc.cycles.samples = spp; sc.cycles.use_denoising = True; sc.cycles.max_bounces = 6
 sc.view_settings.view_transform = 'Standard'; sc.view_settings.look = 'None'
 sc.render.resolution_x, sc.render.resolution_y = int(1932 * scale), int(2576 * scale)
-sc.render.film_transparent = True; sc.cycles.film_transparent_glass = True   # the photo shows through glass tops
+sc.render.film_transparent = True; sc.cycles.film_transparent_glass = True
+if os.environ.get('BORDER'):                          # re-render only a region (fractions x0,x1,y0,y1 from the bottom-left)
+    b_ = [float(v) for v in os.environ['BORDER'].split(',')]; sc.render.use_border = True; sc.render.use_crop_to_border = False
+    sc.render.border_min_x, sc.render.border_max_x, sc.render.border_min_y, sc.render.border_max_y = b_   # the photo shows through glass tops
 sc.render.image_settings.file_format = 'OPEN_EXR'; sc.render.image_settings.color_depth = '32'
 sc.render.image_settings.exr_codec = 'ZIP'
 

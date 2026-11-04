@@ -709,22 +709,34 @@ def houkime_rug(models_dir, size=(1.7, 2.4)):
 
 
 def echasse_bowl(models_dir):
-    """Audo Échasse Bowl, Large (Ø29 x H13.8), official 3D (mm), mouth-blown glass in Amber, with a few lemons."""
+    """Audo Échasse Bowl, Large (Ø29.5 x H13.8), official 3D (mm): mouth-blown Smoke glass on a bronzed-brass stand."""
     d = os.path.join(models_dir, 'x', 'echasse_l'); f = next(os.path.join(r, n) for r, _, fs in os.walk(d) for n in fs if n.lower().endswith('.obj'))
     objs = import_obj(f, 0.001)
-    amber = bpy.data.materials.get('AmberGlass') or glass('AmberGlass')
-    amber.node_tree.nodes['Principled BSDF'].inputs['Base Color'].default_value = (*srgb((214, 150, 70)), 1)
-    for o in objs: o.data.materials.clear(); o.data.materials.append(amber)
-    ob, dim = normalise(objs, 'EchasseBowl')
-    lemon = plain('Lemon', (222, 190, 60), 0.4); parts = [ob]
-    for i, (x, y) in enumerate(((-0.04, 0.02), (0.045, -0.015), (0.0, -0.06), (0.03, 0.06))):
-        bpy.ops.mesh.primitive_uv_sphere_add(segments=48, ring_count=24, radius=1, location=(x, y, dim.z - 0.06))
-        l = bpy.context.object; l.scale = (0.033, 0.033, 0.045)
-        for v in l.data.vertices:                                  # lemon: ellipsoid with small nipples at both ends
-            v.co.z *= 1 + 0.25 * max(0.0, abs(v.co.z) - 0.85) / 0.15
-        bpy.ops.object.shade_smooth(); l.rotation_euler = (math.radians(75 + 10 * i), 0, math.radians(47 * i))
-        bpy.ops.object.transform_apply(scale=True, rotation=True); l.data.materials.append(lemon); parts.append(l)
-    return _group(parts, 'EchasseBowlLemons')
+    smoke = glass('SmokeGlass'); smoke.node_tree.nodes['Principled BSDF'].inputs['Base Color'].default_value = (*srgb((150, 146, 140)), 1)
+    brass = plain('BronzedBrass', (120, 92, 60), 0.35, 1.0)
+    ob, dim = normalise(objs, 'EchasseBowl'); me = ob.data
+    me.materials.clear(); me.materials.append(smoke); me.materials.append(brass)
+    for p in me.polygons:                                         # thin rods of the stand: faces of small, rod-like islands
+        p.material_index = 0
+    import bmesh
+    bm = bmesh.new(); bm.from_mesh(me); bm.faces.ensure_lookup_table()
+    seen = set()
+    for f0 in bm.faces:
+        if f0.index in seen: continue
+        stack = [f0]; isl = []
+        while stack:
+            f_ = stack.pop()
+            if f_.index in seen: continue
+            seen.add(f_.index); isl.append(f_)
+            for e in f_.edges:
+                for g in e.link_faces:
+                    if g.index not in seen: stack.append(g)
+        vs = {v for f_ in isl for v in f_.verts}
+        xs = [v.co.x for v in vs]; ys = [v.co.y for v in vs]
+        if min(max(xs) - min(xs), max(ys) - min(ys)) < 0.02 or (max(xs) - min(xs)) * (max(ys) - min(ys)) < 0.004:
+            for f_ in isl: f_.material_index = 1
+    bm.to_mesh(me); bm.free()
+    return ob, dim
 
 
 def homeview(models_dir):
@@ -736,7 +748,7 @@ def homeview(models_dir):
 LIBRARY = {'androgyne_150': lambda d: androgyne(d, '150'), 'androgyne_120': lambda d: androgyne(d, '120'),
            'ready_chair': lambda d: ready_chair(d), 'eave86_config2': eave86_config2, 'audo_androgyne_lounge': androgyne_lounge,
            'audo_plinth_tall': lambda d: plinth(d, 'tall'), 'audo_plinth_cubic': lambda d: plinth(d, 'cubic'),
-           'beolab28_floor_silver_oak': beolab28, 'beosound_balance_natural_oak': beosound_balance, 'lg_g5_55': lambda d: lg_g5(d, '55'), 'lg_g5_65': lambda d: lg_g5(d, '65'), 'audo_carrie_brushed_brass': carrie, 'polyhaven_potted_plant_01': potted_plant, 'areca_palm': areca_palm, 'areca_potted': areca_potted, 'audo_echasse_bowl_large_amber': echasse_bowl, 'audo_houkime_rug_beige_170x240': houkime_rug, 'polyhaven_potted_plant_01_large': lambda d: potted_plant(d, True),
+           'beolab28_floor_silver_oak': beolab28, 'beosound_balance_natural_oak': beosound_balance, 'lg_g5_55': lambda d: lg_g5(d, '55'), 'lg_g5_65': lambda d: lg_g5(d, '65'), 'audo_carrie_brushed_brass': carrie, 'polyhaven_potted_plant_01': potted_plant, 'areca_palm': areca_palm, 'areca_potted': areca_potted, 'audo_echasse_bowl_large_amber': echasse_bowl, 'audo_echasse_bowl_large_smoke': echasse_bowl, 'audo_houkime_rug_beige_170x240': houkime_rug, 'polyhaven_potted_plant_01_large': lambda d: potted_plant(d, True),
            'tw_place_setting': place_setting, 'tw_table_centre': table_centre, 'tw_books_vase': books_and_vase, 'tw_tray_cups': tray_cups, 'beosound_a9_natural_oak': beosound_a9, 'bolia_eida_100_h28_sand_travertine': lambda d: bolia_eida(d, 1.0, 0.28, 'sand_travertine'),
            'bolia_eida_70_h32_natural_oak': lambda d: bolia_eida(d, 0.7, 0.32, 'natural_oak'), 'gubi_epic_large': lambda d: gubi_epic(d, 'large'), 'gubi_epic_small': lambda d: gubi_epic(d, 'small'), 'audo_brasilia_100_oak_glass': brasilia, 'audo_androgyne_side50': androgyne_side50, 'audo_hashira_portable_raw': hashira_portable, 'audo_column_portable_aluminium': column_portable,
            'audo_column_portable_bronze': lambda d: column_portable(d, 'bronze'), 'apple_homeview': homeview}
