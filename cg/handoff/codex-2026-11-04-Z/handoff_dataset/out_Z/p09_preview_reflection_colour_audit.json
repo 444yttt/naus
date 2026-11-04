@@ -1,0 +1,15 @@
+{
+  "uncovered_raw_mean_RGB": [
+    1.4044831004866865e-05,
+    1.6078571206890047e-05,
+    1.9534383682184853e-05
+  ],
+  "uncovered_raw_p99_RGB": [
+    4.8100948333740234e-05,
+    4.845857620239258e-05,
+    4.571676254272461e-05
+  ],
+  "view_transform": "same source-scene AgX, Medium High Contrast, exposure -1.5; unpremultiplied reflected furniture radiance transformed before BRDF weighting",
+  "old_method": "Reinhard tone curve, inconsistent with foreground AgX",
+  "photo_edited": false
+}

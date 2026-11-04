@@ -1,0 +1,82 @@
+[
+  {
+    "shot": "p09",
+    "pixels": 150418,
+    "front_top_world_bbox_xy": [
+      7.2,
+      1.59,
+      8.35,
+      3.41
+    ],
+    "versions": {
+      "W": {
+        "linear_Y_p05_p50_p95": [
+          0.006823926871363073,
+          0.015493223039992152,
+          0.03206762262620032
+        ],
+        "linear_Y_std": 0.008371438597562543,
+        "channel_clip_fraction": 0.0
+      },
+      "X": {
+        "linear_Y_p05_p50_p95": [
+          0.007082953552622348,
+          0.016056641741283236,
+          0.03328006252869963
+        ],
+        "linear_Y_std": 0.00868926775698727,
+        "channel_clip_fraction": 0.0
+      },
+      "Z": {
+        "linear_Y_p05_p50_p95": [
+          0.008149132866039873,
+          0.016743186790309846,
+          0.09403958911001682
+        ],
+        "linear_Y_std": 0.030608205041098,
+        "channel_clip_fraction": 0.0
+      }
+    },
+    "scope": "surface radiance gradients and clipping, not a measurement of lumens or an automatic aesthetic score; normal/material/world-position masks exclude rear sofa table"
+  },
+  {
+    "shot": "u1",
+    "pixels": 6171,
+    "front_top_world_bbox_xy": [
+      7.2,
+      1.59,
+      8.35,
+      3.41
+    ],
+    "versions": {
+      "W": {
+        "linear_Y_p05_p50_p95": [
+          0.007349727163556963,
+          0.011217469941638409,
+          0.017200986647419633
+        ],
+        "linear_Y_std": 0.002879913650099995,
+        "channel_clip_fraction": 0.0
+      },
+      "X": {
+        "linear_Y_p05_p50_p95": [
+          0.007365735378675162,
+          0.01137033996004611,
+          0.017323273525200782
+        ],
+        "linear_Y_std": 0.0028993177644251154,
+        "channel_clip_fraction": 0.0
+      },
+      "Z": {
+        "linear_Y_p05_p50_p95": [
+          0.025657970356941222,
+          0.04578747612833976,
+          0.07853682912141086
+        ],
+        "linear_Y_std": 0.016389048070001758,
+        "channel_clip_fraction": 0.0
+      }
+    },
+    "scope": "surface radiance gradients and clipping, not a measurement of lumens or an automatic aesthetic score; normal/material/world-position masks exclude rear sofa table"
+  }
+]

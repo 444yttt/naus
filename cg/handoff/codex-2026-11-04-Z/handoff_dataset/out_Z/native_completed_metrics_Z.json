@@ -1,0 +1,229 @@
+[
+  {
+    "shot": "p09",
+    "native_dimensions": [
+      3024,
+      4032
+    ],
+    "unchanged_plate_pixel_count": 7312270,
+    "unchanged_plate_max_error_8bit": 1,
+    "unchanged_plate_pass": true,
+    "grain_identical": true,
+    "grain": {
+      "luminance_sigma_8bit": 1.2500000442378223,
+      "minimum_luminance_sigma_8bit": 0.65,
+      "method": "robust mixed second-difference MAD with a 0.65/255 floor for JPEG-smoothed flat regions; applied to CG foreground only",
+      "optics": "premultiplied edge softening increases smoothly toward frame periphery",
+      "status": "photo-estimated camera texture, not sensor calibration"
+    },
+    "sofa": {
+      "face_groups": [
+        {
+          "world_axis": 0,
+          "sign": 1,
+          "samples": 53886,
+          "W_mean_Y": 0.17646524310112,
+          "Z_mean_Y": 0.276579350233078,
+          "W_mean_RGB_linear": [
+            0.18396756052970886,
+            0.17667052149772644,
+            0.15246906876564026
+          ],
+          "Z_mean_RGB_linear": [
+            0.3074399530887604,
+            0.2728595733642578,
+            0.22281189262866974
+          ],
+          "Z_red_blue_ratio": 1.3798184394836426,
+          "W_red_blue_ratio": 1.2065893411636353,
+          "Z_green_excess_over_RB": 0.007733643054962158,
+          "W_green_excess_over_RB": 0.00845220685005188,
+          "W_CCT_proxy_K": 5829.816390409153,
+          "Z_CCT_proxy_K": 5424.265709340495
+        },
+        {
+          "world_axis": 1,
+          "sign": 1,
+          "samples": 17375,
+          "W_mean_Y": 0.10612746328115463,
+          "Z_mean_Y": 0.24543236196041107,
+          "W_mean_RGB_linear": [
+            0.1141800582408905,
+            0.10577978193759918,
+            0.08583187311887741
+          ],
+          "Z_mean_RGB_linear": [
+            0.2640613615512848,
+            0.24364438652992249,
+            0.20824189484119415
+          ],
+          "Z_red_blue_ratio": 1.2680511474609375,
+          "W_red_blue_ratio": 1.3302757740020752,
+          "Z_green_excess_over_RB": 0.007492750883102417,
+          "W_green_excess_over_RB": 0.005773812532424927,
+          "W_CCT_proxy_K": 5542.503329196942,
+          "Z_CCT_proxy_K": 5670.667858528256
+        },
+        {
+          "world_axis": 2,
+          "sign": 1,
+          "samples": 51809,
+          "W_mean_Y": 0.35397765040397644,
+          "Z_mean_Y": 0.48803040385246277,
+          "W_mean_RGB_linear": [
+            0.35799723863601685,
+            0.355206698179245,
+            0.32972046732902527
+          ],
+          "Z_mean_RGB_linear": [
+            0.4927021861076355,
+            0.48891764879226685,
+            0.4655326306819916
+          ],
+          "Z_red_blue_ratio": 1.0583622455596924,
+          "W_red_blue_ratio": 1.0857598781585693,
+          "Z_green_excess_over_RB": 0.009800255298614502,
+          "W_green_excess_over_RB": 0.011347860097885132,
+          "W_CCT_proxy_K": 6181.547493367255,
+          "Z_CCT_proxy_K": 6276.635252724535
+        }
+      ],
+      "W_std_face_mean_Y": 0.10429007264637465,
+      "Z_std_face_mean_Y": 0.10777316347313476,
+      "contrast_increase_pass": true,
+      "method": "eroded material-index8 upholstery, world-normal component >0.90, native pixel stride2, same camera and geometry. RGB ratios and McCamy CCT derived from reflected upholstery colour are descriptive colour proxies, not measured illuminant CCT."
+    },
+    "island_joint_AO": {
+      "visible_sample_count": 0,
+      "normalized_AO_values": [],
+      "minimum_ratio": null,
+      "shadow_present": null,
+      "visibility_note": "Island face samples immediately above tabletop, ray-tested against foreground geometry; null means seam samples are outside frame or occluded, not a failed pixel measurement."
+    }
+  },
+  {
+    "shot": "u1",
+    "native_dimensions": [
+      4284,
+      5712
+    ],
+    "unchanged_plate_pixel_count": 13418187,
+    "unchanged_plate_max_error_8bit": 1,
+    "unchanged_plate_pass": true,
+    "grain_identical": true,
+    "grain": {
+      "luminance_sigma_8bit": 0.74128981330432,
+      "minimum_luminance_sigma_8bit": 0.65,
+      "method": "robust mixed second-difference MAD with a 0.65/255 floor for JPEG-smoothed flat regions; applied to CG foreground only",
+      "optics": "premultiplied edge softening increases smoothly toward frame periphery",
+      "status": "photo-estimated camera texture, not sensor calibration"
+    },
+    "sofa": {
+      "face_groups": [
+        {
+          "world_axis": 0,
+          "sign": -1,
+          "samples": 149201,
+          "W_mean_Y": 0.3862614333629608,
+          "Z_mean_Y": 0.6111335754394531,
+          "W_mean_RGB_linear": [
+            0.39091557264328003,
+            0.3875861167907715,
+            0.3596462905406952
+          ],
+          "Z_mean_RGB_linear": [
+            0.6189141869544983,
+            0.611351490020752,
+            0.5832487940788269
+          ],
+          "Z_red_blue_ratio": 1.0611494779586792,
+          "W_red_blue_ratio": 1.086944580078125,
+          "Z_green_excess_over_RB": 0.010269999504089355,
+          "W_green_excess_over_RB": 0.012305200099945068,
+          "W_CCT_proxy_K": 6177.690249521208,
+          "Z_CCT_proxy_K": 6267.633783534239
+        },
+        {
+          "world_axis": 1,
+          "sign": -1,
+          "samples": 1781,
+          "W_mean_Y": 0.16574816405773163,
+          "Z_mean_Y": 0.3275476098060608,
+          "W_mean_RGB_linear": [
+            0.17357636988162994,
+            0.16566240787506104,
+            0.14354562759399414
+          ],
+          "Z_mean_RGB_linear": [
+            0.3448256850242615,
+            0.32621005177497864,
+            0.28991878032684326
+          ],
+          "Z_red_blue_ratio": 1.1893872022628784,
+          "W_red_blue_ratio": 1.2092069387435913,
+          "Z_green_excess_over_RB": 0.00883781909942627,
+          "W_green_excess_over_RB": 0.00710141658782959,
+          "W_CCT_proxy_K": 5821.671045309953,
+          "Z_CCT_proxy_K": 5870.7104879993285
+        },
+        {
+          "world_axis": 1,
+          "sign": 1,
+          "samples": 3316,
+          "W_mean_Y": 0.14119434356689453,
+          "Z_mean_Y": 0.3651238679885864,
+          "W_mean_RGB_linear": [
+            0.15246590971946716,
+            0.1404338926076889,
+            0.11553578078746796
+          ],
+          "Z_mean_RGB_linear": [
+            0.3725486993789673,
+            0.36519891023635864,
+            0.34250393509864807
+          ],
+          "Z_red_blue_ratio": 1.0877209901809692,
+          "W_red_blue_ratio": 1.3196423053741455,
+          "Z_green_excess_over_RB": 0.007672607898712158,
+          "W_green_excess_over_RB": 0.006433054804801941,
+          "W_CCT_proxy_K": 5560.453745722653,
+          "Z_CCT_proxy_K": 6176.464371125985
+        },
+        {
+          "world_axis": 2,
+          "sign": 1,
+          "samples": 16157,
+          "W_mean_Y": 0.3816709816455841,
+          "Z_mean_Y": 0.5675578117370605,
+          "W_mean_RGB_linear": [
+            0.384249746799469,
+            0.3829768896102905,
+            0.3613095283508301
+          ],
+          "Z_mean_RGB_linear": [
+            0.5631478428840637,
+            0.5697052478790283,
+            0.5594421625137329
+          ],
+          "Z_red_blue_ratio": 1.0066238641738892,
+          "W_red_blue_ratio": 1.0634918212890625,
+          "Z_green_excess_over_RB": 0.008410215377807617,
+          "W_green_excess_over_RB": 0.010197252035140991,
+          "W_CCT_proxy_K": 6257.310909744178,
+          "Z_CCT_proxy_K": 6469.948118231988
+        }
+      ],
+      "W_std_face_mean_Y": 0.1155853633157021,
+      "Z_std_face_mean_Y": 0.12319623498661872,
+      "contrast_increase_pass": true,
+      "method": "eroded material-index8 upholstery, world-normal component >0.90, native pixel stride2, same camera and geometry. RGB ratios and McCamy CCT derived from reflected upholstery colour are descriptive colour proxies, not measured illuminant CCT."
+    },
+    "island_joint_AO": {
+      "visible_sample_count": 0,
+      "normalized_AO_values": [],
+      "minimum_ratio": null,
+      "shadow_present": null,
+      "visibility_note": "Island face samples immediately above tabletop, ray-tested against foreground geometry; null means seam samples are outside frame or occluded, not a failed pixel measurement."
+    }
+  }
+]

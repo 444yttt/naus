@@ -1,0 +1,7 @@
+{
+  "luminance_sigma_8bit": 0.74128981330432,
+  "minimum_luminance_sigma_8bit": 0.65,
+  "method": "robust mixed second-difference MAD with a 0.65/255 floor for JPEG-smoothed flat regions; applied to CG foreground only",
+  "optics": "premultiplied edge softening increases smoothly toward frame periphery",
+  "status": "photo-estimated camera texture, not sensor calibration"
+}

@@ -1,0 +1,57 @@
+[
+  {
+    "item": "Ernest sofa",
+    "geometry": "DEALER-DISTRIBUTED FBX modules",
+    "source": "https://mesmetric.com/en/modular/35938-ernest.html",
+    "note": "Source Poliform-ERNEST-sofa.fbx; imported mesh. XY fitted by approx 1-2% to selected module envelope; rear table reconstructed; materials recreated.; pale Shedir 02 Burro visual reference; actual fabric appearance not colorimetrically measured"
+  },
+  {
+    "item": "Ernest coffee tables",
+    "geometry": "DEALER-DISTRIBUTED FBX",
+    "source": "https://mesmetric.com/en/other/35943-ernest.html",
+    "note": "1200x900 +1200x700 genuine notched models; fitted to approved plan outlines; dark-wood material recreated."
+  },
+  {
+    "item": "Linha Dining",
+    "geometry": "THIRD-PARTY downloaded Collada, adapted",
+    "source": "https://3dwarehouse.sketchup.com/model/5c6e68ad-e323-452e-b19f-bb94ddd2aaad/Minotti-Linha-Dining-table",
+    "note": "Author Nikhil G. Source3300mm length adjusted to2600mm. Thin side plate thickness preserved. Downloaded marble image is a visual reference, not a manufacturer slab scan."
+  },
+  {
+    "item": "Torii dining-area chairs x6",
+    "geometry": "THIRD-PARTY user-linked SKP; original mesh dimensions",
+    "source": "https://3dwarehouse.sketchup.com/model/d8bb7e13-a21f-456b-855e-796e4aa4c55f/MINOTTI-TORII-CHAIR",
+    "note": "Author Maria Jose V. Measured envelope692x660x877mm. Light grey material recreated; legs share the exact Golden_Brown material with Linha. Standard/Large subtype and actual swivel mechanism not authenticated; CG reference, not manufacturer CAD."
+  },
+  {
+    "item": "Eames Lounge Chair - Classic",
+    "geometry": "OFFICIAL SKP, local conversion",
+    "source": "https://www.hermanmiller.com/resources/3d-models-and-planning-tools/product-models/individual/eames-lounge-chair-classic/",
+    "note": "Chair only, supplied ottoman omitted; original frame and floor glides retained; cushion revision documented below. Light leather/dark wood PROVISIONAL.",
+    "W_surface_revision": "five original cushion component envelopes interpolated; concealed rear upholstery omitted under plywood; fine relief simplified; original frame and floor glides retained"
+  },
+  {
+    "item": "IVRESSE",
+    "geometry": "technical/reference reconstruction",
+    "source": "https://technicals.roche-bobois.com/M66231103/TSv_IVRESSE_2017(2).pdf",
+    "note": "600x550mm white Carrara"
+  },
+  {
+    "item": "97-inch TV",
+    "geometry": "97-inch 16:9 dimensional study",
+    "source": "User confirmed 97-inch class and lower mounting",
+    "note": "Screen approx2148x1208mm; center1150mm above floor; enclosure/model/price unconfirmed."
+  },
+  {
+    "item": "Beolab28 pair",
+    "geometry": "OFFICIAL OBJ",
+    "source": "https://support.bang-olufsen.com/hc/en-us/articles/360020100498-Beolab-28",
+    "note": "Floor/tube/fabric/wood supplied assemblies; materials recreated; Charcoal Stain / Black Anthracite visual recreation; symmetric Y0.80 / 3.90 at X9.05m"
+  },
+  {
+    "item": "Beosound Balance",
+    "geometry": "OFFICIAL OBJ",
+    "source": "https://support.bang-olufsen.com/hc/en-us/articles/360041238491-Beosound-Balance",
+    "note": "Finish not selected, temporary grey"
+  }
+]

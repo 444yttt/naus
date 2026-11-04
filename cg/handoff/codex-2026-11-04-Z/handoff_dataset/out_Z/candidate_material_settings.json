@@ -1,0 +1,15 @@
+{
+  "sofa_sheen_weight": 0.45,
+  "previous": 0.1,
+  "base_colour_unchanged": true,
+  "roughness": 0.46,
+  "coat_weight": 0.13,
+  "coat_roughness": 0.32,
+  "AO_distance_m": 0.025,
+  "AO_mix": 0.35,
+  "lighting": "existing X lights/world unchanged; warm200W unchanged; diagonal sky return800W",
+  "status": "chosen from foreground trials; native all-view acceptance pending",
+  "diagonal_sky_W": 800,
+  "previous_diagonal_sky_W": 300,
+  "preview_evidence": "candidate_material_QA_sky800.json; native_mask_sky800_metrics.json; native verification pending"
+}

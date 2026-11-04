@@ -1,0 +1,182 @@
+{
+  "inputs": [
+    {
+      "file": "C:\\Users\\akaay\\Documents\\Codex\\2026-11-03\\codex-3d\\handoff_dataset\\out\\photo_final_W\\Harajuku_3LDK_delivery_W.zip",
+      "recorded_before_Z": "6099918b831954e914a71f85557b1cbb9d6f7900db6d24dd2c750346579f6068",
+      "actual": "6099918b831954e914a71f85557b1cbb9d6f7900db6d24dd2c750346579f6068",
+      "unchanged": true
+    },
+    {
+      "file": "C:\\Users\\akaay\\Documents\\Codex\\2026-11-03\\codex-3d\\handoff_dataset\\out\\photo_final_W\\delivery\\source\\Harajuku_LDK_W.blend",
+      "recorded_before_Z": "5923ad4e37a5015530ca4046925212ca69a71b30783bcdd5468ca1245dcdf5ea",
+      "actual": "5923ad4e37a5015530ca4046925212ca69a71b30783bcdd5468ca1245dcdf5ea",
+      "unchanged": true
+    },
+    {
+      "file": "C:\\Users\\akaay\\Documents\\Codex\\2026-11-03\\codex-3d\\handoff_dataset\\out\\photo_final_W\\u1_photo_scene.blend",
+      "recorded_before_Z": "d065c57c6eb360ab7ee7e33fc9087d488dc0d8d55495581cf350acb001f41b33",
+      "actual": "d065c57c6eb360ab7ee7e33fc9087d488dc0d8d55495581cf350acb001f41b33",
+      "unchanged": true
+    },
+    {
+      "file": "C:\\Users\\akaay\\Documents\\Codex\\2026-11-03\\codex-3d\\handoff_dataset\\out\\photo_final_W\\u2_photo_scene.blend",
+      "recorded_before_Z": "ce503b612bc3bdebc3302ecc1ef6ebff0afb03b3ef4d1d9bc339b16a02818d2e",
+      "actual": "ce503b612bc3bdebc3302ecc1ef6ebff0afb03b3ef4d1d9bc339b16a02818d2e",
+      "unchanged": true
+    },
+    {
+      "file": "C:\\Users\\akaay\\Documents\\Codex\\2026-11-03\\codex-3d\\handoff_dataset\\out\\photo_final_W\\p09_photo_scene.blend",
+      "recorded_before_Z": "62036c078b75b883e2fed68b897ffed17d37b1cae1cf606019d6f51e850242f2",
+      "actual": "62036c078b75b883e2fed68b897ffed17d37b1cae1cf606019d6f51e850242f2",
+      "unchanged": true
+    },
+    {
+      "file": "C:\\Users\\akaay\\Documents\\Codex\\2026-11-03\\codex-3d\\handoff_dataset\\out\\photo_final_W\\p01_photo_scene.blend",
+      "recorded_before_Z": "0684f6e5e194f68f03f57b8c4911bf66d7d46a6d9f21de1c37938d6330f95d7c",
+      "actual": "0684f6e5e194f68f03f57b8c4911bf66d7d46a6d9f21de1c37938d6330f95d7c",
+      "unchanged": true
+    },
+    {
+      "file": "C:\\Users\\akaay\\Documents\\Codex\\2026-11-03\\codex-3d\\handoff_dataset\\out\\photo_final_W\\p13_photo_scene.blend",
+      "recorded_before_Z": "748f49f60af9a629870162c270c1cdb72b86656e724ed3ee3e1b3466a6d5f634",
+      "actual": "748f49f60af9a629870162c270c1cdb72b86656e724ed3ee3e1b3466a6d5f634",
+      "unchanged": true
+    },
+    {
+      "file": "C:\\Users\\akaay\\Documents\\Codex\\2026-11-03\\codex-3d\\handoff_dataset\\images\\photos_srgb\\u1.png",
+      "recorded_before_Z": "d1eb2e42ccb1a2c0388c48c8941b43b2af650dca776bd38e83164097f7abf41c",
+      "actual": "d1eb2e42ccb1a2c0388c48c8941b43b2af650dca776bd38e83164097f7abf41c",
+      "unchanged": true
+    },
+    {
+      "file": "C:\\Users\\akaay\\Documents\\Codex\\2026-11-03\\codex-3d\\handoff_dataset\\images\\photos_srgb\\u2.png",
+      "recorded_before_Z": "59a2f323e507781805d0d489f6bcc4ca565ef13e9e47577febb353099b02cd2f",
+      "actual": "59a2f323e507781805d0d489f6bcc4ca565ef13e9e47577febb353099b02cd2f",
+      "unchanged": true
+    },
+    {
+      "file": "C:\\Users\\akaay\\Documents\\Codex\\2026-11-03\\codex-3d\\handoff_dataset\\images\\photos_srgb\\p09.png",
+      "recorded_before_Z": "6ad4d62dc58f0a171313f443df13affac7f2e6e75790aabdc4ae52632fc24cc5",
+      "actual": "6ad4d62dc58f0a171313f443df13affac7f2e6e75790aabdc4ae52632fc24cc5",
+      "unchanged": true
+    },
+    {
+      "file": "C:\\Users\\akaay\\Documents\\Codex\\2026-11-03\\codex-3d\\handoff_dataset\\images\\photos_srgb\\p01.png",
+      "recorded_before_Z": "668f48f223e593783c9c88012c446a2864b64fd5ac89f395c7438d283747c081",
+      "actual": "668f48f223e593783c9c88012c446a2864b64fd5ac89f395c7438d283747c081",
+      "unchanged": true
+    },
+    {
+      "file": "C:\\Users\\akaay\\Documents\\Codex\\2026-11-03\\codex-3d\\handoff_dataset\\images\\photos_srgb\\p13.png",
+      "recorded_before_Z": "771e6ba251f1e6d6777293dab627265d41bc4746d7e336cb9155ac288af9ce78",
+      "actual": "771e6ba251f1e6d6777293dab627265d41bc4746d7e336cb9155ac288af9ce78",
+      "unchanged": true
+    },
+    {
+      "file": "C:\\Users\\akaay\\Documents\\Codex\\2026-11-03\\codex-3d\\handoff_dataset\\out\\photo_final_W\\delivery\\layout.json",
+      "recorded_before_Z": "c8d82c6caab4859506d498e9946edaf6a8f719b0687a9562543fb15d2979d97b",
+      "actual": "c8d82c6caab4859506d498e9946edaf6a8f719b0687a9562543fb15d2979d97b",
+      "unchanged": true
+    },
+    {
+      "file": "C:\\Users\\akaay\\Documents\\Codex\\2026-11-03\\codex-3d\\handoff_dataset\\out\\photo_final_W\\delivery\\details\\camera_fit_unchanged_from_V.json",
+      "recorded_before_Z": "318da17200d17e05b21052acfd66c052b4e707d4d91f9520e545134d4fee9ab1",
+      "actual": "318da17200d17e05b21052acfd66c052b4e707d4d91f9520e545134d4fee9ab1",
+      "unchanged": true
+    },
+    {
+      "file": "C:\\Users\\akaay\\.codex\\codex-remote-attachments\\01a19f51-138e-7622-817c-433434a14e62\\8456A875-0C48-4B57-AFB9-AF4BD2FA5D60\\1-codex_pack.zip",
+      "recorded_before_Z": "574016100051c8d26a34254c1ffca055293688fe11d337cab48b7e65b3e1af1d",
+      "actual": "574016100051c8d26a34254c1ffca055293688fe11d337cab48b7e65b3e1af1d",
+      "unchanged": true
+    },
+    {
+      "file": "C:\\Users\\akaay\\Documents\\Codex\\2026-11-03\\codex-3d\\handoff_dataset\\instructions_X\\00_user_instructions.md",
+      "recorded_before_Z": "850ece16a4e79a375a3db8ed57e0fb981470606438352e831d860ca2a6131dcd",
+      "actual": "850ece16a4e79a375a3db8ed57e0fb981470606438352e831d860ca2a6131dcd",
+      "unchanged": true
+    },
+    {
+      "file": "C:\\Users\\akaay\\Documents\\Codex\\2026-11-03\\codex-3d\\handoff_dataset\\instructions_X\\ACCEPTANCE.md",
+      "recorded_before_Z": "29e9f7a1cd17240218e5780c85c805d2d1646a00ae69089e49e1801d0d4745b8",
+      "actual": "29e9f7a1cd17240218e5780c85c805d2d1646a00ae69089e49e1801d0d4745b8",
+      "unchanged": true
+    },
+    {
+      "file": "C:\\Users\\akaay\\Documents\\Codex\\2026-11-03\\codex-3d\\handoff_dataset\\instructions_X\\AGENTS.md",
+      "recorded_before_Z": "bd6abde47a1496a4857af28ae74982c29c48cce0d36211d4fb565aa65a392ff2",
+      "actual": "bd6abde47a1496a4857af28ae74982c29c48cce0d36211d4fb565aa65a392ff2",
+      "unchanged": true
+    },
+    {
+      "file": "C:\\Users\\akaay\\Documents\\Codex\\2026-11-03\\codex-3d\\handoff_dataset\\instructions_X\\GOAL_PROMPT.md",
+      "recorded_before_Z": "eea385693da0a7412211eb7166367c7d4ced82103d2736a23a00c5684ce13fd3",
+      "actual": "eea385693da0a7412211eb7166367c7d4ced82103d2736a23a00c5684ce13fd3",
+      "unchanged": true
+    },
+    {
+      "file": "C:\\Users\\akaay\\Documents\\Codex\\2026-11-03\\codex-3d\\handoff_dataset\\instructions_X\\REVIEW_HANDOFF.md",
+      "recorded_before_Z": "b66c75335034817155b7ef1c8ca5d17d80bdcacf059306af61e00492be52ed56",
+      "actual": "b66c75335034817155b7ef1c8ca5d17d80bdcacf059306af61e00492be52ed56",
+      "unchanged": true
+    },
+    {
+      "file": "C:\\Users\\akaay\\Documents\\Codex\\2026-11-03\\codex-3d\\handoff_dataset\\out_X\\p01_photo_scene.blend",
+      "recorded_before_Z": "78179ec90f7ec284a95ca1d3c4d2c3bb8b87987853e560dfbe5b514078dddb88",
+      "actual": "78179ec90f7ec284a95ca1d3c4d2c3bb8b87987853e560dfbe5b514078dddb88",
+      "unchanged": true
+    },
+    {
+      "file": "C:\\Users\\akaay\\Documents\\Codex\\2026-11-03\\codex-3d\\handoff_dataset\\out_X\\p09_photo_scene.blend",
+      "recorded_before_Z": "6b5d3d34ae7e19dabc499bf0fef95e8b06b43ae9e186f622dd6a1683af8be637",
+      "actual": "6b5d3d34ae7e19dabc499bf0fef95e8b06b43ae9e186f622dd6a1683af8be637",
+      "unchanged": true
+    },
+    {
+      "file": "C:\\Users\\akaay\\Documents\\Codex\\2026-11-03\\codex-3d\\handoff_dataset\\out_X\\p13_photo_scene.blend",
+      "recorded_before_Z": "a10192369da97e383f74b3cb0f0c0f432a64dce55415e0c4fc086945266fbe1b",
+      "actual": "a10192369da97e383f74b3cb0f0c0f432a64dce55415e0c4fc086945266fbe1b",
+      "unchanged": true
+    },
+    {
+      "file": "C:\\Users\\akaay\\Documents\\Codex\\2026-11-03\\codex-3d\\handoff_dataset\\out_X\\u1_photo_scene.blend",
+      "recorded_before_Z": "d01c945ac051eb1269f16d454fc3faec6f39c4b02482fe643bb6d4f975b15109",
+      "actual": "d01c945ac051eb1269f16d454fc3faec6f39c4b02482fe643bb6d4f975b15109",
+      "unchanged": true
+    },
+    {
+      "file": "C:\\Users\\akaay\\Documents\\Codex\\2026-11-03\\codex-3d\\handoff_dataset\\out_X\\u2_photo_scene.blend",
+      "recorded_before_Z": "cb966186702eadd7e0fdf549dc604d636ca3456d45e7d4345a58cad50e440bd6",
+      "actual": "cb966186702eadd7e0fdf549dc604d636ca3456d45e7d4345a58cad50e440bd6",
+      "unchanged": true
+    },
+    {
+      "file": "C:\\Users\\akaay\\Documents\\Codex\\2026-11-03\\codex-3d\\handoff_dataset\\out_X\\delivery\\source\\Harajuku_LDK_X.blend",
+      "recorded_before_Z": "cdf80d6c13b3882c7ad806c36a967bd29e25bf24dbadb21a89ec3b168c0f054b",
+      "actual": "cdf80d6c13b3882c7ad806c36a967bd29e25bf24dbadb21a89ec3b168c0f054b",
+      "unchanged": true
+    },
+    {
+      "file": "C:\\Users\\akaay\\Documents\\Codex\\2026-11-03\\codex-3d\\handoff_dataset\\out_X\\Harajuku_3LDK_review_X.zip",
+      "recorded_before_Z": "92af40c0edb45262724082754ae062463f4369d26b1de8ee018d32c1049ba896",
+      "actual": "92af40c0edb45262724082754ae062463f4369d26b1de8ee018d32c1049ba896",
+      "unchanged": true
+    }
+  ],
+  "originals_and_prior_deliveries_unchanged": true,
+  "additional_references": [
+    {
+      "file": "C:\\Users\\akaay\\Documents\\Codex\\2026-11-03\\codex-3d\\handoff_dataset\\out_Z\\Shindo_Natural_official_reference.jpg",
+      "sha256": "0b0b5440a3bc709f148527c4c1d9e487b842fdf33fec7e072ea6b268aac874d0",
+      "source": "https://s3.poliform.it/2025/07/Poliform_tappeti_SHINDO_finiture_1300x1740px_natural.jpg",
+      "use": "unmodified official reference; not an official 3D mesh or measured PBR scan"
+    },
+    {
+      "file": "C:\\Users\\akaay\\Documents\\Codex\\2026-11-03\\codex-3d\\handoff_dataset\\out_Z\\Shindo_official_dimensions.svg",
+      "sha256": "ba24b78dfed28598ebbbc04446497b1d2dca4d7dac3524c5cb3c8aabd9108bed",
+      "source": "https://s3.poliform.it/2025/07/Poliform_tappeti_SHINDO_rettangolare.svg",
+      "use": "unmodified official reference; not an official 3D mesh or measured PBR scan"
+    }
+  ],
+  "external_expected_hashes_provided": false
+}

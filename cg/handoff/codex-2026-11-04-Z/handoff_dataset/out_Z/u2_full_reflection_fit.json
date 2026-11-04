@@ -1,0 +1,9 @@
+{
+  "method": "BRDF-derived intrinsic prior consistent with calibrated-branch minimum; environment fit weak",
+  "environment_gain": 1.0027170985465452,
+  "contrast_correlation": 0.09895911251608445,
+  "existing_reflection_occlusion": "unweighted geometric coverage; conservative photo-based reflection estimate",
+  "coverage": "opacity divided by unit-white BRDF response; existing reflection blocked by directional radiance loss where calibrated, otherwise geometric coverage, not double Fresnel",
+  "shadow": "diffuse component only; existing reflection retained outside occlusion",
+  "status": "photographic estimate, not measured HDR inverse rendering"
+}

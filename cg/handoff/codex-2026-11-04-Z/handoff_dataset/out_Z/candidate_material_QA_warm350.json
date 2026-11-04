@@ -1,0 +1,115 @@
+{
+  "views": [
+    {
+      "shot": "u1",
+      "faces": [
+        {
+          "axis": 0,
+          "sign": -1,
+          "pixels": 37227,
+          "RGB": [
+            0.5792734026908875,
+            0.5510795712471008,
+            0.502673327922821
+          ],
+          "Y": 0.5535786490440369,
+          "CCT_proxy_K": 5974.4314665117645,
+          "green_excess": 0.010106205940246582
+        },
+        {
+          "axis": 1,
+          "sign": -1,
+          "pixels": 334,
+          "RGB": [
+            0.3149873614311218,
+            0.2819601595401764,
+            0.23506881296634674
+          ],
+          "Y": 0.2855961874395609,
+          "CCT_proxy_K": 5504.683267464402,
+          "green_excess": 0.006932079792022705
+        },
+        {
+          "axis": 1,
+          "sign": 1,
+          "pixels": 653,
+          "RGB": [
+            0.31608423590660095,
+            0.29009613394737244,
+            0.2520396411418915
+          ],
+          "Y": 0.2928735256433487,
+          "CCT_proxy_K": 5700.499013495938,
+          "green_excess": 0.006034195423126221
+        },
+        {
+          "axis": 2,
+          "sign": 1,
+          "pixels": 4017,
+          "RGB": [
+            0.5224341154098511,
+            0.5137722492218018,
+            0.48906320333480835
+          ],
+          "Y": 0.51382976886034,
+          "CCT_proxy_K": 6243.246615745994,
+          "green_excess": 0.008023619651794434
+        }
+      ],
+      "face_std_Y": 0.1230667814965909,
+      "sofa_channel_clipping_fraction": 0.0,
+      "scope": "quarter-resolution foreground only; final native composite metrics required"
+    },
+    {
+      "shot": "p09",
+      "faces": [
+        {
+          "axis": 0,
+          "sign": 1,
+          "pixels": 13373,
+          "RGB": [
+            0.3213914930820465,
+            0.2733037769794464,
+            0.21282310783863068
+          ],
+          "Y": 0.2791605211108923,
+          "CCT_proxy_K": 5180.735445791669,
+          "green_excess": 0.006196469068527222
+        },
+        {
+          "axis": 1,
+          "sign": 1,
+          "pixels": 3956,
+          "RGB": [
+            0.2421594113111496,
+            0.2070932537317276,
+            0.16135342419147491
+          ],
+          "Y": 0.21124590314030645,
+          "CCT_proxy_K": 5199.1029880000215,
+          "green_excess": 0.005336835980415344
+        },
+        {
+          "axis": 2,
+          "sign": 1,
+          "pixels": 12704,
+          "RGB": [
+            0.4763330817222595,
+            0.45897427201271057,
+            0.4223364293575287
+          ],
+          "Y": 0.46001950271725656,
+          "CCT_proxy_K": 6048.459099701191,
+          "green_excess": 0.009639531373977661
+        }
+      ],
+      "face_std_Y": 0.10499241793167445,
+      "sofa_channel_clipping_fraction": 0.0,
+      "scope": "quarter-resolution foreground only; final native composite metrics required"
+    }
+  ],
+  "window_minus_Y_CCT_proxy": 5504.683267464402,
+  "room_plus_Y_CCT_proxy": 5449.80100074798,
+  "window_warmer_in_preview": false,
+  "caveat": "original normal-based colour diagnostic retained, includes internal cushion faces; not measured illuminant temperature"
+}
