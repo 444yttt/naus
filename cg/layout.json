@@ -663,17 +663,6 @@
      "rot": 0
     },
     {
-     "type": "homeview",
-     "model": "apple_homeview",
-     "w": 0.146,
-     "d": 0.141,
-     "x": -3.05,
-     "y": -4.72,
-     "rot": 0,
-     "on": "kitchen_counter",
-     "z": 0.88
-    },
-    {
      "type": "table_lamp",
      "model": "audo_carrie_brushed_brass",
      "w": 0.153,
@@ -771,6 +760,16 @@
      "y": -0.03,
      "rot": 80,
      "z": 0.32
+    },
+    {
+     "type": "tableware",
+     "model": "audo_echasse_bowl_large_amber",
+     "w": 0.29,
+     "d": 0.29,
+     "x": -2.95,
+     "y": -4.78,
+     "rot": 0,
+     "z": 0.88
     }
    ]
   }

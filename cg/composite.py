@@ -98,7 +98,6 @@ if not calib_mode:
     for it in items:
         k = it.get('model')
         if not k or k not in furniture.LIBRARY: continue
-        if it['type'] == 'homeview' and view != 'v3': continue   # on the kitchen island, seen only from the kitchen
         z = 0.0
         if it.get('on') == 'dining_table': z = ON['dining_table']
         if it['type'] == 'smart_speaker': z = ON['plinth_tall']
