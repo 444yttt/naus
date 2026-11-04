@@ -316,27 +316,25 @@ def beosound_balance(models_dir=None):
     return lathe('BeosoundBalance', P, [wood, cloth, bronze]), Vector((0.193, 0.193, 0.38))
 
 
-def beolab28(models_dir=None):
-    """B&O BeoLab 28 floor stand, natural aluminium with oak lamella cover (no public 3D: modelled from B&O's
-    product sheet 25.3 x 137 x 25.3 cm and product photos)."""
-    alu = plain('NaturalAlu', (200, 200, 198), 0.28, 1.0); black = plain('Rubber', (20, 20, 20), 0.8)
-    wood = oak('BeoOak', stain=(1.0, 0.93, 0.84), stain_mix=1.0); grille = plain('Grille', (35, 35, 35), 0.7)
-    base = lathe('BL28Base', [(0.122, 0, 1), (0.1265, 0.004, 1), (0.1265, 0.008, 0), (0.04, 0.155, 0), (0.0, 0.155, 0)], [alu, black])
-    neck = lathe('BL28Neck', [(0.0, 0.14, 0), (0.03, 0.15, 0), (0.044, 0.18, 0), (0.044, 0.445, 0), (0.0, 0.445, 0)], [alu])
-    parts = [base, neck]
-    W, D, z0, z1 = 0.115, 0.13, 0.44, 1.37
-    bpy.ops.mesh.primitive_cube_add(size=1, location=(0, 0, (z0 + z1) / 2)); body = bpy.context.object
-    body.scale = (W - 0.01, D - 0.012, z1 - z0 - 0.03); bpy.ops.object.transform_apply(scale=True)
-    body.data.materials.append(grille); parts.append(body)
-    bpy.ops.mesh.primitive_cylinder_add(vertices=64, radius=D / 2, depth=0.025, location=(0, 0, z1 - 0.0125)); cap = bpy.context.object
-    cap.scale = (W / D, 1, 1); bpy.ops.object.transform_apply(scale=True); cap.data.materials.append(alu); parts.append(cap)
-    n = 9                                                        # vertical oak lamellas over front and sides
-    for i in range(n):
-        a = math.radians(-80 + 160 * i / (n - 1)); x, y = (W / 2) * math.sin(a), -(D / 2) * math.cos(a)
-        bpy.ops.mesh.primitive_cube_add(size=1, location=(x, y, (z0 + z1 - 0.025) / 2)); l = bpy.context.object
-        l.scale = (0.011, 0.012, z1 - z0 - 0.03); l.rotation_euler.z = a; bpy.ops.object.transform_apply(scale=True, rotation=True)
-        l.data.materials.append(wood); parts.append(l)
-    return normalise(parts, 'BeoLab28')
+def beolab28(models_dir):
+    """B&O BeoLab 28 floor stand, official 3D supplied by the client (mm, Y-up): floor woofer base, tube and the oak
+    lamella 'wooden curtain'. Natural aluminium; the tube body behind the curtain is dark."""
+    d = os.path.join(models_dir, 'bl28', 'Beolab 28', 'obj')
+    alu = plain('NaturalAlu', (200, 200, 198), 0.28, 1.0); dark = plain('Grille', (35, 35, 35), 0.7)
+    wood = oak('BeoOak', stain=(1.0, 0.93, 0.84), stain_mix=1.0)
+    objs = []
+    for f, m in (('beolab-28_woofer_floor.obj', alu), ('beolab-28_tube_basic.obj', None), ('beolab-28_wooden_curtain_off.obj', wood)):
+        for o in import_obj(os.path.join(d, f), 0.001):
+            o.data.materials.clear()
+            if m is not None: o.data.materials.append(m)
+            else:
+                o.data.materials.append(alu); o.data.materials.append(dark)
+                mw = o.matrix_world
+                for p in o.data.polygons:                    # speaker body between the base neck and the top cap
+                    c = mw @ p.center
+                    p.material_index = 1 if 0.44 < c.z < 1.35 else 0
+            objs.append(o)
+    return normalise(objs, 'BeoLab28')
 
 
 def _flatten(before):
@@ -601,6 +599,76 @@ def tray_cups(models_dir=None):
     return _group(parts, 'TrayCups')
 
 
+def leaf_mat(name='ArecaLeaf'):
+    m = bpy.data.materials.get(name)
+    if m: return m
+    m = bpy.data.materials.new(name); m.use_nodes = True; nt = m.node_tree; N = nt.nodes.new; L = nt.links.new
+    b = nt.nodes['Principled BSDF']; b.inputs['Base Color'].default_value = (*srgb((46, 94, 30)), 1); b.inputs['Roughness'].default_value = 0.45
+    tr = N('ShaderNodeBsdfTranslucent'); tr.inputs['Color'].default_value = (*srgb((120, 170, 40)), 1)
+    mx = N('ShaderNodeMixShader'); mx.inputs[0].default_value = 0.3
+    out = nt.nodes['Material Output']; L(b.outputs[0], mx.inputs[1]); L(tr.outputs[0], mx.inputs[2]); L(mx.outputs[0], out.inputs['Surface'])
+    return m
+
+
+def areca_palm(models_dir=None, seed=7):
+    """Areca (golden cane) palm in a tapered sand-terracotta pot, after the client's reference photo: about ten
+    slender cane stems from one pot, arching pinnate fronds with fine drooping leaflets; overall about 1.9 m.
+    Procedural (no suitable free model): pot Ø46/32 x H52."""
+    import bmesh, random
+    rnd = random.Random(seed)
+    stem_m = plain('ArecaCane', (120, 128, 62), 0.6); leaf = leaf_mat()
+    pot_m = travertine('TerracottaSand', light=(206, 170, 134), dark=(188, 150, 116), pit=(160, 124, 94))
+    pot_m.node_tree.nodes['Principled BSDF'].inputs['Roughness'].default_value = 0.9
+    parts = [lathe('palm_pot', [(0, 0.0, 0), (0.15, 0.0, 0), (0.165, 0.01, 0), (0.215, 0.2, 0), (0.232, 0.42, 0), (0.23, 0.52, 0),
+                                (0.215, 0.52, 1), (0.0, 0.49, 1)], [pot_m, plain('PalmSoil', (200, 184, 150), 0.95)], 96)]
+    me = bpy.data.meshes.new('palm'); bm = bmesh.new()
+    def tube(pts, r0, r1):
+        rings = []
+        for i, p in enumerate(pts):
+            r = r0 + (r1 - r0) * i / (len(pts) - 1); d = (pts[min(i + 1, len(pts) - 1)] - pts[max(i - 1, 0)]).normalized()
+            u = d.orthogonal().normalized(); v = d.cross(u)
+            rings.append([bm.verts.new(p + r * (math.cos(a) * u + math.sin(a) * v)) for a in [2 * math.pi * k / 6 for k in range(6)]])
+        for a_, b_ in zip(rings, rings[1:]):
+            for k in range(6):
+                f = bm.faces.new((a_[k], a_[(k + 1) % 6], b_[(k + 1) % 6], b_[k])); f.material_index = 0; f.smooth = True
+    def leaflet(base, along, side, length, width, droop):
+        pts = []; n = 4
+        for i in range(n + 1):
+            t = i / n; p = base + side * (length * t) + Vector((0, 0, -droop * t * t)) + along * (0.05 * t)
+            pts.append(p)
+        vs = []
+        for i, p in enumerate(pts):
+            w = width * math.sin(math.pi * min(0.95, max(0.08, i / n)))
+            vs.append((bm.verts.new(p + along * w / 2), bm.verts.new(p - along * w / 2)))
+        for (a1, a2), (b1, b2) in zip(vs, vs[1:]):
+            f = bm.faces.new((a1, a2, b2, b1)); f.material_index = 1
+    n_stems = 10
+    for si in range(n_stems):
+        ang = 2 * math.pi * si / n_stems + rnd.uniform(-0.3, 0.3); lean = rnd.uniform(0.1, 0.35)
+        h = rnd.uniform(0.75, 1.35); base = Vector((0.05 * math.cos(ang), 0.05 * math.sin(ang), 0.49))
+        out = Vector((math.cos(ang), math.sin(ang), 0))
+        pts = [base + out * (lean * h * (t ** 1.6)) + Vector((0, 0, h * t)) for t in [k / 8 for k in range(9)]]
+        tube(pts, 0.014, 0.008)
+        top = pts[-1]
+        for fi in range(rnd.randint(2, 4)):
+            fa = ang + rnd.uniform(-1.4, 1.4); fdir = Vector((math.cos(fa), math.sin(fa), 0))
+            L_ = rnd.uniform(0.55, 0.85); rise = rnd.uniform(0.15, 0.4)
+            rach = [top + fdir * (L_ * t) + Vector((0, 0, rise * math.sin(math.pi * t * 0.8) - 0.35 * t * t * L_)) for t in [k / 12 for k in range(13)]]
+            tube(rach, 0.006, 0.002)
+            for k in range(1, 12):
+                p = rach[k]; along = (rach[k + 1] - rach[k - 1]).normalized()
+                side0 = along.cross(Vector((0, 0, 1))).normalized()
+                for sgn in (1, -1):
+                    for j in range(3):
+                        tt = (k + j / 3) / 12; q = p + along * (j / 3) * (L_ / 12)
+                        length = 0.32 * math.sin(math.pi * min(0.97, 0.12 + tt)) + 0.05
+                        side = (side0 * sgn * 0.8 + along * 0.45 + Vector((0, 0, 0.15))).normalized()
+                        leaflet(q, along, side, length, 0.018, 0.12 * length / 0.3)
+    bm.to_mesh(me); bm.free(); ob = bpy.data.objects.new('palm_foliage', me); bpy.context.collection.objects.link(ob)
+    me.materials.append(stem_m); me.materials.append(leaf); parts.append(ob)
+    return _group(parts, 'ArecaPalm')
+
+
 def homeview(models_dir):
     """Apple HomeView, tabletop (Apple's own AR model from apple.com, authored in cm)."""
     before = set(bpy.data.objects); bpy.ops.wm.usd_import(filepath=os.path.join(models_dir, 'homeview', 'apple-homeview.usdz'), scale=0.01)
@@ -610,7 +678,7 @@ def homeview(models_dir):
 LIBRARY = {'androgyne_150': lambda d: androgyne(d, '150'), 'androgyne_120': lambda d: androgyne(d, '120'),
            'ready_chair': lambda d: ready_chair(d), 'eave86_config2': eave86_config2, 'audo_androgyne_lounge': androgyne_lounge,
            'audo_plinth_tall': lambda d: plinth(d, 'tall'), 'audo_plinth_cubic': lambda d: plinth(d, 'cubic'),
-           'beolab28_floor_silver_oak': beolab28, 'beosound_balance_natural_oak': beosound_balance, 'lg_g5_55': lambda d: lg_g5(d, '55'), 'lg_g5_65': lambda d: lg_g5(d, '65'), 'audo_carrie_brushed_brass': carrie, 'polyhaven_potted_plant_01': potted_plant, 'polyhaven_potted_plant_01_large': lambda d: potted_plant(d, True),
+           'beolab28_floor_silver_oak': beolab28, 'beosound_balance_natural_oak': beosound_balance, 'lg_g5_55': lambda d: lg_g5(d, '55'), 'lg_g5_65': lambda d: lg_g5(d, '65'), 'audo_carrie_brushed_brass': carrie, 'polyhaven_potted_plant_01': potted_plant, 'areca_palm': areca_palm, 'polyhaven_potted_plant_01_large': lambda d: potted_plant(d, True),
            'tw_place_setting': place_setting, 'tw_table_centre': table_centre, 'tw_books_vase': books_and_vase, 'tw_tray_cups': tray_cups, 'beosound_a9_natural_oak': beosound_a9, 'bolia_eida_100_h28_sand_travertine': lambda d: bolia_eida(d, 1.0, 0.28, 'sand_travertine'),
            'bolia_eida_70_h32_natural_oak': lambda d: bolia_eida(d, 0.7, 0.32, 'natural_oak'), 'gubi_epic_large': lambda d: gubi_epic(d, 'large'), 'gubi_epic_small': lambda d: gubi_epic(d, 'small'), 'audo_brasilia_100_oak_glass': brasilia, 'audo_androgyne_side50': androgyne_side50, 'audo_hashira_portable_raw': hashira_portable, 'audo_column_portable_aluminium': column_portable,
            'audo_column_portable_bronze': lambda d: column_portable(d, 'bronze'), 'apple_homeview': homeview}
