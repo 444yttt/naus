@@ -485,7 +485,7 @@ def bolia_eida(models_dir, size=1.0, height=0.28, finish='sand_travertine'):
     return normalise(parts, 'Eida_%d_%s' % (round(size * 100), finish))
 
 
-def potted_plant(models_dir):
+def potted_plant(models_dir, big=False):
     """Potted Plant 01 (Poly Haven, CC0), tall leafy plant, about 0.6 x 0.6 x 1.35 m.
     The ornate terracotta urn is replaced by a plain cylindrical planter in matte sand ceramic (same height)."""
     before = set(bpy.data.objects); bpy.ops.import_scene.gltf(filepath=os.path.join(models_dir, 'plant', 'potted_plant_01.gltf'))
@@ -495,7 +495,17 @@ def potted_plant(models_dir):
         else: keep.append(o)
     pot = lathe('Planter', [(0.0, 0.0, 0), (0.205, 0.0, 0), (0.215, 0.01, 0), (0.225, 0.52, 0), (0.212, 0.53, 0), (0.212, 0.49, 1), (0.0, 0.49, 1)],
                 [plain('PlanterCeramic', (206, 192, 170), 0.75), plain('Soil', (40, 32, 26), 0.95)], 96)
-    return normalise(keep + [pot], 'PottedPlant')
+    from mathutils import Matrix
+    foliage = [o for o in keep]
+    for a in (125, 245):                                       # two more copies of the crown, turned and varied, for a fuller plant
+        for o in foliage:
+            c = o.copy(); c.data = o.data.copy(); bpy.context.collection.objects.link(c)
+            c.matrix_world = Matrix.Rotation(math.radians(a), 4, 'Z') @ Matrix.Scale(0.85 if a == 125 else 0.92, 4) @ o.matrix_world
+            keep.append(c)
+    ob, dim = normalise(keep + [pot], 'PottedPlant')
+    if big:                                                    # a larger specimen: about 1.8 m tall
+        ob.data.transform(Matrix.Scale(1.8 / dim.z, 4)); dim = dim * (1.8 / dim.z)
+    return ob, dim
 
 
 def beosound_a9(models_dir=None):
@@ -522,6 +532,69 @@ def beosound_a9(models_dir=None):
     return normalise(parts, 'BeosoundA9')
 
 
+def ceramic(name, rgb, rough=0.35):
+    m = bpy.data.materials.get(name)
+    if m: return m
+    m = plain(name, rgb, rough); m.node_tree.nodes['Principled BSDF'].inputs['Coat Weight'].default_value = 0.3; return m
+
+
+def _group(parts, name):
+    for o in parts: o.select_set(True)
+    return normalise(parts, name)
+
+
+def place_setting(models_dir=None):
+    """One dining place (front = -y): stoneware dinner plate Ø27 with a bowl, a wine glass and a linen napkin."""
+    plate = ceramic('Stoneware', (226, 220, 208), 0.45); glassm = glass('WineGlass'); linen = fabric('Linen', (196, 186, 168), 900)
+    parts = [lathe('plate', [(0, 0.004, 0), (0.09, 0.004, 0), (0.12, 0.012, 0), (0.135, 0.022, 0), (0.132, 0.024, 0), (0.115, 0.015, 0), (0.0, 0.008, 0)], [plate]),
+             lathe('bowl', [(0, 0.012, 0), (0.035, 0.012, 0), (0.07, 0.04, 0), (0.075, 0.07, 0), (0.071, 0.07, 0), (0.066, 0.042, 0), (0.0, 0.016, 0)], [plate]),
+             lathe('glass', [(0, 0, 0), (0.036, 0, 0), (0.036, 0.004, 0), (0.004, 0.01, 0), (0.004, 0.11, 0), (0.03, 0.13, 0), (0.042, 0.18, 0), (0.036, 0.22, 0),
+                             (0.034, 0.22, 0), (0.039, 0.18, 0), (0.0, 0.122, 0)], [glassm], 64)]
+    parts[2].location = (0.13, 0.17, 0)
+    bpy.ops.mesh.primitive_cube_add(size=1, location=(-0.19, 0.0, 0.003)); n = bpy.context.object; n.scale = (0.09, 0.2, 0.006)
+    bpy.ops.object.transform_apply(scale=True); n.data.materials.append(linen); n.rotation_euler.z = math.radians(4); parts.append(n)
+    return _group(parts, 'PlaceSetting')
+
+
+def table_centre(models_dir=None):
+    """Centre of the dining table: a low stoneware bowl of pears and a carafe."""
+    bowl = ceramic('StonewareDark', (120, 104, 88), 0.5); glassm = glass('Carafe'); fruit = plain('Pear', (176, 160, 72), 0.45)
+    parts = [lathe('fruitbowl', [(0, 0.0, 0), (0.08, 0.0, 0), (0.15, 0.05, 0), (0.16, 0.075, 0), (0.155, 0.075, 0), (0.145, 0.052, 0), (0.0, 0.012, 0)], [bowl])]
+    for i, (x, y) in enumerate(((-0.04, 0.02), (0.05, -0.01), (0.0, -0.06), (0.06, 0.06))):
+        p = lathe('pear%d' % i, [(0, 0.0, 0), (0.03, 0.01, 0), (0.035, 0.035, 0), (0.025, 0.065, 0), (0.016, 0.085, 0), (0.0, 0.095, 0)], [fruit], 32)
+        p.location = (x, y, 0.015); p.rotation_euler = (math.radians(20 * (i % 2) - 10), math.radians(15 - 10 * i), 0); parts.append(p)
+    c = lathe('carafe', [(0, 0, 0), (0.05, 0, 0), (0.055, 0.02, 0), (0.05, 0.15, 0), (0.025, 0.21, 0), (0.024, 0.27, 0), (0.022, 0.27, 0), (0.0, 0.004, 0)], [glassm], 64)
+    c.location = (0.27, 0.05, 0); parts.append(c)
+    return _group(parts, 'TableCentre')
+
+
+def books_and_vase(models_dir=None):
+    """Coffee-table styling: two stacked art books and a small matte vase with a branch."""
+    covers = [plain('BookA', (214, 206, 192), 0.8), plain('BookB', (96, 84, 72), 0.8)]; pages = plain('Pages', (236, 232, 222), 0.9)
+    parts = []
+    for i, (w, d, h, m, a) in enumerate(((0.30, 0.24, 0.035, covers[0], 0), (0.26, 0.21, 0.028, covers[1], 7))):
+        z = 0.035 * i
+        bpy.ops.mesh.primitive_cube_add(size=1, location=(0, 0, z + h / 2)); b = bpy.context.object; b.scale = (w, d, h)
+        bpy.ops.object.transform_apply(scale=True); b.data.materials.append(m); b.rotation_euler.z = math.radians(a); parts.append(b)
+    v = lathe('vase', [(0, 0, 0), (0.05, 0, 0), (0.06, 0.06, 0), (0.045, 0.16, 0), (0.02, 0.2, 0), (0.022, 0.215, 0), (0.0, 0.2, 0)],
+              [ceramic('VaseSand', (208, 196, 176), 0.85)], 64)
+    v.location = (0.26, 0.04, 0); parts.append(v)
+    stem = plain('Branch', (70, 58, 44), 0.8)
+    bpy.ops.mesh.primitive_cylinder_add(vertices=8, radius=0.004, depth=0.45, location=(0.27, 0.05, 0.4)); s_ = bpy.context.object
+    s_.rotation_euler = (math.radians(8), math.radians(-12), 0); s_.data.materials.append(stem); parts.append(s_)
+    return _group(parts, 'BooksVase')
+
+
+def tray_cups(models_dir=None):
+    """Small oak tray with two stoneware cups."""
+    wood = oak('NaturalOak', **NATURAL_OAK); cup = ceramic('Stoneware', (226, 220, 208), 0.45)
+    parts = [rounded_box('tray', 0.32, 0.22, 0.02, 0.0, 0.03, wood)]
+    for x in (-0.06, 0.07):
+        c = lathe('cup', [(0, 0.02, 0), (0.03, 0.02, 0), (0.042, 0.03, 0), (0.045, 0.1, 0), (0.042, 0.1, 0), (0.04, 0.035, 0), (0.0, 0.028, 0)], [cup], 48)
+        c.location = (x, 0.01 * (x > 0), 0); parts.append(c)
+    return _group(parts, 'TrayCups')
+
+
 def homeview(models_dir):
     """Apple HomeView, tabletop (Apple's own AR model from apple.com, authored in cm)."""
     before = set(bpy.data.objects); bpy.ops.wm.usd_import(filepath=os.path.join(models_dir, 'homeview', 'apple-homeview.usdz'), scale=0.01)
@@ -531,6 +604,7 @@ def homeview(models_dir):
 LIBRARY = {'androgyne_150': lambda d: androgyne(d, '150'), 'androgyne_120': lambda d: androgyne(d, '120'),
            'ready_chair': lambda d: ready_chair(d), 'eave86_config2': eave86_config2, 'audo_androgyne_lounge': androgyne_lounge,
            'audo_plinth_tall': lambda d: plinth(d, 'tall'), 'audo_plinth_cubic': lambda d: plinth(d, 'cubic'),
-           'beolab28_floor_silver_oak': beolab28, 'beosound_balance_natural_oak': beosound_balance, 'lg_g5_55': lambda d: lg_g5(d, '55'), 'lg_g5_65': lambda d: lg_g5(d, '65'), 'audo_carrie_brushed_brass': carrie, 'polyhaven_potted_plant_01': potted_plant, 'beosound_a9_natural_oak': beosound_a9, 'bolia_eida_100_h28_sand_travertine': lambda d: bolia_eida(d, 1.0, 0.28, 'sand_travertine'),
+           'beolab28_floor_silver_oak': beolab28, 'beosound_balance_natural_oak': beosound_balance, 'lg_g5_55': lambda d: lg_g5(d, '55'), 'lg_g5_65': lambda d: lg_g5(d, '65'), 'audo_carrie_brushed_brass': carrie, 'polyhaven_potted_plant_01': potted_plant, 'polyhaven_potted_plant_01_large': lambda d: potted_plant(d, True),
+           'tw_place_setting': place_setting, 'tw_table_centre': table_centre, 'tw_books_vase': books_and_vase, 'tw_tray_cups': tray_cups, 'beosound_a9_natural_oak': beosound_a9, 'bolia_eida_100_h28_sand_travertine': lambda d: bolia_eida(d, 1.0, 0.28, 'sand_travertine'),
            'bolia_eida_70_h32_natural_oak': lambda d: bolia_eida(d, 0.7, 0.32, 'natural_oak'), 'gubi_epic_large': lambda d: gubi_epic(d, 'large'), 'gubi_epic_small': lambda d: gubi_epic(d, 'small'), 'audo_brasilia_100_oak_glass': brasilia, 'audo_androgyne_side50': androgyne_side50, 'audo_hashira_portable_raw': hashira_portable, 'audo_column_portable_aluminium': column_portable,
            'audo_column_portable_bronze': lambda d: column_portable(d, 'bronze'), 'apple_homeview': homeview}

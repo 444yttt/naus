@@ -534,7 +534,7 @@
    ]
   },
   "P": {
-   "title": "P:Eida の配置を調整、ソファ後ろの窓際に Beosound A9 と植物",
+   "title": "P:Eida を指定どおりに、A9・大ぶりの植物、食器類(仮)",
    "items": [
     {
      "type": "dining_table_round",
@@ -591,8 +591,8 @@
      "label": "Eida 100 石",
      "w": 1.0,
      "d": 1.0,
-     "x": -3.76,
-     "y": -1.14,
+     "x": -3.8,
+     "y": -1.13,
      "rot": 0
     },
     {
@@ -679,7 +679,7 @@
      "w": 0.7,
      "d": 0.7,
      "x": -3.55,
-     "y": -0.43,
+     "y": -0.42,
      "rot": 0
     },
     {
@@ -694,12 +694,72 @@
     },
     {
      "type": "plant",
-     "model": "polyhaven_potted_plant_01",
-     "w": 0.6,
-     "d": 0.6,
-     "x": -0.62,
-     "y": 0.5,
+     "model": "polyhaven_potted_plant_01_large",
+     "w": 0.84,
+     "d": 0.84,
+     "x": -0.6,
+     "y": 0.42,
      "rot": 0
+    },
+    {
+     "type": "tableware",
+     "model": "tw_place_setting",
+     "w": 0.4,
+     "d": 0.35,
+     "x": 0.004,
+     "y": -2.696,
+     "rot": 135,
+     "z": 0.733
+    },
+    {
+     "type": "tableware",
+     "model": "tw_place_setting",
+     "w": 0.4,
+     "d": 0.35,
+     "x": -0.704,
+     "y": -2.696,
+     "rot": 225,
+     "z": 0.733
+    },
+    {
+     "type": "tableware",
+     "model": "tw_place_setting",
+     "w": 0.4,
+     "d": 0.35,
+     "x": -0.704,
+     "y": -3.404,
+     "rot": 315,
+     "z": 0.733
+    },
+    {
+     "type": "tableware",
+     "model": "tw_table_centre",
+     "w": 0.48,
+     "d": 0.32,
+     "x": -0.117,
+     "y": -3.283,
+     "rot": 45,
+     "z": 0.733
+    },
+    {
+     "type": "tableware",
+     "model": "tw_books_vase",
+     "w": 0.47,
+     "d": 0.24,
+     "x": -3.95,
+     "y": -1.33,
+     "rot": 95,
+     "z": 0.28
+    },
+    {
+     "type": "tableware",
+     "model": "tw_tray_cups",
+     "w": 0.32,
+     "d": 0.22,
+     "x": -3.52,
+     "y": -0.28,
+     "rot": 80,
+     "z": 0.32
     }
    ]
   }

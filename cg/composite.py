@@ -98,6 +98,7 @@ if not calib_mode:
         if it.get('on') == 'dining_table': z = ON['dining_table']
         if it['type'] == 'smart_speaker': z = ON['plinth_tall']
         if it['type'] == 'tv': z = 0.55                   # wall mount, bottom edge 55 cm above the floor
+        z = it.get('z', z)                                # explicit height (things standing on other things)
         place(k, it, z)
 if refl_mode:
     # mirror everything (room, lights, furniture) through the floor plane; seen from the real camera this is the image
