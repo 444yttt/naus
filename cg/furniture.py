@@ -546,11 +546,11 @@ def nn_glaze():
 
 
 def place_setting(models_dir=None):
-    """One dining place (front = -y), Audo New Norm Dinnerware (Norm Architects) in Dark Glazed: dinner plate Ø27 with
-    a low bowl Ø13.5 x H5 (Audo's sizes; plate height ~1.7 cm by analogy with the Ø23 plate's 1.5 cm), New Norm
+    """One dining place (front = -y), Audo New Norm Dinnerware (Norm Architects) in Dark Glazed: dinner plate Ø27.5 with
+    a low bowl Ø13.5 x H5 (Audo's sizes; dinner plate Ø27.5 x H2), New Norm
     cutlery in brushed steel, a plain wine glass and a linen napkin. No public 3D: shapes from Audo's pack shots."""
     g = nn_glaze(); steel = plain('BrushedSteel', (190, 190, 188), 0.32, 1.0); glassm = glass('WineGlass'); linen = fabric('Linen', (196, 186, 168), 900)
-    parts = [lathe('nn_plate', [(0, 0.0, 0), (0.115, 0.0, 0), (0.122, 0.003, 0), (0.135, 0.017, 0), (0.132, 0.017, 0), (0.12, 0.007, 0), (0.0, 0.005, 0)], [g]),
+    parts = [lathe('nn_plate', [(0, 0.0, 0), (0.117, 0.0, 0), (0.124, 0.003, 0), (0.1375, 0.02, 0), (0.1345, 0.02, 0), (0.122, 0.008, 0), (0.0, 0.006, 0)], [g]),
              lathe('nn_lowbowl', [(0, 0.005, 0), (0.045, 0.005, 0), (0.064, 0.02, 0), (0.0675, 0.055, 0), (0.0645, 0.055, 0), (0.061, 0.022, 0), (0.0, 0.01, 0)], [g]),
              lathe('glass', [(0, 0, 0), (0.036, 0, 0), (0.036, 0.004, 0), (0.004, 0.01, 0), (0.004, 0.11, 0), (0.03, 0.13, 0), (0.042, 0.18, 0), (0.036, 0.22, 0),
                              (0.034, 0.22, 0), (0.039, 0.18, 0), (0.0, 0.122, 0)], [glassm], 64)]
