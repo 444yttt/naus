@@ -669,6 +669,24 @@ def areca_palm(models_dir=None, seed=7):
     return _group(parts, 'ArecaPalm')
 
 
+def areca_potted(models_dir):
+    """Areca palm (Dypsis lutescens): '[FREE] Dyspis Lutescens - Potted Palm' by AllQuad (Sketchfab, CC BY 4.0).
+    Its dark plastic pot is replaced by a tapered sand-terracotta pot after the client's reference (Ø42 top, H46);
+    the plant is raised so its base sits at the new soil line."""
+    from mathutils import Matrix
+    before = set(bpy.data.objects); bpy.ops.import_scene.gltf(filepath=os.path.join(models_dir, 'areca', 'areca.glb'))
+    objs = _flatten(before); keep = []
+    for o in objs:
+        if 'POT' in o.name.upper() and 'LUTESCENS' not in o.name.upper(): bpy.data.objects.remove(o)
+        else:
+            o.data.transform(o.matrix_world); o.matrix_world = Matrix(); o.data.transform(Matrix.Translation((0, 0, 0.17))); keep.append(o)
+    pot_m = travertine('TerracottaSand', light=(206, 170, 134), dark=(188, 150, 116), pit=(160, 124, 94))
+    pot_m.node_tree.nodes['Principled BSDF'].inputs['Roughness'].default_value = 0.9
+    pot = lathe('areca_pot', [(0, 0.0, 0), (0.13, 0.0, 0), (0.145, 0.012, 0), (0.19, 0.16, 0), (0.21, 0.33, 0), (0.21, 0.46, 0),
+                              (0.197, 0.46, 1), (0.0, 0.43, 1)], [pot_m, plain('PalmMulch', (196, 180, 146), 0.95)], 96)
+    return normalise(keep + [pot], 'ArecaPotted')
+
+
 def homeview(models_dir):
     """Apple HomeView, tabletop (Apple's own AR model from apple.com, authored in cm)."""
     before = set(bpy.data.objects); bpy.ops.wm.usd_import(filepath=os.path.join(models_dir, 'homeview', 'apple-homeview.usdz'), scale=0.01)
@@ -678,7 +696,7 @@ def homeview(models_dir):
 LIBRARY = {'androgyne_150': lambda d: androgyne(d, '150'), 'androgyne_120': lambda d: androgyne(d, '120'),
            'ready_chair': lambda d: ready_chair(d), 'eave86_config2': eave86_config2, 'audo_androgyne_lounge': androgyne_lounge,
            'audo_plinth_tall': lambda d: plinth(d, 'tall'), 'audo_plinth_cubic': lambda d: plinth(d, 'cubic'),
-           'beolab28_floor_silver_oak': beolab28, 'beosound_balance_natural_oak': beosound_balance, 'lg_g5_55': lambda d: lg_g5(d, '55'), 'lg_g5_65': lambda d: lg_g5(d, '65'), 'audo_carrie_brushed_brass': carrie, 'polyhaven_potted_plant_01': potted_plant, 'areca_palm': areca_palm, 'polyhaven_potted_plant_01_large': lambda d: potted_plant(d, True),
+           'beolab28_floor_silver_oak': beolab28, 'beosound_balance_natural_oak': beosound_balance, 'lg_g5_55': lambda d: lg_g5(d, '55'), 'lg_g5_65': lambda d: lg_g5(d, '65'), 'audo_carrie_brushed_brass': carrie, 'polyhaven_potted_plant_01': potted_plant, 'areca_palm': areca_palm, 'areca_potted': areca_potted, 'polyhaven_potted_plant_01_large': lambda d: potted_plant(d, True),
            'tw_place_setting': place_setting, 'tw_table_centre': table_centre, 'tw_books_vase': books_and_vase, 'tw_tray_cups': tray_cups, 'beosound_a9_natural_oak': beosound_a9, 'bolia_eida_100_h28_sand_travertine': lambda d: bolia_eida(d, 1.0, 0.28, 'sand_travertine'),
            'bolia_eida_70_h32_natural_oak': lambda d: bolia_eida(d, 0.7, 0.32, 'natural_oak'), 'gubi_epic_large': lambda d: gubi_epic(d, 'large'), 'gubi_epic_small': lambda d: gubi_epic(d, 'small'), 'audo_brasilia_100_oak_glass': brasilia, 'audo_androgyne_side50': androgyne_side50, 'audo_hashira_portable_raw': hashira_portable, 'audo_column_portable_aluminium': column_portable,
            'audo_column_portable_bronze': lambda d: column_portable(d, 'bronze'), 'apple_homeview': homeview}

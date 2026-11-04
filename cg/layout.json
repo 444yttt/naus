@@ -694,9 +694,9 @@
     },
     {
      "type": "plant",
-     "model": "areca_palm",
-     "w": 1.0,
-     "d": 1.0,
+     "model": "areca_potted",
+     "w": 1.15,
+     "d": 1.15,
      "x": -0.6,
      "y": 0.42,
      "rot": 0
