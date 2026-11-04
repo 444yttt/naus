@@ -91,7 +91,7 @@ elif mode == 'amb': sun.data.energy = 0.0; bg.inputs['Color'].default_value = (1
 else:
     s = light['sun']; a = light['sky']
     sun.data.color = [c / max(s) for c in s]; sun.data.energy = max(s)
-    bg.inputs['Color'].default_value = (*[c / max(a) for c in a], 1); bg.inputs['Strength'].default_value = max(a)
+    bg.inputs['Color'].default_value = (*[c / max(a) for c in a], 1); bg.inputs['Strength'].default_value = max(a) * float(os.environ.get('SKY_GAIN', light.get('sky_gain', 1.0)))
 
 if not calib_mode:
     items = L['options'][opt]['items']
