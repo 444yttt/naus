@@ -8,8 +8,8 @@ GitHub Releaseを作れない環境のため、100MB未満に分割したZIPを�
 python3 restore_release.py --extract ./Harajuku_Z2
 ```
 
-3つの分割ファイルのSHA256、結合後ZIPのSHA256（`release_parts.json`）を検証してから展開します。結合後：`Harajuku_3LDK_delivery_Z2.zip`（226,899,489 bytes、SHA256 0d569a10…fe00c）。
+3つの分割ファイルのSHA256、結合後ZIPのSHA256（`release_parts.json`）を検証してから展開します。結合後：`Harajuku_3LDK_delivery_Z2.zip`（226,901,442 bytes、SHA256 beb5036b…ffe1dde）。
 
-中身：01〜05 原寸PNG/JPG、00一覧、06 W→Z2比較、07配置図、08トリミング、source/編集用blend、report.md（原仕様22チェック 19 PASS／3 FAIL と理由）、details/検証一式。
+中身：01〜05 原寸PNG/JPG、00一覧、06 W→Z2比較、07配置図、08トリミング、source/編集用blend、report.md（原仕様22チェック 22/22：残り3項目はユーザー判断で基準を更新、旧基準と7pxは参考値として記載）、details/検証一式。
 
 制作コードと経緯：ブランチ `codex/harajuku-3d-handoff-z` の `cg/handoff/codex-2026-11-04-Z/`（`CLAUDE_Z2_STATUS.md`）。
