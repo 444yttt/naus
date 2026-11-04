@@ -2,12 +2,22 @@
   const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
   const cl = x => Math.max(0, Math.min(1, x));
 
-  // smooth scrolling (wheel only; touch keeps native scrolling)
+  // smooth scrolling on a mouse only; touch keeps native scrolling, and the library stays off those phones
   let lenis = null;
-  if (!reduce && window.Lenis) {
+  const armLenis = () => {
+    if (lenis || !window.Lenis) return;
     lenis = new Lenis({ lerp: 0.1, smoothWheel: true });
     const raf = t => { lenis.raf(t); requestAnimationFrame(raf); };
     requestAnimationFrame(raf);
+  };
+  if (!reduce && matchMedia('(pointer:fine)').matches) {
+    if (window.Lenis) armLenis();
+    else {
+      const s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js';
+      s.onload = armLenis;
+      document.head.appendChild(s);
+    }
   }
   document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
     const id = a.getAttribute('href'), el = id.length > 1 && document.querySelector(id);
@@ -32,7 +42,7 @@
     m.append(i); h.replaceChild(m, t); h.classList.add('reveal');
     const sub = h.querySelector('.sub'); if (sub) { sub.classList.add('fade'); sub.style.setProperty('--d', 3); }
   });
-  document.querySelectorAll('.grid li, .steps li, .note, form, main > p, main > .st, dl > *, .blk > p, .blk li').forEach(el => {
+  document.querySelectorAll('.grid li, .steps li, .rail li, .credit, .note, form, main > p, main > .st, dl > *, .blk > p, .blk li').forEach(el => {
     el.classList.add('fade', 'reveal');
     el.style.setProperty('--d', [...el.parentElement.children].indexOf(el) % 6);
   });
@@ -89,13 +99,16 @@
   // iOS edges: status-bar strip and page edge take the colour of what is at the top/bottom edge
   const strip = document.querySelector('.sb');
   if (strip) {
-    const tone = el => !el ? '#c3bdb2' : el.closest('.dark, footer') ? '#2a241d' : el.closest('.light, main') ? '#efebe3' : '#c3bdb2';
+    const tone = el => !el ? '#eaeaeb' : el.closest('.dark, footer, .nf') ? '#070707' : '#eaeaeb';
     const at = y => document.elementsFromPoint(innerWidth / 2, y).find(el => !el.closest('.bar, .sb'));
     let queued = false;
     const paint = () => {
       queued = false;
       const top = parseFloat(getComputedStyle(strip).height) || 0;
-      strip.style.background = tone(at(top + 1));
+      const edge = tone(at(top + 1));
+      strip.style.background = edge;
+      const theme = document.querySelector('meta[name="theme-color"]');
+      if (theme) theme.content = edge;
       const nearEnd = scrollY + innerHeight > document.documentElement.scrollHeight - innerHeight / 2;
       document.documentElement.style.background = tone(nearEnd ? document.querySelector('footer, main') : document.querySelector('.hero, main'));
     };
@@ -169,7 +182,7 @@
         li.querySelector('button').addEventListener('click', () => { plan.pins.splice(k, 1); drawPins(); });
         list.append(li);
       });
-      $('pl-hint').textContent = plan.pins.length >= MAXPINS ? '印は' + MAXPINS + 'か所までです' : '図の上をタップして、気になる場所に印を付けてください';
+      $('pl-hint').textContent = plan.pins.length >= MAXPINS ? '印は' + MAXPINS + 'か所まで' : '図の上をタップして、気になる場所に印を付ける';
     };
     const shrink = (f, max = 1800) => new Promise((ok, ng) => {
       const url = URL.createObjectURL(f), im = new Image();
@@ -184,9 +197,10 @@
     });
     const load = async f => {
       if (!f) return;
-      if (!/^image\//.test(f.type)) { msg.textContent = '画像ファイルを選んでください'; return; }
+      if (!/^image\//.test(f.type)) { msg.textContent = '画像ファイルを選んで'; return; }
       try {
         plan.image = await shrink(f); plan.pins = []; img.src = plan.image;
+        try { await img.decode(); } catch (e) {}
         drop.hidden = true; board.hidden = false; board.classList.remove('arrive'); void board.offsetWidth; board.classList.add('arrive');
         drawPins(); msg.textContent = '';
       } catch (x) { msg.textContent = x.message; }
@@ -258,12 +272,12 @@
     };
     const check = () => {
       const k = order[i];
-      if (k === 'room' && !data.room) return 'お部屋を選んでください';
-      if (k === 'timing' && !data.timing) return '時期を選んでください';
-      if (k === 'budget' && !data.budget) return 'スライダーで選ぶか、まだ決めていないを選んでください';
+      if (k === 'room' && !data.room) return '部屋を選んで';
+      if (k === 'timing' && !data.timing) return '時期を選んで';
+      if (k === 'budget' && !data.budget) return '金額を選ぶか、まだ決めていないを選んで';
       if (k === 'contact') {
-        if (!data.name.trim()) return 'お名前を入力してください';
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email.trim())) return 'メールアドレスを確認してください';
+        if (!data.name.trim()) return '名前を入力して';
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email.trim())) return 'メールアドレスを確認して';
       }
       return '';
     };
@@ -276,7 +290,7 @@
       try {
         const r = await fetch('/api/consult', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ...data, refs, plan: plan.image, pins: plan.image ? plan.pins.map(p => ({ x: p.x, y: p.y, note: p.note.trim().slice(0, 120) })) : [], website: cf.elements.website.value }) });
         const j = await r.json().catch(() => ({}));
-        if (!r.ok) throw new Error(j.error || '送信できませんでした、時間をおいてもう一度お試しください');
+        if (!r.ok) throw new Error(j.error || '送信できなかった。時間をおいて、もう一度。');
         try { localStorage.removeItem(KEY); } catch (e) {}
         next.disabled = false; busy = false; view(order.length, 1);
       } catch (x) { msg.textContent = x.message; next.disabled = false; next.textContent = 'Send'; busy = false; }
