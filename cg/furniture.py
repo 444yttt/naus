@@ -414,7 +414,7 @@ def androgyne_side50(models_dir):
     return normalise(objs, 'AndrogyneSide50')
 
 
-def travertine(name='TravertineNeutralWhite'):
+def travertine(name='TravertineNeutralWhite', light=(234, 228, 214), dark=(216, 205, 184), pit=(196, 182, 158)):
     """Honed, resin-filled travertine (Gubi 'Neutral White'): fine wavy bedding bands and small pits."""
     m = bpy.data.materials.get(name)
     if m: return m
@@ -429,13 +429,13 @@ def travertine(name='TravertineNeutralWhite'):
     band = N('ShaderNodeTexNoise'); band.inputs['Scale'].default_value = 2.2; band.inputs['Detail'].default_value = 9; band.inputs['Roughness'].default_value = 0.62
     L(mp.outputs['Vector'], band.inputs['Vector'])
     ramp = N('ShaderNodeValToRGB'); e = ramp.color_ramp.elements
-    e[0].position = 0.35; e[0].color = (*srgb((216, 205, 184)), 1); e[1].position = 0.68; e[1].color = (*srgb((234, 228, 214)), 1)
+    e[0].position = 0.35; e[0].color = (*srgb(dark), 1); e[1].position = 0.68; e[1].color = (*srgb(light), 1)
     L(band.outputs['Fac'], ramp.inputs['Fac'])
     pits = N('ShaderNodeTexVoronoi'); pits.inputs['Scale'].default_value = 140; L(vm.outputs[1], pits.inputs['Vector'])
     pm = N('ShaderNodeMapRange'); pm.inputs['From Min'].default_value = 0.03; pm.inputs['From Max'].default_value = 0.09
     L(pits.outputs['Distance'], pm.inputs['Value'])
     col = N('ShaderNodeMix'); col.data_type = 'RGBA'; L(pm.outputs['Result'], col.inputs[0])
-    col.inputs[6].default_value = (*srgb((196, 182, 158)), 1); L(ramp.outputs['Color'], col.inputs[7]); L(col.outputs[2], b.inputs['Base Color'])
+    col.inputs[6].default_value = (*srgb(pit), 1); L(ramp.outputs['Color'], col.inputs[7]); L(col.outputs[2], b.inputs['Base Color'])
     b.inputs['Roughness'].default_value = 0.55
     bump = N('ShaderNodeBump'); bump.inputs['Strength'].default_value = 0.08; L(pm.outputs['Result'], bump.inputs['Height']); L(bump.outputs['Normal'], b.inputs['Normal'])
     return m
@@ -457,6 +457,34 @@ def gubi_epic(models_dir, size='large'):
     return ob, dim
 
 
+def rounded_box(name, w, d, h, z0, r, mat):
+    """Box with corners rounded in plan (radius r) and a 2 mm softened edge all round."""
+    import bmesh
+    me = bpy.data.meshes.new(name); bm = bmesh.new(); bmesh.ops.create_cube(bm, size=1.0)
+    bmesh.ops.scale(bm, vec=(w, d, h), verts=bm.verts); bmesh.ops.translate(bm, vec=(0, 0, z0 + h / 2), verts=bm.verts)
+    vert_edges = [e for e in bm.edges if abs(e.verts[0].co.x - e.verts[1].co.x) < 1e-6 and abs(e.verts[0].co.y - e.verts[1].co.y) < 1e-6]
+    bmesh.ops.bevel(bm, geom=vert_edges, offset=r, segments=12, affect='EDGES', profile=0.5)
+    bm.to_mesh(me); bm.free()
+    o = bpy.data.objects.new(name, me); bpy.context.collection.objects.link(o)
+    m = o.modifiers.new('soft', 'BEVEL'); m.width = 0.002; m.segments = 2; m.limit_method = 'ANGLE'
+    bpy.context.view_layer.objects.active = o; bpy.ops.object.modifier_apply(modifier='soft')
+    o.data.materials.append(mat); return o
+
+
+def bolia_eida(models_dir, size=1.0, height=0.28, finish='sand_travertine'):
+    """Bolia Eida coffee table (Martin Lauritsen): soft-cornered square top on a central square pedestal.
+    No public 3D: built from Bolia's sizes (100x100 / 70x70, H 28 / 32, 2 cm oak top) and the product photos
+    (pedestal ~46 % of the top, corner radius ~12 %). Travertine edition: top and pedestal in sand travertine."""
+    if finish == 'sand_travertine':
+        mat = travertine('TravertineSand', light=(228, 214, 192), dark=(206, 188, 160), pit=(184, 164, 136)); t = 0.03
+    else:
+        mat = oak('NaturalOak', **NATURAL_OAK); t = 0.02
+    base = size * (0.46 if size >= 0.9 else 0.5)
+    parts = [rounded_box('eida_base', base, base, height - t, 0, base * 0.12, mat),
+             rounded_box('eida_top', size, size, t, height - t, size * 0.12, mat)]
+    return normalise(parts, 'Eida_%d_%s' % (round(size * 100), finish))
+
+
 def homeview(models_dir):
     """Apple HomeView, tabletop (Apple's own AR model from apple.com, authored in cm)."""
     before = set(bpy.data.objects); bpy.ops.wm.usd_import(filepath=os.path.join(models_dir, 'homeview', 'apple-homeview.usdz'), scale=0.01)
@@ -466,5 +494,6 @@ def homeview(models_dir):
 LIBRARY = {'androgyne_150': lambda d: androgyne(d, '150'), 'androgyne_120': lambda d: androgyne(d, '120'),
            'ready_chair': lambda d: ready_chair(d), 'eave86_config2': eave86_config2, 'audo_androgyne_lounge': androgyne_lounge,
            'audo_plinth_tall': lambda d: plinth(d, 'tall'), 'audo_plinth_cubic': lambda d: plinth(d, 'cubic'),
-           'beolab28_floor_silver_oak': beolab28, 'beosound_balance_natural_oak': beosound_balance, 'lg_g5_55': lambda d: lg_g5(d, '55'), 'lg_g5_65': lambda d: lg_g5(d, '65'), 'audo_carrie_brushed_brass': carrie, 'gubi_epic_large': lambda d: gubi_epic(d, 'large'), 'gubi_epic_small': lambda d: gubi_epic(d, 'small'), 'audo_brasilia_100_oak_glass': brasilia, 'audo_androgyne_side50': androgyne_side50, 'audo_hashira_portable_raw': hashira_portable, 'audo_column_portable_aluminium': column_portable,
+           'beolab28_floor_silver_oak': beolab28, 'beosound_balance_natural_oak': beosound_balance, 'lg_g5_55': lambda d: lg_g5(d, '55'), 'lg_g5_65': lambda d: lg_g5(d, '65'), 'audo_carrie_brushed_brass': carrie, 'bolia_eida_100_h28_sand_travertine': lambda d: bolia_eida(d, 1.0, 0.28, 'sand_travertine'),
+           'bolia_eida_70_h32_natural_oak': lambda d: bolia_eida(d, 0.7, 0.32, 'natural_oak'), 'gubi_epic_large': lambda d: gubi_epic(d, 'large'), 'gubi_epic_small': lambda d: gubi_epic(d, 'small'), 'audo_brasilia_100_oak_glass': brasilia, 'audo_androgyne_side50': androgyne_side50, 'audo_hashira_portable_raw': hashira_portable, 'audo_column_portable_aluminium': column_portable,
            'audo_column_portable_bronze': lambda d: column_portable(d, 'bronze'), 'apple_homeview': homeview}
