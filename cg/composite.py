@@ -61,7 +61,7 @@ catch = not calib_mode
 fl = box('floor', XR, XW, YT, YW, -0.1, 0, M_floor, True, catch)
 box('ceiling', XR, XW, YT, YW, CEIL, CEIL + t, M_ceil, False)          # must stop at the glass: outside is open sky
 box('wall_right', XR - t, XR, YT, YW, 0, CEIL, M_wall, catch, catch)
-box('wall_top', XR, XW, YT - t, YT, 0, CEIL, M_wall, False)
+if view != 'v3': box('wall_top', XR, XW, YT - t, YT, 0, CEIL, M_wall, False)   # photo 3 looks through the open kitchen
 box('pier', 0, XW, 0, YW, 0, CEIL, M_wall, False)
 for (a0, a1) in ((XR, 0), ):                         # W1 wall (y = YW): sill and soffit strips, mullions
     box('w1_sill', a0, a1, YW - t, YW, 0, SILL, M_wall, False); box('w1_head', a0, a1, YW - t, YW, HEAD, CEIL, M_wall, False)
@@ -77,6 +77,10 @@ if view == 'v3':                                     # kitchen view: the island 
                                     ('v3_kwall', -0.9, 0.89, -6.5, -4.40, CEIL)):
         o = box(nm, x0, x1, y0, y1, 0, z1, M_wall, True, catch)
         if not calib_mode: o.is_shadow_catcher = False; o.is_holdout = True
+if view == 'v3' and not calib_mode:                  # the bright kitchen behind the camera (not modelled): soft fill toward the room
+    bpy.ops.object.light_add(type='AREA', location=(C.x, C.y - 1.0, 1.6)); fl_ = bpy.context.object
+    fl_.data.shape = 'RECTANGLE'; fl_.data.size, fl_.data.size_y = 3.0, 1.6; fl_.data.energy = float(os.environ.get('FILL', 60))
+    fl_.rotation_euler = (Vector((C.x, C.y + 3, 0.9)) - fl_.location).to_track_quat('-Z', 'Y').to_euler(); fl_.visible_camera = False
 # sky enters only through the two window openings; portals help Cycles find it
 for nm, loc, rot, size in (('portal_w1', ((XR + 0) / 2, YW + 0.15, (SILL + HEAD) / 2), (math.radians(-90), 0, 0), (abs(XR), HEAD - SILL)),
                            ('portal_w2', (XW + 0.15, (YT + 0) / 2, (SILL + HEAD) / 2), (0, math.radians(90), 0), (HEAD - SILL, abs(YT)))):
@@ -103,6 +107,8 @@ if not calib_mode:
     for it in items:
         k = it.get('model')
         if not k or k not in furniture.LIBRARY: continue
+        if os.environ.get('ONLY') and k not in os.environ['ONLY'].split(','): continue
+        if os.environ.get('SKIP') and k in os.environ['SKIP'].split(','): continue
         z = 0.0
         if it.get('on') == 'dining_table': z = ON['dining_table']
         if it['type'] == 'smart_speaker': z = ON['plinth_tall']

@@ -739,6 +739,25 @@ def echasse_bowl(models_dir):
     return ob, dim
 
 
+def orange_boxes(models_dir=None):
+    """Styling prop: two stacked gift boxes in the classic Hermès orange with a brown 'bolduc' ribbon (no logo or
+    lettering is reproduced). Sizes after common Hermès boxes: 30 x 24 x 8 cm and 22 x 22 x 4.5 cm (approximate)."""
+    orange = plain('HermesOrange', (233, 108, 30), 0.55); brown = plain('Bolduc', (88, 56, 32), 0.6)
+    parts = []
+    def boxw(w, d, h, z, rot):
+        o = rounded_box('box', w, d, h, z, 0.002, orange); o.rotation_euler.z = math.radians(rot); parts.append(o)
+        lid = rounded_box('lid', w + 0.004, d + 0.004, h * 0.35, z + h * 0.65 + 0.001, 0.002, orange)   # telescoping lid
+        lid.rotation_euler.z = math.radians(rot); parts.append(lid)
+        for (rw, rd) in ((w + 0.006, 0.012), (0.012, d + 0.006)):       # ribbon around both directions
+            bpy.ops.mesh.primitive_cube_add(size=1, location=(0, 0, z + h / 2)); r = bpy.context.object; r.scale = (rw, rd, h + 0.002)
+            bpy.ops.object.transform_apply(scale=True); r.rotation_euler.z = math.radians(rot); r.data.materials.append(brown); parts.append(r)
+    boxw(0.30, 0.24, 0.08, 0.0, 0); boxw(0.22, 0.22, 0.045, 0.08, 12)
+    bpy.context.view_layer.update()
+    for o in parts:
+        o.select_set(True)
+    return normalise(parts, 'OrangeBoxes')
+
+
 def homeview(models_dir):
     """Apple HomeView, tabletop (Apple's own AR model from apple.com, authored in cm)."""
     before = set(bpy.data.objects); bpy.ops.wm.usd_import(filepath=os.path.join(models_dir, 'homeview', 'apple-homeview.usdz'), scale=0.01)
@@ -748,7 +767,7 @@ def homeview(models_dir):
 LIBRARY = {'androgyne_150': lambda d: androgyne(d, '150'), 'androgyne_120': lambda d: androgyne(d, '120'),
            'ready_chair': lambda d: ready_chair(d), 'eave86_config2': eave86_config2, 'audo_androgyne_lounge': androgyne_lounge,
            'audo_plinth_tall': lambda d: plinth(d, 'tall'), 'audo_plinth_cubic': lambda d: plinth(d, 'cubic'),
-           'beolab28_floor_silver_oak': beolab28, 'beosound_balance_natural_oak': beosound_balance, 'lg_g5_55': lambda d: lg_g5(d, '55'), 'lg_g5_65': lambda d: lg_g5(d, '65'), 'audo_carrie_brushed_brass': carrie, 'polyhaven_potted_plant_01': potted_plant, 'areca_palm': areca_palm, 'areca_potted': areca_potted, 'audo_echasse_bowl_large_amber': echasse_bowl, 'audo_echasse_bowl_large_smoke': echasse_bowl, 'audo_houkime_rug_beige_170x240': houkime_rug, 'polyhaven_potted_plant_01_large': lambda d: potted_plant(d, True),
+           'beolab28_floor_silver_oak': beolab28, 'beosound_balance_natural_oak': beosound_balance, 'lg_g5_55': lambda d: lg_g5(d, '55'), 'lg_g5_65': lambda d: lg_g5(d, '65'), 'audo_carrie_brushed_brass': carrie, 'polyhaven_potted_plant_01': potted_plant, 'areca_palm': areca_palm, 'areca_potted': areca_potted, 'prop_orange_boxes': orange_boxes, 'audo_echasse_bowl_large_amber': echasse_bowl, 'audo_echasse_bowl_large_smoke': echasse_bowl, 'audo_houkime_rug_beige_170x240': houkime_rug, 'polyhaven_potted_plant_01_large': lambda d: potted_plant(d, True),
            'tw_place_setting': place_setting, 'tw_table_centre': table_centre, 'tw_books_vase': books_and_vase, 'tw_tray_cups': tray_cups, 'beosound_a9_natural_oak': beosound_a9, 'bolia_eida_100_h28_sand_travertine': lambda d: bolia_eida(d, 1.0, 0.28, 'sand_travertine'),
            'bolia_eida_70_h32_natural_oak': lambda d: bolia_eida(d, 0.7, 0.32, 'natural_oak'), 'gubi_epic_large': lambda d: gubi_epic(d, 'large'), 'gubi_epic_small': lambda d: gubi_epic(d, 'small'), 'audo_brasilia_100_oak_glass': brasilia, 'audo_androgyne_side50': androgyne_side50, 'audo_hashira_portable_raw': hashira_portable, 'audo_column_portable_aluminium': column_portable,
            'audo_column_portable_bronze': lambda d: column_portable(d, 'bronze'), 'apple_homeview': homeview}

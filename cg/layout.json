@@ -763,12 +763,12 @@
     },
     {
      "type": "tableware",
-     "model": "audo_echasse_bowl_large_smoke",
-     "w": 0.29,
-     "d": 0.29,
+     "model": "prop_orange_boxes",
+     "w": 0.3,
+     "d": 0.24,
      "x": -2.95,
-     "y": -4.78,
-     "rot": 0,
+     "y": -4.75,
+     "rot": -20,
      "z": 0.88
     }
    ]

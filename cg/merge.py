@@ -46,4 +46,9 @@ if os.path.exists(mf):                                        # real foreground 
     mt = cv2.imread(mf, 0); mt = cv2.resize(mt, (W, H), interpolation=cv2.INTER_AREA) if mt.shape != (H, W) else mt
     mt = cv2.GaussianBlur(mt.astype(np.float32) / 255, (0, 0), 0.8)[..., None]
     o = o * (1 - mt) + P * mt
+if len(sys.argv) > 7:                                          # a top layer that stands in front of the photo matte
+    top = np.load(sys.argv[7]); ta = np.ascontiguousarray(top[..., 3])
+    sh = cv2.GaussianBlur(np.roll(ta, int(4 * W / 1932), axis=0), (0, 0), 3 * W / 1932)   # soft contact shadow on the worktop
+    o = o * (1 - 0.45 * sh)[..., None]
+    o = top[..., :3] + (1 - top[..., 3:4]) * o
 cv2.imwrite(out, (np.clip(enc(o), 0, 1) * 255 + 0.5).astype(np.uint8)[..., ::-1], [cv2.IMWRITE_JPEG_QUALITY, 93])
