@@ -508,28 +508,25 @@ def potted_plant(models_dir, big=False):
     return ob, dim
 
 
-def beosound_a9(models_dir=None):
-    """B&O Beosound A9 (5th gen), natural aluminium with oak legs. No public 3D: built from B&O's dimensions
-    (W 70.1 x H 90.8 x D 41.5 cm with legs) and photos: a disc tilted back ~12 deg on two front legs and one rear leg."""
+def beosound_a9(models_dir):
+    """B&O Beosound A9 (5th gen), official 3D supplied by the client (mm; the file stands upside down with the cover
+    facing +x). Natural aluminium rim and back, light grey cover (faces whose normal points forward), oak legs."""
     from mathutils import Matrix
+    d = os.path.join(models_dir, 'a9')
+    objs = import_obj(os.path.join(d, 'beosound_a9_5th_gen.obj'), 0.001, up='Z', forward='Y') + \
+           import_obj(os.path.join(d, 'beosound_a9_5th_gen_legs.obj'), 0.001, up='Z', forward='Y')
     alu = plain('NaturalAlu', (200, 200, 198), 0.28, 1.0); cloth = fabric('A9Cover', (200, 198, 192), 1400)
     wood = oak('BeoOak', stain=(1.0, 0.93, 0.84), stain_mix=1.0)
-    R = 0.3505; T = 0.16
-    # disc: profile revolved about its axis (local z = facing direction), rim aluminium, front cover dome fabric
-    P = [(0.0, -T * 0.55, 0), (R * 0.55, -T * 0.5, 0), (R * 0.97, -T * 0.25, 0), (R, -T * 0.1, 0), (R, T * 0.05, 0),
-         (R * 0.985, T * 0.08, 1), (R * 0.75, T * 0.3, 1), (R * 0.35, T * 0.42, 1), (0.0, T * 0.45, 1)]
-    disc = lathe('A9Disc', P, [alu, cloth], 128)
-    disc.data.transform(Matrix.Rotation(math.radians(-90 + 12), 4, 'X'))          # face -Y, tilted 12 deg back
-    cz = 0.908 - R - 0.02; disc.location = (0, 0, cz); parts = [disc]
-    def leg(x0, y0, x1, y1, z1):
-        a, b = Vector((x0, y0, 0.0)), Vector((x1, y1, z1)); d = b - a
-        bpy.ops.mesh.primitive_cylinder_add(vertices=24, radius=0.013, depth=d.length, location=(a + b) / 2)
-        o = bpy.context.object; o.rotation_euler = d.to_track_quat('Z', 'Y').to_euler(); o.data.materials.append(wood); parts.append(o)
-    leg(-0.2, -0.12, -0.13, 0.0, cz - 0.08); leg(0.2, -0.12, 0.13, 0.0, cz - 0.08); leg(0.0, 0.29, 0.0, 0.06, cz - 0.05)
-    bpy.context.view_layer.update()
-    for o in parts:
-        bpy.context.view_layer.objects.active = o; o.select_set(True)
-    return normalise(parts, 'BeosoundA9')
+    turn = Matrix.Rotation(math.radians(-90), 4, 'Z') @ Matrix.Rotation(math.pi, 4, 'X')   # stand it up, cover toward -y
+    for o in objs:
+        o.data.transform(o.matrix_world); o.matrix_world = Matrix(); o.data.transform(turn)
+        o.data.materials.clear()
+        if 'legs' in o.name: o.data.materials.append(wood); continue
+        o.data.materials.append(alu); o.data.materials.append(cloth)
+        ymin = min(v.co.y for v in o.data.vertices)
+        for p in o.data.polygons:
+            p.material_index = 1 if p.normal.y < -0.35 and p.center.y < ymin + 0.09 else 0
+    return normalise(objs, 'BeosoundA9')
 
 
 def ceramic(name, rgb, rough=0.35):
