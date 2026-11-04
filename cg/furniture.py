@@ -540,28 +540,37 @@ def _group(parts, name):
     return normalise(parts, name)
 
 
+def nn_glaze():
+    """Audo New Norm 'Dark Glazed' stoneware: deep brown-charcoal, satin."""
+    return ceramic('NewNormDarkGlazed', (62, 54, 48), 0.42)
+
+
 def place_setting(models_dir=None):
-    """One dining place (front = -y): stoneware dinner plate Ø27 with a bowl, a wine glass and a linen napkin."""
-    plate = ceramic('Stoneware', (226, 220, 208), 0.45); glassm = glass('WineGlass'); linen = fabric('Linen', (196, 186, 168), 900)
-    parts = [lathe('plate', [(0, 0.004, 0), (0.09, 0.004, 0), (0.12, 0.012, 0), (0.135, 0.022, 0), (0.132, 0.024, 0), (0.115, 0.015, 0), (0.0, 0.008, 0)], [plate]),
-             lathe('bowl', [(0, 0.012, 0), (0.035, 0.012, 0), (0.07, 0.04, 0), (0.075, 0.07, 0), (0.071, 0.07, 0), (0.066, 0.042, 0), (0.0, 0.016, 0)], [plate]),
+    """One dining place (front = -y), Audo New Norm Dinnerware (Norm Architects) in Dark Glazed: dinner plate Ø27 with
+    a low bowl Ø13.5 x H5 (Audo's sizes; plate height ~1.7 cm by analogy with the Ø23 plate's 1.5 cm), New Norm
+    cutlery in brushed steel, a plain wine glass and a linen napkin. No public 3D: shapes from Audo's pack shots."""
+    g = nn_glaze(); steel = plain('BrushedSteel', (190, 190, 188), 0.32, 1.0); glassm = glass('WineGlass'); linen = fabric('Linen', (196, 186, 168), 900)
+    parts = [lathe('nn_plate', [(0, 0.0, 0), (0.115, 0.0, 0), (0.122, 0.003, 0), (0.135, 0.017, 0), (0.132, 0.017, 0), (0.12, 0.007, 0), (0.0, 0.005, 0)], [g]),
+             lathe('nn_lowbowl', [(0, 0.005, 0), (0.045, 0.005, 0), (0.064, 0.02, 0), (0.0675, 0.055, 0), (0.0645, 0.055, 0), (0.061, 0.022, 0), (0.0, 0.01, 0)], [g]),
              lathe('glass', [(0, 0, 0), (0.036, 0, 0), (0.036, 0.004, 0), (0.004, 0.01, 0), (0.004, 0.11, 0), (0.03, 0.13, 0), (0.042, 0.18, 0), (0.036, 0.22, 0),
                              (0.034, 0.22, 0), (0.039, 0.18, 0), (0.0, 0.122, 0)], [glassm], 64)]
-    parts[2].location = (0.13, 0.17, 0)
-    bpy.ops.mesh.primitive_cube_add(size=1, location=(-0.19, 0.0, 0.003)); n = bpy.context.object; n.scale = (0.09, 0.2, 0.006)
-    bpy.ops.object.transform_apply(scale=True); n.data.materials.append(linen); n.rotation_euler.z = math.radians(4); parts.append(n)
+    parts[2].location = (0.14, 0.19, 0)
+    for x, l, w in ((-0.165, 0.2, 0.018), (0.165, 0.21, 0.014)):           # fork / knife: slim brushed-steel bars
+        bpy.ops.mesh.primitive_cube_add(size=1, location=(x, -0.01, 0.003)); c = bpy.context.object; c.scale = (w, l, 0.004)
+        bpy.ops.object.transform_apply(scale=True); c.data.materials.append(steel); parts.append(c)
+    bpy.ops.mesh.primitive_cube_add(size=1, location=(-0.2, 0.0, 0.002)); n = bpy.context.object; n.scale = (0.05, 0.2, 0.004)
+    bpy.ops.object.transform_apply(scale=True); n.data.materials.append(linen); parts.append(n)
     return _group(parts, 'PlaceSetting')
 
 
 def table_centre(models_dir=None):
-    """Centre of the dining table: a low stoneware bowl of pears and a carafe."""
-    bowl = ceramic('StonewareDark', (120, 104, 88), 0.5); glassm = glass('Carafe'); fruit = plain('Pear', (176, 160, 72), 0.45)
-    parts = [lathe('fruitbowl', [(0, 0.0, 0), (0.08, 0.0, 0), (0.15, 0.05, 0), (0.16, 0.075, 0), (0.155, 0.075, 0), (0.145, 0.052, 0), (0.0, 0.012, 0)], [bowl])]
-    for i, (x, y) in enumerate(((-0.04, 0.02), (0.05, -0.01), (0.0, -0.06), (0.06, 0.06))):
+    """Centre of the dining table: Audo New Norm Fruit Bowl (footed, Ø24.8 x H13, Dark Glazed) with pears."""
+    g = nn_glaze(); fruit = plain('Pear', (176, 160, 72), 0.45)
+    parts = [lathe('nn_fruitbowl', [(0, 0.0, 0), (0.05, 0.0, 0), (0.05, 0.035, 0), (0.07, 0.04, 0), (0.115, 0.075, 0), (0.124, 0.13, 0),
+                                    (0.119, 0.13, 0), (0.11, 0.08, 0), (0.0, 0.045, 0)], [g])]
+    for i, (x, y) in enumerate(((-0.04, 0.02), (0.05, -0.01), (0.0, -0.06), (0.04, 0.06))):
         p = lathe('pear%d' % i, [(0, 0.0, 0), (0.03, 0.01, 0), (0.035, 0.035, 0), (0.025, 0.065, 0), (0.016, 0.085, 0), (0.0, 0.095, 0)], [fruit], 32)
-        p.location = (x, y, 0.015); p.rotation_euler = (math.radians(20 * (i % 2) - 10), math.radians(15 - 10 * i), 0); parts.append(p)
-    c = lathe('carafe', [(0, 0, 0), (0.05, 0, 0), (0.055, 0.02, 0), (0.05, 0.15, 0), (0.025, 0.21, 0), (0.024, 0.27, 0), (0.022, 0.27, 0), (0.0, 0.004, 0)], [glassm], 64)
-    c.location = (0.27, 0.05, 0); parts.append(c)
+        p.location = (x, y, 0.05); p.rotation_euler = (math.radians(20 * (i % 2) - 10), math.radians(15 - 10 * i), 0); parts.append(p)
     return _group(parts, 'TableCentre')
 
 
