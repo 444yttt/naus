@@ -28,10 +28,10 @@ if len(sys.argv) > 6:
                 for ax, a0, a1 in ((0, x0, x1), (1, y0, y1), (2, 0.0, z1)):
                     for pl in (a0, a1):
                         t = (pl - C[ax]) / d[..., ax]
-                        P = C[None, None, :] + t[..., None] * d
+                        Pt = C[None, None, :] + t[..., None] * d
                         o = [i for i in range(3) if i != ax]; lim = ((x0, x1), (y0, y1), (0.0, z1))
                         inside = (t > 0) & (t < tz)
-                        for i in o: inside &= (P[..., i] >= lim[i][0]) & (P[..., i] <= lim[i][1])
+                        for i in o: inside &= (Pt[..., i] >= lim[i][0]) & (Pt[..., i] <= lim[i][1])
                         floor &= ~inside
     cos = np.clip(-d[..., 2], 0, 1)
     F = np.minimum(1.5 * (0.06 + (1 - 0.06) * (1 - cos) ** 5), 0.6)  # Schlick for glazed tile plus its polish coat; the
