@@ -485,6 +485,43 @@ def bolia_eida(models_dir, size=1.0, height=0.28, finish='sand_travertine'):
     return normalise(parts, 'Eida_%d_%s' % (round(size * 100), finish))
 
 
+def potted_plant(models_dir):
+    """Potted Plant 01 (Poly Haven, CC0), tall leafy plant, about 0.6 x 0.6 x 1.35 m.
+    The ornate terracotta urn is replaced by a plain cylindrical planter in matte sand ceramic (same height)."""
+    before = set(bpy.data.objects); bpy.ops.import_scene.gltf(filepath=os.path.join(models_dir, 'plant', 'potted_plant_01.gltf'))
+    objs = _flatten(before); keep = []
+    for o in objs:
+        if o.name.startswith('potted_plant_01_pot'): bpy.data.objects.remove(o)
+        else: keep.append(o)
+    pot = lathe('Planter', [(0.0, 0.0, 0), (0.205, 0.0, 0), (0.215, 0.01, 0), (0.225, 0.52, 0), (0.212, 0.53, 0), (0.212, 0.49, 1), (0.0, 0.49, 1)],
+                [plain('PlanterCeramic', (206, 192, 170), 0.75), plain('Soil', (40, 32, 26), 0.95)], 96)
+    return normalise(keep + [pot], 'PottedPlant')
+
+
+def beosound_a9(models_dir=None):
+    """B&O Beosound A9 (5th gen), natural aluminium with oak legs. No public 3D: built from B&O's dimensions
+    (W 70.1 x H 90.8 x D 41.5 cm with legs) and photos: a disc tilted back ~12 deg on two front legs and one rear leg."""
+    from mathutils import Matrix
+    alu = plain('NaturalAlu', (200, 200, 198), 0.28, 1.0); cloth = fabric('A9Cover', (200, 198, 192), 1400)
+    wood = oak('BeoOak', stain=(1.0, 0.93, 0.84), stain_mix=1.0)
+    R = 0.3505; T = 0.16
+    # disc: profile revolved about its axis (local z = facing direction), rim aluminium, front cover dome fabric
+    P = [(0.0, -T * 0.55, 0), (R * 0.55, -T * 0.5, 0), (R * 0.97, -T * 0.25, 0), (R, -T * 0.1, 0), (R, T * 0.05, 0),
+         (R * 0.985, T * 0.08, 1), (R * 0.75, T * 0.3, 1), (R * 0.35, T * 0.42, 1), (0.0, T * 0.45, 1)]
+    disc = lathe('A9Disc', P, [alu, cloth], 128)
+    disc.data.transform(Matrix.Rotation(math.radians(-90 + 12), 4, 'X'))          # face -Y, tilted 12 deg back
+    cz = 0.908 - R - 0.02; disc.location = (0, 0, cz); parts = [disc]
+    def leg(x0, y0, x1, y1, z1):
+        a, b = Vector((x0, y0, 0.0)), Vector((x1, y1, z1)); d = b - a
+        bpy.ops.mesh.primitive_cylinder_add(vertices=24, radius=0.013, depth=d.length, location=(a + b) / 2)
+        o = bpy.context.object; o.rotation_euler = d.to_track_quat('Z', 'Y').to_euler(); o.data.materials.append(wood); parts.append(o)
+    leg(-0.2, -0.12, -0.13, 0.0, cz - 0.08); leg(0.2, -0.12, 0.13, 0.0, cz - 0.08); leg(0.0, 0.29, 0.0, 0.06, cz - 0.05)
+    bpy.context.view_layer.update()
+    for o in parts:
+        bpy.context.view_layer.objects.active = o; o.select_set(True)
+    return normalise(parts, 'BeosoundA9')
+
+
 def homeview(models_dir):
     """Apple HomeView, tabletop (Apple's own AR model from apple.com, authored in cm)."""
     before = set(bpy.data.objects); bpy.ops.wm.usd_import(filepath=os.path.join(models_dir, 'homeview', 'apple-homeview.usdz'), scale=0.01)
@@ -494,6 +531,6 @@ def homeview(models_dir):
 LIBRARY = {'androgyne_150': lambda d: androgyne(d, '150'), 'androgyne_120': lambda d: androgyne(d, '120'),
            'ready_chair': lambda d: ready_chair(d), 'eave86_config2': eave86_config2, 'audo_androgyne_lounge': androgyne_lounge,
            'audo_plinth_tall': lambda d: plinth(d, 'tall'), 'audo_plinth_cubic': lambda d: plinth(d, 'cubic'),
-           'beolab28_floor_silver_oak': beolab28, 'beosound_balance_natural_oak': beosound_balance, 'lg_g5_55': lambda d: lg_g5(d, '55'), 'lg_g5_65': lambda d: lg_g5(d, '65'), 'audo_carrie_brushed_brass': carrie, 'bolia_eida_100_h28_sand_travertine': lambda d: bolia_eida(d, 1.0, 0.28, 'sand_travertine'),
+           'beolab28_floor_silver_oak': beolab28, 'beosound_balance_natural_oak': beosound_balance, 'lg_g5_55': lambda d: lg_g5(d, '55'), 'lg_g5_65': lambda d: lg_g5(d, '65'), 'audo_carrie_brushed_brass': carrie, 'polyhaven_potted_plant_01': potted_plant, 'beosound_a9_natural_oak': beosound_a9, 'bolia_eida_100_h28_sand_travertine': lambda d: bolia_eida(d, 1.0, 0.28, 'sand_travertine'),
            'bolia_eida_70_h32_natural_oak': lambda d: bolia_eida(d, 0.7, 0.32, 'natural_oak'), 'gubi_epic_large': lambda d: gubi_epic(d, 'large'), 'gubi_epic_small': lambda d: gubi_epic(d, 'small'), 'audo_brasilia_100_oak_glass': brasilia, 'audo_androgyne_side50': androgyne_side50, 'audo_hashira_portable_raw': hashira_portable, 'audo_column_portable_aluminium': column_portable,
            'audo_column_portable_bronze': lambda d: column_portable(d, 'bronze'), 'apple_homeview': homeview}

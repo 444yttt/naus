@@ -534,7 +534,7 @@
    ]
   },
   "P": {
-   "title": "P:Bolia Eida 石100+オーク70の重ね置き、2台の中心をソファとテレビの軸に合わせた",
+   "title": "P:Eida の配置を調整、ソファ後ろの窓際に Beosound A9 と植物",
    "items": [
     {
      "type": "dining_table_round",
@@ -592,7 +592,7 @@
      "w": 1.0,
      "d": 1.0,
      "x": -3.76,
-     "y": -0.867,
+     "y": -1.14,
      "rot": 0
     },
     {
@@ -678,8 +678,27 @@
      "label": "Eida 70 オーク",
      "w": 0.7,
      "d": 0.7,
-     "x": -3.66,
-     "y": -0.182,
+     "x": -3.55,
+     "y": -0.43,
+     "rot": 0
+    },
+    {
+     "type": "floor_speaker",
+     "model": "beosound_a9_natural_oak",
+     "label": "Beosound A9",
+     "w": 0.701,
+     "d": 0.415,
+     "x": -1.42,
+     "y": 0.45,
+     "rot": 0
+    },
+    {
+     "type": "plant",
+     "model": "polyhaven_potted_plant_01",
+     "w": 0.6,
+     "d": 0.6,
+     "x": -0.62,
+     "y": 0.5,
      "rot": 0
     }
    ]
