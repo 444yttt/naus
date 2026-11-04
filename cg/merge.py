@@ -1,7 +1,7 @@
 """Composite: photo * shadow-catcher + furniture (premultiplied), in linear light; optionally the furniture's
 reflection in the polished floor (render of the mirrored scene), weighted by the tile's Fresnel reflectance.
 usage: merge.py photo.jpg combined.npy catcher.npy out.jpg [refl.npy view]"""
-import sys, numpy as np, cv2
+import sys, os, numpy as np, cv2
 ph, cb, ct, out = sys.argv[1:5]
 comb = np.load(cb); cat = np.load(ct)[..., :3]
 H, W = comb.shape[:2]; img = cv2.imread(ph)[..., ::-1] / 255.0
@@ -10,6 +10,10 @@ lin = lambda x: np.where(x <= 0.04045, x / 12.92, ((x + 0.055) / 1.055) ** 2.4)
 enc = lambda x: np.where(x <= 0.0031308, 12.92 * x, 1.055 * np.power(np.clip(x, 0, None), 1 / 2.4) - 0.055)
 P = lin(img); rgb, a = comb[..., :3], comb[..., 3:4]
 cat = np.nan_to_num(np.clip(cat, 0, 1.0), nan=1.0)   # furniture only takes light away
+if os.environ.get('AO'):                                       # contact occlusion of the furniture on the floor
+    ao = np.nan_to_num(np.clip(np.load(os.environ['AO'])[..., :3].mean(2), 0, 1), nan=1.0)
+    if ao.shape != (H, W): ao = cv2.resize(ao, (W, H), interpolation=cv2.INTER_LINEAR)
+    cat = cat * (1 - float(os.environ.get('AO_K', 0.6)) * (1 - ao))[..., None]
 bgd = P * cat
 if len(sys.argv) > 6:
     from geo import cam

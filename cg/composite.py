@@ -44,7 +44,7 @@ co.matrix_world = Matrix.Translation(C) @ (R.transposed() @ Matrix.Diagonal((1, 
 def mat(name, rgb, rough=0.6):
     m = bpy.data.materials.new(name); m.use_nodes = True; b = m.node_tree.nodes['Principled BSDF']
     b.inputs['Base Color'].default_value = (*rgb, 1); b.inputs['Roughness'].default_value = rough; return m
-calib_mode = mode in ('sun', 'amb'); refl_mode = mode == 'refl'
+calib_mode = mode in ('sun', 'amb'); refl_mode = mode == 'refl'; ao_mode = mode == 'ao'
 FLOOR_ALB = (0.66, 0.62, 0.53)                      # cream tile (luminance ~0.62); calibration renders use it too
 floor_alb = FLOOR_ALB
 M_floor = mat('floor', floor_alb, 0.35 if calib_mode else 0.12)    # polished tile: catches the furniture's reflections in the final pass
@@ -88,7 +88,14 @@ w = bpy.data.worlds.new('w'); sc.world = w; w.use_nodes = True; bg = w.node_tree
 bpy.ops.object.light_add(type='SUN'); sun = bpy.context.object; sun.data.angle = math.radians(0.53)
 d = Vector((SUN['az_dir'][0] * math.cos(math.radians(SUN['el'])), SUN['az_dir'][1] * math.cos(math.radians(SUN['el'])), -math.sin(math.radians(SUN['el']))))
 sun.rotation_euler = d.to_track_quat('-Z', 'Y').to_euler()
-if mode == 'sun': sun.data.energy = 1.0; bg.inputs['Strength'].default_value = 0.0
+if ao_mode:
+    # contact occlusion: an open sky over the bare floor (no room, no sun); the floor catcher then holds the
+    # furniture's ambient occlusion, which the window-only lighting of the main pass barely produces
+    sun.data.energy = 0.0; bg.inputs['Color'].default_value = (1, 1, 1, 1); bg.inputs['Strength'].default_value = 1.0
+    for o in list(sc.objects):
+        if o.type == 'MESH' and o.name != 'floor': o.hide_render = True
+        if o.type == 'LIGHT' and o.name != sun.name: o.hide_render = True
+elif mode == 'sun': sun.data.energy = 1.0; bg.inputs['Strength'].default_value = 0.0
 elif mode == 'amb': sun.data.energy = 0.0; bg.inputs['Color'].default_value = (1, 1, 1, 1); bg.inputs['Strength'].default_value = 1.0
 else:
     s = light['sun']; a = light['sky']
