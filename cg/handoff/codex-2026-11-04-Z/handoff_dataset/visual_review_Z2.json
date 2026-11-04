@@ -1,0 +1,45 @@
+{
+  "review_type": "Claude original-pixel inspection of the final Z2 native PNGs (SHA-bound). Visual judgement, not a measurement.",
+  "views": [
+    {
+      "shot": "u1",
+      "native_png_sha256": "a211bc55ad32d6fef904c71dd538252296ea3c1b47bd1c874c825c302d2463b7",
+      "contact_visual_pass": true,
+      "reflection_visual_pass": true,
+      "reviewed": "full image downscaled plus native 1:1 crops of furniture contacts, reflections, coffee tables, Eames and the island joint",
+      "observations_ja": "全体と原寸1:1を確認。ソファ背面・Beolab 28・TV・背面一体テーブル・ラグの縁と接地はZと同等。ラグ上の脚は接触影、露出床は反射。日なたの床とラグの境界、既存反射のラグ下遮断に破綻なし。残る制約：全画角の右下は固定カメラと共通配置によりEamesの座面がレンズ直前に巨大に入り、W由来の補修面の縁に小さな段差と切れ込みが原寸で見える(Z2で未変更)。08トリミング版[0,1600,4284,4500]は座面上端(約y4610)を含まず、見切れと段差を避けられる。"
+    },
+    {
+      "shot": "u2",
+      "native_png_sha256": "b65e7bfa733e0882701e89c4a3c316100292b36e31361eab3e94771e04648c37",
+      "contact_visual_pass": true,
+      "reflection_visual_pass": true,
+      "reviewed": "full image downscaled plus native 1:1 crops of furniture contacts, reflections, coffee tables, Eames and the island joint",
+      "observations_ja": "全体と原寸1:1を確認。Eames座面の殻の下端にあった白〜金色の筋(殻の後部開口から見えたクッション下面の細片)は消失、肘掛けと殻の形状はZと同じ。Eamesの足元の暗部は光沢床に映る窓反射を椅子が遮った反射欠けで、方向と形は物理的に整合。IVRESSE台座は日なたに接地影、床反射あり。ダイニングはテーブル短辺がアイランド端に接し、椅子脚の床反射と接地あり。背面一体テーブルは木目K材質で暗部に控えめな木目。粒状感・境界のにじみに違和感なし。手前ソファは画面端で近接、陰影の階調あり。"
+    },
+    {
+      "shot": "p09",
+      "native_png_sha256": "0a35a89a4740224207b40f3caac2fc5f6f8e8b6406fee94898ba003759e7ed70",
+      "contact_visual_pass": true,
+      "reflection_visual_pass": true,
+      "reviewed": "full image downscaled plus native 1:1 crops of furniture contacts, reflections, coffee tables, Eames and the island joint",
+      "observations_ja": "全体と原寸1:1(コーヒーテーブル、ソファ右端、Eames/IVRESSE遠景)を確認。前面テーブルは木目K材質で、左天板に細かい木目と窓側の柔らかい映り込み、右天板は視角により木目控えめ・照り返しの階調あり。白飛びなし。ラグ上の脚は接触影と圧縮、露出床の椅子脚・Eames・IVRESSEは床反射と接地あり。既存の窓反射はラグ下で遮断。粒状感・境界のにじみに違和感なし。"
+    },
+    {
+      "shot": "p01",
+      "native_png_sha256": "32203578f59ee05f52517fbfaf57b867e053f6b3a32fbbc775f2b2c01fa6ced0",
+      "contact_visual_pass": true,
+      "reflection_visual_pass": true,
+      "reviewed": "full image downscaled plus native 1:1 crops of furniture contacts, reflections, coffee tables, Eames and the island joint",
+      "observations_ja": "最新Z2で初めて原寸完成。全体と原寸1:1(ダイニング脚元、左のEames周辺の床)を確認。Linha側板と椅子脚に床反射と接地、窓の既存反射帯は家具で遮られた部分のみ欠ける。Eamesは窓向きで、光沢床上の反射の欠けは柔らかく方向が窓と整合。床の青みは元写真由来で背景は未加工。右下のソファ端は画面端で近接。粒状感・境界のにじみに違和感なし。"
+    },
+    {
+      "shot": "p13",
+      "native_png_sha256": "95146741193e02c5851b1c691fe9e24af223387c4a5c22788646d7bccc7f9186",
+      "contact_visual_pass": true,
+      "reflection_visual_pass": true,
+      "reviewed": "full image downscaled plus native 1:1 crops of furniture contacts, reflections, coffee tables, Eames and the island joint",
+      "observations_ja": "最新Z2で初めて原寸完成。全体と原寸1:1(テーブル端とアイランドの接合部、手前椅子、床)を確認。Linha天板の短辺はアイランドの端に接し、隙間からの光漏れなし。Linhaの側板・椅子はアイランド下部と床に対して前後関係が正しい。床反射は暗い木床で控えめ、既存のダウンライト反射は維持。手前椅子はレンズ直前で大きく入る。粒状感・境界のにじみに違和感なし。"
+    }
+  ]
+}
