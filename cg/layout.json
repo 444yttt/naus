@@ -91,7 +91,7 @@
    ]
   },
   "M": {
-   "title": "M:TV を LG G5 65型に、ソファを15cm離す、HomeView はキッチン向き、テーブルに Carrie",
+   "title": "M:LG G5 65型、ソファ15cm後退、HomeView キッチン向き、Carrie をテーブル中央に",
    "items": [
     {
      "type": "dining_table_round",
@@ -224,8 +224,8 @@
      "model": "audo_carrie_brushed_brass",
      "w": 0.153,
      "d": 0.138,
-     "x": -0.78,
-     "y": -3.25,
+     "x": -0.55,
+     "y": -3.05,
      "rot": 0,
      "on": "dining_table"
     }
