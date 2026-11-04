@@ -23,7 +23,7 @@ if len(sys.argv) > 6:
     tz = -C[2] / np.where(d[..., 2] < -1e-6, d[..., 2], -1e-6); X = C[0] + tz * d[..., 0]; Y = C[1] + tz * d[..., 1]
     floor = (d[..., 2] < 0) & (X > -4.69) & (X < 0.89) & (Y > -4.83) & (Y < 0.87) & ~((X > 0) & (Y > 0))
     if view == 'v3':                                              # the kitchen island and wall stand in front of the floor
-        for x0, x1, y0, y1, z1 in ((-3.33, -1.68, -5.21, -4.33, 0.88), (-1.68, -1.05, -6.3, -4.33, 0.88), (-0.9, 0.89, -6.5, -4.40, 2.65)):
+        for x0, x1, y0, y1, z1 in ((-3.33, -0.9, -5.21, -4.24, 0.88), (-1.68, -0.9, -6.3, -4.24, 0.88), (-0.9, 0.89, -6.5, -4.40, 2.65)):
             with np.errstate(divide='ignore', invalid='ignore'):
                 for ax, a0, a1 in ((0, x0, x1), (1, y0, y1), (2, 0.0, z1)):
                     for pl in (a0, a1):
@@ -40,4 +40,10 @@ if len(sys.argv) > 6:
     rr, ra = blur(np.ascontiguousarray(ref[..., :3])), blur(np.ascontiguousarray(ref[..., 3]))[..., None]
     bgd = bgd * (1 - k * ra) + k * rr                              # the mirrored furniture replaces what the tile reflected there
 o = rgb + (1 - a) * bgd
+import os
+mf = os.path.join(os.path.dirname(ph), os.path.basename(ph).split('.')[0] + '_matte.png')
+if os.path.exists(mf):                                        # real foreground objects cut from the photo (e.g. the tap)
+    mt = cv2.imread(mf, 0); mt = cv2.resize(mt, (W, H), interpolation=cv2.INTER_AREA) if mt.shape != (H, W) else mt
+    mt = cv2.GaussianBlur(mt.astype(np.float32) / 255, (0, 0), 0.8)[..., None]
+    o = o * (1 - mt) + P * mt
 cv2.imwrite(out, (np.clip(enc(o), 0, 1) * 255 + 0.5).astype(np.uint8)[..., ::-1], [cv2.IMWRITE_JPEG_QUALITY, 93])
