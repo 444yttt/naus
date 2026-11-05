@@ -241,3 +241,14 @@ html:not(.js) .cf-step[hidden]{display:block}
 @media (max-width:600px){.steps li{flex-wrap:wrap;gap:6px 16px}.steps .t{flex-basis:100%;padding-left:32px;opacity:.85}}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 
+/* ---- portfolio: large images, short text ---- */
+.page main.pf{max-width:1240px}
+.pf>p,.pf .blk,.pf dl{max-width:760px}
+.pf figure{margin:clamp(40px,6vw,80px) 0 0}
+.pf img{display:block;width:100%;height:auto;background:#e2ddd3}
+.pf figcaption{margin-top:14px;font-family:var(--jp);font-size:13px;line-height:1.9;letter-spacing:.04em;opacity:.75;max-width:640px}
+.pf figcaption b{display:block;font-weight:400;letter-spacing:.1em;opacity:1}
+.pf .pair{display:grid;grid-template-columns:repeat(2,minmax(0,560px));gap:clamp(20px,3vw,40px);margin-top:clamp(16px,3vw,40px)}
+.pf dl{grid-template-columns:160px 1fr}
+.pf .blk+dl{margin-top:clamp(56px,8vw,96px)}
+@media(max-width:600px){.pf .pair{grid-template-columns:1fr;gap:0}}
