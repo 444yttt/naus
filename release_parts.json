@@ -1,29 +1,24 @@
 {
-  "archive": "Harajuku_3LDK_delivery_Z3.zip",
-  "archive_bytes": 345422038,
-  "archive_sha256": "ddf0e1a57dad457603a457cc96f5e62ffa1507b4c3b4f2ba0f3f5a9786b30384",
-  "entries": 96,
+  "archive": "Harajuku_3LDK_delivery_Z5.zip",
+  "archive_bytes": 226940938,
+  "archive_sha256": "44cde76337bea05c507f571bb444541401d48e4f0ed001369f072a8788485ff8",
+  "entries": 101,
   "crc_test": "passed",
   "parts": [
     {
-      "name": "Harajuku_3LDK_delivery_Z3.zip.001",
+      "name": "Harajuku_3LDK_delivery_Z5.zip.001",
       "bytes": 94371840,
-      "sha256": "119da4b03a7d6f0dc28c02831a38172358ab3593548f9266ff6cca0f82a2e89f"
+      "sha256": "45e63ce9b61d7f996211af4741b85cc3227bb6998b805224e2ab3c6d4ce26fc4"
     },
     {
-      "name": "Harajuku_3LDK_delivery_Z3.zip.002",
+      "name": "Harajuku_3LDK_delivery_Z5.zip.002",
       "bytes": 94371840,
-      "sha256": "f9629dce9a213059a247c8a0fb81322a45396f98402097fc8e51ff7c7ab981fe"
+      "sha256": "0be7bbe6137a3431cf0d6d0bc90e877678d49da6a8a2cebe86d3b186081bca3a"
     },
     {
-      "name": "Harajuku_3LDK_delivery_Z3.zip.003",
-      "bytes": 94371840,
-      "sha256": "30b467f1b08e78ce6d31792c848b861d8ac42263156cfc54e9fd78245d943ebe"
-    },
-    {
-      "name": "Harajuku_3LDK_delivery_Z3.zip.004",
-      "bytes": 62306518,
-      "sha256": "d6d2f82a4ffc1ba6bbddc6afd3b6e50391470a3a6d2e70fa91da64e53a99ebc4"
+      "name": "Harajuku_3LDK_delivery_Z5.zip.003",
+      "bytes": 38197258,
+      "sha256": "931f1ed453a0c7d36f38f93763de79b7dc041a8bb36523629349ca07774fa19b"
     }
   ]
 }
