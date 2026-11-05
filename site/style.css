@@ -278,3 +278,4 @@ html:not(.js) .cmp input,html:not(.js) .cmp-h,html:not(.js) .cmp-k{display:none}
 .pf .ft .q,.pf .ft .pr{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
 .pf .ft .pr{padding-right:0}
 @media(max-width:600px){.pf .ft table{font-size:12.5px}.pf .ft tbody th{white-space:normal}.pf .ft th,.pf .ft td{padding:10px 10px 10px 0}}
+.pf .ft tfoot th,.pf .ft tfoot td{border-bottom:0;border-top:1px solid var(--ink);padding-top:16px;font-size:15px;letter-spacing:.06em}
