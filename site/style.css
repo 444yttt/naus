@@ -268,3 +268,13 @@ html:not(.js) .cf-step[hidden]{display:block}
 .cmp input{position:absolute;inset:0;width:100%;height:100%;margin:0;padding:0;opacity:0;pointer-events:none;-webkit-appearance:none;appearance:none}
 html:not(.js) .cmp input,html:not(.js) .cmp-h,html:not(.js) .cmp-k{display:none}
 @media (prefers-reduced-motion:reduce){.cmp-k{transition:none}.cmp.drag .cmp-k{transform:none}}
+
+/* ---- portfolio: furniture list ---- */
+.pf .ft{max-width:760px;margin-top:20px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.pf .ft table{width:100%;border-collapse:collapse;font-size:14px;line-height:1.7;font-family:var(--jp)}
+.pf .ft th,.pf .ft td{padding:12px 14px 12px 0;border-bottom:1px solid rgba(42,36,29,.18);text-align:left;font-weight:400;vertical-align:top}
+.pf .ft thead th{font-size:12px;letter-spacing:.08em;opacity:.65;border-bottom-color:var(--ink)}
+.pf .ft tbody th{letter-spacing:.04em;white-space:nowrap}
+.pf .ft .q,.pf .ft .pr{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.pf .ft .pr{padding-right:0}
+@media(max-width:600px){.pf .ft table{font-size:12.5px}.pf .ft tbody th{white-space:normal}.pf .ft th,.pf .ft td{padding:10px 10px 10px 0}}
