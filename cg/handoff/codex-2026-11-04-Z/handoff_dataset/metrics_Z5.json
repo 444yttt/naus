@@ -1,0 +1,72 @@
+[
+  {
+    "shot": "u1",
+    "native": [
+      4284,
+      5712
+    ],
+    "unchanged_max_err_8bit": 1,
+    "pass_le2": true,
+    "grain_sigma_8bit": 0.741
+  },
+  {
+    "shot": "u2",
+    "native": [
+      5712,
+      4284
+    ],
+    "unchanged_max_err_8bit": 1,
+    "pass_le2": true,
+    "grain_sigma_8bit": 0.65
+  },
+  {
+    "shot": "p09",
+    "native": [
+      3024,
+      4032
+    ],
+    "unchanged_max_err_8bit": 1,
+    "pass_le2": true,
+    "grain_sigma_8bit": 1.25
+  },
+  {
+    "shot": "p01",
+    "native": [
+      3174,
+      4233
+    ],
+    "unchanged_max_err_8bit": 1,
+    "pass_le2": true,
+    "grain_sigma_8bit": 0.741
+  },
+  {
+    "shot": "p13",
+    "native": [
+      3024,
+      4032
+    ],
+    "unchanged_max_err_8bit": 2,
+    "pass_le2": true,
+    "grain_sigma_8bit": 0.741
+  },
+  {
+    "shot": "n03",
+    "native": [
+      1086,
+      1448
+    ],
+    "unchanged_max_err_8bit": 1,
+    "pass_le2": true,
+    "grain_sigma_8bit": 0.65
+  },
+  {
+    "shot": "n04",
+    "native": [
+      1086,
+      1448
+    ],
+    "unchanged_max_err_8bit": 1,
+    "pass_le2": true,
+    "grain_sigma_8bit": 0.65
+  }
+]

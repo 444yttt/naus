@@ -25,3 +25,9 @@
 - ユーザー提供の2枚（n03・n04の1086×1448版）を `09_n03`・`10_n04` として追加。共通シーンはZ2と同一で、既存5視点の画像は変更なし。
 - 写真ごとに求めたカメラ（n04はU版が縮退していたため再推定）、太陽（床の窓影から）、影専用の窓枠、暖色の写真に合わせた照明色と露出。詳細は `report_Z3.md` と `n_view_params.json`。
 - 納品：ブランチ `harajuku-cg-delivery-z2` に `Harajuku_3LDK_delivery_Z3.zip`（345,422,038 bytes、SHA256 ddf0e1a5…）の分割4つ。
+
+## Z4・Z5（2026-11-04〜05 ユーザー指示）
+- Z4：コーヒーテーブルを暗く・木目強めに（`ernest_wood_Z4.py`）。n03に説明用の透かし版（`ghost_blend_*`）。
+- Z5：植物3鉢（ユーザー提供モデル、図面の緑位置）、Beosound Balance撤去、テーブルのベース色の茶色みを下げる、ダイニング6席にエルメスH Déco（ユーザー提供、FBX6は`assets_Z5/import6.py`で直接読み込み）とユーザー提供カトラリー＋レザーマット、Panthella型ランプ3灯、コーヒーテーブル上の小物。全7視点を原寸で再レンダー。未加工領域の誤差は最大2/255（`metrics_Z5.json`）。
+- 外部アセット（植物・H Déco・カトラリー）はこのリポジトリに含めない。再現には `assets_Z5/` のスクリプトで `/work/plant2/plants_lib.blend`、`/work/herm/tableware_lib.blend` を作り直す。
+- 納品：ブランチ `harajuku-cg-delivery-z2` に `Harajuku_3LDK_delivery_Z5.zip`（226,940,938 bytes、SHA256 44cde763…）の分割3つ。

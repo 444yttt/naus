@@ -3,6 +3,7 @@ Chosen after p09 trials A(current Z)/B-G at 50% and G/H/I/J/K/L at native 1:1; K
 stronger grain read as a ribbed pattern at 1:1): visible open grain along each
 table, soft coat sheen. Kitchen cabinet proxies keep 'Ernest_dark_wood_study' (shared before)."""
 import bpy
+BASE=(0.016,0.0105,0.0075)
 TARGETS=['Ernest_DEALER_FBX_table_0','Ernest_DEALER_FBX_table_1','Ernest_rear_table']
 P=dict(coat=.30,coat_r=.18,rough=.42,grain_contrast=1.8,base_scale=1.3,gs=(30,1.6,30),dist=9,bump=.05,mixf=.5)
 def build():
@@ -12,7 +13,7 @@ def build():
     ll.new(mp.outputs['Vector'],wv.inputs['Vector'])
     nz=nn.new('ShaderNodeTexNoise');nz.inputs['Scale'].default_value=2.0;nz.inputs['Detail'].default_value=8;nz.inputs['Roughness'].default_value=.6;ll.new(mp.outputs['Vector'],nz.inputs['Vector'])
     mx=nn.new('ShaderNodeMix');mx.data_type='FLOAT';mx.inputs['Factor'].default_value=P['mixf'];ll.new(wv.outputs['Fac'],mx.inputs['A']);ll.new(nz.outputs['Fac'],mx.inputs['B'])
-    cr=nn.new('ShaderNodeValToRGB');e=cr.color_ramp.elements;base=(0.016,0.0105,0.0075)
+    cr=nn.new('ShaderNodeValToRGB');e=cr.color_ramp.elements;base=BASE
     e[0].position=.25;e[0].color=tuple(c*P['base_scale'] for c in base)+(1,);e[1].position=.75;e[1].color=tuple(c*P['base_scale']*P['grain_contrast'] for c in base)+(1,)
     ll.new(mx.outputs['Result'],cr.inputs['Fac']);ll.new(cr.outputs['Color'],bs.inputs['Base Color'])
     rr=nn.new('ShaderNodeMapRange');rr.inputs['To Min'].default_value=P['rough']-.06;rr.inputs['To Max'].default_value=P['rough']+.08;ll.new(mx.outputs['Result'],rr.inputs['Value']);ll.new(rr.outputs['Result'],bs.inputs['Roughness'])
