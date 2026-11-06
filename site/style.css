@@ -204,7 +204,7 @@ html:not(.js) .cf-step[hidden]{display:block}
 .ref-add span{font-size:20px;font-weight:200;line-height:1}
 .ref-add small{font-family:var(--jp);font-size:10px;opacity:.6}
 .ref-add[hidden]{display:none}
-/* floor plan: upload, then tap to pin */
+/* floor plan: upload, or pick a known sheet and tap rooms for 依頼範囲 */
 .pl-drop[hidden],.pl-board[hidden]{display:none}
 .pl-drop{position:relative;display:grid;place-items:center;gap:8px;padding:44px 20px;border:1px dashed rgba(42,36,29,.35);text-align:center;cursor:pointer;transition:border-color .5s var(--io),background-color .5s var(--io);margin:0}
 .pl-drop:hover,.pl-drop.over{border-color:var(--ink);background:rgba(42,36,29,.03)}
@@ -215,24 +215,12 @@ html:not(.js) .cf-step[hidden]{display:block}
 .pl-t{font-family:var(--jp);font-size:15px;letter-spacing:.06em}
 .pl-s{font-family:var(--jp);font-size:12px;opacity:.55;letter-spacing:.04em}
 .pl-board.arrive{animation:cf-arrive .8s var(--out) both}
-.pl-canvas{position:relative;width:100%;max-width:100%;overflow:hidden;line-height:0;background:#fff;cursor:crosshair;touch-action:manipulation;-webkit-user-select:none;user-select:none;box-shadow:0 0 0 1px rgba(42,36,29,.1)}
+.pl-canvas{position:relative;width:100%;max-width:100%;overflow:hidden;line-height:0;background:#fff;touch-action:manipulation;-webkit-user-select:none;user-select:none;box-shadow:0 0 0 1px rgba(42,36,29,.1)}
 .pl-canvas img{width:100%;max-width:100%;height:auto;display:block;pointer-events:none;vertical-align:top}
-.pin{position:absolute;z-index:6;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:var(--ink);color:var(--cream);display:grid;place-items:center;font-size:11px;line-height:1;letter-spacing:0;animation:pin-in .7s var(--out) both}
-.pin::after{content:"";position:absolute;inset:-1px;border-radius:50%;border:1px solid var(--ink);animation:pin-ring 1.4s var(--out) .1s both;pointer-events:none}
-.pin.on{outline:1px solid var(--sand);outline-offset:2px}
 @keyframes pin-in{from{transform:scale(.2);opacity:0}to{transform:none;opacity:1}}
-@keyframes pin-ring{from{transform:scale(1);opacity:.7}to{transform:scale(2.4);opacity:0}}
-.pl-hint{font-family:var(--jp);font-size:12px;opacity:.6;margin:14px 0 6px;line-height:1.8}
-.pl-list{list-style:none;margin:0;padding:0}
-.pl-list li{display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(42,36,29,.15);animation:cf-arrive .6s var(--out) both}
-.pl-list li b{width:22px;height:22px;flex:0 0 22px;border-radius:50%;background:var(--ink);color:var(--cream);display:grid;place-items:center;font-size:10px;font-weight:400}
-.pl-list li input{flex:1;min-width:0;border:0;padding:12px 0;background:none}
-.pl-list li button{border:0;background:none!important;color:var(--ink)!important;padding:8px;font-size:16px;opacity:.5;cursor:pointer}
-.pl-list li button:hover{opacity:1}
 .pl-change{display:block;margin:14px 0 0;border:0;border-bottom:1px solid currentColor;border-radius:0;padding:2px 0;background:none!important;color:var(--ink)!important;font-family:var(--jp);font-size:12px;opacity:.6;cursor:pointer}
 .pl-change:hover{opacity:1}
-/* sample plans: a known sheet can show a room list; other uploads stay pin-only */
-.pl-pick[hidden],.pl-rooms[hidden],.pl-read[hidden],.pl-scan[hidden],.pl-add[hidden]{display:none}
+.pl-pick[hidden],.pl-rooms[hidden],.pl-read[hidden],.pl-scan[hidden]{display:none}
 .pl-or{font-family:var(--jp);font-size:11px;letter-spacing:.16em;opacity:.45;margin:28px 0 14px}
 .pl-samples{display:grid;grid-template-columns:1fr 1fr;gap:22px 20px}
 .pl-sample{display:grid;gap:8px;width:100%;padding:0;border:0;border-radius:0;background:none!important;color:var(--ink)!important;font:inherit;text-align:left;cursor:pointer;justify-self:stretch}
@@ -252,22 +240,20 @@ html:not(.js) .cf-step[hidden]{display:block}
 .pl-mark.in{animation:pl-found .9s var(--out) forwards;animation-delay:var(--d,0s)}
 @keyframes pl-found{from{opacity:0}to{opacity:1}}
 .pl-canvas.ready .pl-mark{opacity:1;pointer-events:auto}
-.pl-map .pl-mark:hover,.pl-map .pl-mark.on,.pl-map .pl-mark:focus{fill:rgba(42,36,29,.12);stroke:var(--ink);stroke-width:1.75px}
+.pl-map .pl-mark:hover,.pl-map .pl-mark.hi,.pl-map .pl-mark.on,.pl-map .pl-mark:focus{fill:rgba(42,36,29,.12);stroke:var(--ink);stroke-width:1.75px}
 .pl-map .pl-mark:focus{outline:none}
 .pl-rooms{margin-top:32px}
 .pl-rooms.arrive{animation:cf-arrive .8s var(--out) both}
 .pl-rooms-h{font-family:var(--jp);font-size:12px;letter-spacing:.14em;margin:0;opacity:.55;font-weight:300}
 .pl-rooms-note{font-family:var(--jp);font-size:12px;opacity:.45;margin:6px 0 10px;line-height:1.8}
 .pl-room-list{list-style:none;margin:0;padding:0}
-.pl-room-list li{display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(42,36,29,.1);transition:box-shadow .45s var(--io)}
-.pl-room-list li.on{box-shadow:inset 2px 0 0 var(--ink)}
-.pl-room-list input{min-width:0;border:0;padding:14px 0;font-family:var(--jp);background:none}
-.pl-room-list .pl-room-name{flex:1.4}
-.pl-room-list .pl-room-size{flex:0 1 6.5em;text-align:right;font-variant-numeric:tabular-nums}
-.pl-room-list button{border:0;background:none!important;color:var(--ink)!important;padding:8px;font-size:16px;opacity:.4;cursor:pointer}
-.pl-room-list button:hover{opacity:1}
-.pl-add{display:inline-block;margin:16px 0 0;border:0;border-bottom:1px solid currentColor;border-radius:0;padding:2px 0;background:none!important;color:var(--ink)!important;font-family:var(--jp);font-size:12px;letter-spacing:.06em;opacity:.5;cursor:pointer}
-.pl-add:hover{opacity:.85}
+.pl-room-list li{margin:0;border-bottom:1px solid rgba(42,36,29,.1);transition:box-shadow .45s var(--io)}
+.pl-room-list li.on,.pl-room-list li.hi{box-shadow:inset 2px 0 0 var(--ink)}
+.pl-room{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:52px;padding:14px 4px 14px 12px;border:0;border-radius:0;background:none!important;color:var(--ink)!important;font:inherit;font-family:var(--jp);font-size:16px;letter-spacing:.04em;line-height:1.4;text-align:left;cursor:pointer;justify-self:stretch;opacity:.4;transition:opacity .45s var(--io)}
+.pl-room:hover,.pl-room-list li.hi .pl-room{opacity:.85}
+.pl-room-list li.on .pl-room{opacity:1}
+.pl-room-name{flex:1.4;min-width:0}
+.pl-room-size{flex:0 1 auto;text-align:right;font-variant-numeric:tabular-nums;opacity:.7}
 @media(max-width:520px){
   .pl-samples{grid-template-columns:1fr}
   .pl-sample img{height:200px}

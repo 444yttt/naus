@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300&family=Elms+Sans:wght@100;300;400&family=Noto+Sans+JP:wght@100;300;400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=72780f1acb">
+<link rel="stylesheet" href="style.css?v=93c0c4389d">
 </head>
 <body>
 <div class="sb" aria-hidden="true"></div>
@@ -103,7 +103,7 @@
       </fieldset>
 
       <fieldset class="cf-step" data-step="plan" hidden>
-        <legend><span class="cf-label">FLOOR PLAN</span>間取り図と、気になる場所<span class="cf-opt">任意</span></legend>
+        <legend><span class="cf-label">FLOOR PLAN</span>間取り図と依頼範囲<span class="cf-opt">任意</span></legend>
         <div class="pl" id="pl">
           <div class="pl-pick" id="pl-pick">
             <label class="pl-drop" id="pl-drop">
@@ -131,13 +131,10 @@
               <p class="pl-read" id="pl-read" hidden role="status">間取りを読んでいます</p>
             </div>
             <div class="pl-rooms" id="pl-rooms" hidden aria-live="polite">
-              <p class="pl-rooms-h">読み取り結果</p>
-              <p class="pl-rooms-note">違うところは直してください</p>
+              <p class="pl-rooms-h">依頼範囲</p>
+              <p class="pl-rooms-note">提案してほしい部屋を選んでください</p>
               <ul class="pl-room-list" id="pl-room-list"></ul>
-              <button type="button" class="pl-add" id="pl-room-add">部屋を足す</button>
             </div>
-            <p class="pl-hint" id="pl-hint">図の上をタップして、気になる場所に印を付けてください</p>
-            <ol class="pl-list" id="pl-list"></ol>
             <button type="button" class="pl-change" id="pl-change">画像を選び直す</button>
           </div>
         </div>
@@ -189,6 +186,6 @@
   <span>© NAUS</span>
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
-<script src="main.js?v=2c874d02b7"></script>
+<script src="main.js?v=28bc41597a"></script>
 </body>
 </html>
