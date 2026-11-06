@@ -153,22 +153,41 @@
     if (data.budget && data.budget !== 'まだ決めていない') { const n = SCALE.findIndex((_, k) => label(k) === data.budget); if (n >= 0) setBudget(n); } else if (data.budget) und.setAttribute('aria-pressed', 'true');
 
     // floor plan: image is shrunk on the device (this also drops photo metadata), then tapped to place numbered pins.
-    // Known sample sheets also pause on a short read, then show an editable room list (planRooms on submit).
-    const SAMPLE_ROOMS = [
-      { label: 'Living Dining', size: '約30.3帖' },
-      { label: 'Kitchen', size: '約12.6帖' },
-      { label: 'Bedroom 1（WICあり）', size: '約11.5帖' },
-      { label: 'Bedroom 2', size: '約8.7帖' },
-      { label: 'Bedroom 3', size: '約7.5帖' }
-    ];
+    // Known sample sheets pause on a scan, then mark those rooms on the drawing. planRooms on submit is label + size only.
+    // box is a fraction of that sheet: x, y, w, h. The two crops do not share a box.
+    const sheet = (src, name, rooms) => ({ src, name, rooms: rooms.map(([label, size, x, y, w, h]) => ({ label, size, box: { x, y, w, h } })) });
     const SAMPLES = {
-      'harajuku-3ldk': { src: '/media/plans/harajuku-3ldk.jpg', name: '原宿 3LDK' },
-      'harajuku-3ldk-tight': { src: '/media/plans/harajuku-3ldk-tight.jpg', name: '原宿 3LDK（別図）' }
+      'harajuku-3ldk': sheet('/media/plans/harajuku-3ldk.jpg', '原宿 3LDK', [
+        ['Living Dining', '約30.3帖', .09, .49, .32, .31],
+        ['Kitchen', '約12.6帖', .22, .33, .14, .1],
+        ['Bedroom 1（WICあり）', '約11.5帖', .74, .635, .215, .17],
+        ['Bedroom 2', '約8.7帖', .432, .635, .148, .17],
+        ['Bedroom 3', '約7.5帖', .588, .635, .142, .17]
+      ]),
+      'harajuku-3ldk-tight': sheet('/media/plans/harajuku-3ldk-tight.jpg', '原宿 3LDK（別図）', [
+        ['Living Dining', '約30.3帖', .06, .51, .345, .23],
+        ['Kitchen', '約12.6帖', .21, .335, .14, .1],
+        ['Bedroom 1（WICあり）', '約11.5帖', .74, .60, .22, .15],
+        ['Bedroom 2', '約8.7帖', .42, .60, .15, .15],
+        ['Bedroom 3', '約7.5帖', .585, .60, .145, .15]
+      ])
     };
-    const plan = { image: '', pins: [], sample: '', rooms: null }, MAXPINS = 8, MAXROOMS = 12;
+    const plan = { image: '', pins: [], sample: '', rooms: null }, MAXPINS = 8, MAXROOMS = 12, READ_MS = 2500;
     const drop = $('pl-drop'), file = $('pl-file'), pick = $('pl-pick'), board = $('pl-board'), canvas = $('pl-canvas'), img = $('pl-img'), list = $('pl-list');
     const roomsEl = $('pl-rooms'), roomList = $('pl-room-list'), roomAdd = $('pl-room-add'), readEl = $('pl-read'), scanEl = $('pl-scan'), hint = $('pl-hint');
-    let planToken = 0, readTimer = 0, reading = false;
+    let planToken = 0, readTimer = 0, reading = false, onRoom = -1;
+    const copyRoom = r => ({ label: r.label, size: r.size, box: r.box ? { x: r.box.x, y: r.box.y, w: r.box.w, h: r.box.h } : null });
+    const setOn = (k) => {
+      onRoom = k;
+      roomList.querySelectorAll('li').forEach(li => li.classList.toggle('on', li.dataset.i === String(k)));
+      canvas.querySelectorAll('.pl-mark').forEach(m => m.classList.toggle('on', m.dataset.i === String(k)));
+    };
+    const clearMarks = () => canvas.querySelectorAll('.pl-mark').forEach(m => m.remove());
+    const paintMark = (m, r) => {
+      m.querySelector('b').textContent = r.label.trim() || '部屋';
+      m.querySelector('small').textContent = r.size.trim();
+      m.setAttribute('aria-label', (r.label.trim() || '部屋') + (r.size.trim() ? ' ' + r.size.trim() : ''));
+    };
     const drawPins = () => {
       canvas.querySelectorAll('.pin').forEach(p => p.remove());
       list.innerHTML = '';
@@ -186,9 +205,36 @@
       hint.hidden = reading;
       if (!reading) hint.textContent = plan.pins.length >= MAXPINS ? '印は' + MAXPINS + 'か所までです' : '図の上をタップして、気になる場所に印を付けてください';
     };
+    const drawMarks = (animate) => {
+      clearMarks();
+      if (!plan.sample || !Array.isArray(plan.rooms)) return;
+      plan.rooms.forEach((r, k) => {
+        if (!r.box) return;
+        const m = document.createElement('button');
+        m.type = 'button'; m.className = 'pl-mark'; m.dataset.i = String(k);
+        m.style.left = (r.box.x * 100) + '%'; m.style.top = (r.box.y * 100) + '%';
+        m.style.width = (r.box.w * 100) + '%'; m.style.height = (r.box.h * 100) + '%';
+        m.innerHTML = '<span><b></b><small></small></span>';
+        paintMark(m, r);
+        if (animate && !reduce) {
+          m.style.setProperty('--d', (0.32 + (r.box.y + r.box.h / 2) * 1.2).toFixed(2) + 's');
+          m.classList.add('in');
+        }
+        m.addEventListener('click', e => {
+          e.stopPropagation();
+          const input = roomList.querySelector('li[data-i="' + k + '"] .pl-room-name');
+          if (input) input.focus({ preventScroll: true });
+          setOn(k);
+        });
+        m.addEventListener('mouseenter', () => setOn(k));
+        m.addEventListener('mouseleave', () => { if (onRoom === k && !roomList.querySelector('li[data-i="' + k + '"] input:focus')) setOn(-1); });
+        canvas.append(m);
+      });
+      if (onRoom >= 0) setOn(onRoom);
+    };
     const drawRooms = () => {
       roomList.innerHTML = '';
-      if (!plan.sample || !Array.isArray(plan.rooms)) { roomsEl.hidden = true; board.classList.remove('has-rooms'); return; }
+      if (!plan.sample || !Array.isArray(plan.rooms)) { roomsEl.hidden = true; board.classList.remove('has-rooms'); clearMarks(); return; }
       const first = roomsEl.hidden;
       roomsEl.hidden = false; board.classList.add('has-rooms');
       if (first) {
@@ -196,16 +242,21 @@
         roomsEl.scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
       }
       plan.rooms.forEach((r, k) => {
-        const li = document.createElement('li');
+        const li = document.createElement('li'); li.dataset.i = String(k);
         li.innerHTML = '<input class="pl-room-name" maxlength="80" aria-label="部屋の名前" placeholder="部屋の名前" autocomplete="off"><input class="pl-room-size" maxlength="24" aria-label="広さ" placeholder="広さ" autocomplete="off"><button type="button" aria-label="この部屋を消す">×</button>';
         const name = li.querySelector('.pl-room-name'), size = li.querySelector('.pl-room-size');
         name.value = r.label; size.value = r.size;
-        name.addEventListener('input', () => { r.label = name.value; });
-        size.addEventListener('input', () => { r.size = size.value; });
-        li.querySelector('button').addEventListener('click', () => { plan.rooms.splice(k, 1); drawRooms(); });
+        const sync = () => { r.label = name.value; r.size = size.value; const m = canvas.querySelector('.pl-mark[data-i="' + k + '"]'); if (m) paintMark(m, r); };
+        name.addEventListener('input', sync); size.addEventListener('input', sync);
+        li.addEventListener('focusin', () => setOn(k));
+        li.addEventListener('focusout', () => setTimeout(() => { if (!document.activeElement || !document.activeElement.closest('#pl-room-list li')) setOn(-1); }, 0));
+        li.addEventListener('mouseenter', () => setOn(k));
+        li.addEventListener('mouseleave', () => { if (onRoom === k && !li.contains(document.activeElement)) setOn(-1); });
+        li.querySelector('button').addEventListener('click', () => { plan.rooms.splice(k, 1); if (onRoom === k) onRoom = -1; drawRooms(); drawMarks(false); });
         roomList.append(li);
       });
       roomAdd.hidden = plan.rooms.length >= MAXROOMS;
+      if (onRoom >= 0) setOn(onRoom);
     };
     const shrink = (f, max = 1800) => new Promise((ok, ng) => {
       const url = URL.createObjectURL(f), im = new Image();
@@ -220,24 +271,26 @@
     });
     const stopRead = () => { clearTimeout(readTimer); reading = false; readEl.hidden = true; scanEl.hidden = true; canvas.classList.remove('reading'); };
     const resetPlan = () => {
-      planToken++; stopRead();
+      planToken++; stopRead(); onRoom = -1; clearMarks();
       plan.image = ''; plan.pins = []; plan.sample = ''; plan.rooms = null;
       file.value = ''; img.removeAttribute('src'); img.alt = '間取り図';
-      roomsEl.hidden = true; board.classList.remove('has-rooms'); board.hidden = true; pick.hidden = false;
+      roomsEl.hidden = true; board.classList.remove('has-rooms'); canvas.classList.remove('ready'); board.hidden = true; pick.hidden = false;
       drawPins();
     };
     const openBoard = (withRead) => {
+      clearMarks(); onRoom = -1;
       pick.hidden = true; board.hidden = false; roomsEl.hidden = true; board.classList.remove('has-rooms', 'arrive');
+      canvas.classList.remove('ready');
       void board.offsetWidth; board.classList.add('arrive');
       if (!withRead) { stopRead(); drawPins(); return; }
-      reading = true; readEl.hidden = false; canvas.classList.add('reading'); drawPins();
+      reading = true; readEl.hidden = false; canvas.classList.add('reading'); drawPins(); drawMarks(true);
       if (!reduce) { scanEl.hidden = false; scanEl.style.animation = 'none'; void scanEl.offsetWidth; scanEl.style.animation = ''; }
       const token = planToken;
       readTimer = setTimeout(() => {
         if (token !== planToken) return;
-        reading = false; readEl.hidden = true; scanEl.hidden = true; canvas.classList.remove('reading');
+        reading = false; readEl.hidden = true; scanEl.hidden = true; canvas.classList.remove('reading'); canvas.classList.add('ready');
         drawPins(); drawRooms();
-      }, reduce ? 420 : 1500);
+      }, reduce ? 480 : READ_MS);
     };
     const load = async f => {
       if (!f) return;
@@ -260,7 +313,7 @@
         if (!res.ok) throw new Error('図面を開けませんでした');
         const jpeg = await shrink(new File([await res.blob()], 'plan.jpg', { type: 'image/jpeg' }));
         if (token !== planToken) return;
-        plan.sample = id; plan.rooms = SAMPLE_ROOMS.map(r => ({ label: r.label, size: r.size })); plan.pins = []; plan.image = jpeg;
+        plan.sample = id; plan.rooms = sample.rooms.map(copyRoom); plan.pins = []; plan.image = jpeg;
         img.alt = sample.name + 'の間取り図'; img.src = jpeg;
         openBoard(true);
       } catch (x) {
@@ -274,7 +327,7 @@
     drop.addEventListener('drop', e => { e.preventDefault(); load(e.dataTransfer.files[0]); });
     pick.querySelectorAll('.pl-sample').forEach(b => b.addEventListener('click', () => useSample(b.dataset.sample)));
     canvas.addEventListener('click', e => {
-      if (reading || e.target.closest('.pin') || plan.pins.length >= MAXPINS) return;
+      if (reading || e.target.closest('.pin') || e.target.closest('.pl-mark') || plan.pins.length >= MAXPINS) return;
       const r = img.getBoundingClientRect();
       const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
       if (x < 0 || x > 1 || y < 0 || y > 1) return;
@@ -283,7 +336,7 @@
     });
     roomAdd.addEventListener('click', () => {
       if (!Array.isArray(plan.rooms) || plan.rooms.length >= MAXROOMS) return;
-      plan.rooms.push({ label: '', size: '' }); drawRooms();
+      plan.rooms.push({ label: '', size: '', box: null }); drawRooms(); drawMarks(false);
       const inputs = roomList.querySelectorAll('.pl-room-name'); inputs[inputs.length - 1].focus({ preventScroll: true });
     });
     $('pl-change').addEventListener('click', () => { resetPlan(); msg.textContent = ''; });
