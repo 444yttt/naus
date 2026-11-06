@@ -154,39 +154,50 @@
 
     // floor plan: image is shrunk on the device (this also drops photo metadata), then tapped to place numbered pins.
     // Known sample sheets pause on a scan, then mark those rooms on the drawing. planRooms on submit is label + size only.
-    // box is a fraction of that sheet: x, y, w, h. The two crops do not share a box.
-    const sheet = (src, name, rooms) => ({ src, name, rooms: rooms.map(([label, size, x, y, w, h]) => ({ label, size, box: { x, y, w, h } })) });
+    // poly is the room outline as fractions of that sheet; at is the label. The two crops do not share a poly.
+    const room = (label, size, at, poly) => ({ label, size, at, poly });
+    const sheet = (src, name, rooms) => ({ src, name, rooms });
     const SAMPLES = {
       'harajuku-3ldk': sheet('/media/plans/harajuku-3ldk.jpg', '原宿 3LDK', [
-        ['Living Dining', '約30.3帖', .09, .49, .32, .31],
-        ['Kitchen', '約12.6帖', .22, .33, .14, .1],
-        ['Bedroom 1（WICあり）', '約11.5帖', .74, .635, .215, .17],
-        ['Bedroom 2', '約8.7帖', .432, .635, .148, .17],
-        ['Bedroom 3', '約7.5帖', .588, .635, .142, .17]
+        room('Living Dining', '約30.3帖', [.22, .64], [[.128, .432], [.118, .5], [.1, .56], [.088, .64], [.068, .72], [.048, .8], [.036, .855], [.44, .855], [.44, .555], [.38, .555], [.38, .488], [.348, .488], [.348, .432]]),
+        room('Kitchen', '約12.6帖', [.24, .3], [[.182, .18], [.296, .18], [.296, .32], [.348, .32], [.348, .432], [.128, .432], [.14, .37], [.155, .3], [.168, .23]]),
+        room('Bedroom 1（WICあり）', '約11.5帖', [.844, .72], [[.736, .555], [.958, .555], [.958, .855], [.736, .855]]),
+        room('Bedroom 2', '約8.7帖', [.518, .72], [[.448, .555], [.588, .555], [.588, .855], [.448, .855]]),
+        room('Bedroom 3', '約7.5帖', [.662, .72], [[.598, .555], [.726, .555], [.726, .855], [.598, .855]])
       ]),
       'harajuku-3ldk-tight': sheet('/media/plans/harajuku-3ldk-tight.jpg', '原宿 3LDK（別図）', [
-        ['Living Dining', '約30.3帖', .06, .51, .345, .23],
-        ['Kitchen', '約12.6帖', .21, .335, .14, .1],
-        ['Bedroom 1（WICあり）', '約11.5帖', .74, .60, .22, .15],
-        ['Bedroom 2', '約8.7帖', .42, .60, .15, .15],
-        ['Bedroom 3', '約7.5帖', .585, .60, .145, .15]
+        room('Living Dining', '約30.3帖', [.22, .60], [[.148, .448], [.12, .53], [.092, .6], [.064, .67], [.036, .745], [.418, .745], [.418, .558], [.36, .558], [.36, .505], [.328, .505], [.328, .448]]),
+        room('Kitchen', '約12.6帖', [.245, .34], [[.18, .222], [.302, .222], [.302, .33], [.33, .33], [.33, .448], [.148, .448], [.158, .38], [.168, .3]]),
+        room('Bedroom 1（WICあり）', '約11.5帖', [.816, .655], [[.706, .558], [.94, .558], [.94, .745], [.706, .745]]),
+        room('Bedroom 2', '約8.7帖', [.493, .655], [[.42, .558], [.56, .558], [.56, .745], [.42, .745]]),
+        room('Bedroom 3', '約7.5帖', [.633, .655], [[.572, .558], [.694, .558], [.694, .745], [.572, .745]])
       ])
     };
     const plan = { image: '', pins: [], sample: '', rooms: null }, MAXPINS = 8, MAXROOMS = 12, READ_MS = 2500;
     const drop = $('pl-drop'), file = $('pl-file'), pick = $('pl-pick'), board = $('pl-board'), canvas = $('pl-canvas'), img = $('pl-img'), list = $('pl-list');
     const roomsEl = $('pl-rooms'), roomList = $('pl-room-list'), roomAdd = $('pl-room-add'), readEl = $('pl-read'), scanEl = $('pl-scan'), hint = $('pl-hint');
     let planToken = 0, readTimer = 0, reading = false, onRoom = -1;
-    const copyRoom = r => ({ label: r.label, size: r.size, box: r.box ? { x: r.box.x, y: r.box.y, w: r.box.w, h: r.box.h } : null });
+    const copyRoom = r => ({ label: r.label, size: r.size, at: r.at ? r.at.slice() : null, poly: r.poly ? r.poly.map(p => p.slice()) : null });
     const setOn = (k) => {
       onRoom = k;
       roomList.querySelectorAll('li').forEach(li => li.classList.toggle('on', li.dataset.i === String(k)));
-      canvas.querySelectorAll('.pl-mark').forEach(m => m.classList.toggle('on', m.dataset.i === String(k)));
+      canvas.querySelectorAll('.pl-mark, .pl-tag').forEach(m => m.classList.toggle('on', m.dataset.i === String(k)));
     };
-    const clearMarks = () => canvas.querySelectorAll('.pl-mark').forEach(m => m.remove());
+    const clearMarks = () => canvas.querySelectorAll('.pl-mark, .pl-tag, svg.pl-map').forEach(m => m.remove());
     const paintMark = (m, r) => {
       m.querySelector('b').textContent = r.label.trim() || '部屋';
       m.querySelector('small').textContent = r.size.trim();
       m.setAttribute('aria-label', (r.label.trim() || '部屋') + (r.size.trim() ? ' ' + r.size.trim() : ''));
+    };
+    const bindMark = (el, k) => {
+      const pick = () => {
+        const input = roomList.querySelector('li[data-i="' + k + '"] .pl-room-name');
+        if (input) input.focus({ preventScroll: true });
+        setOn(k);
+      };
+      el.addEventListener('click', e => { e.stopPropagation(); pick(); });
+      el.addEventListener('mouseenter', () => setOn(k));
+      el.addEventListener('mouseleave', () => { if (onRoom === k && !roomList.querySelector('li[data-i="' + k + '"] input:focus')) setOn(-1); });
     };
     const drawPins = () => {
       canvas.querySelectorAll('.pin').forEach(p => p.remove());
@@ -208,27 +219,37 @@
     const drawMarks = (animate) => {
       clearMarks();
       if (!plan.sample || !Array.isArray(plan.rooms)) return;
+      const ns = 'http://www.w3.org/2000/svg';
+      const svg = document.createElementNS(ns, 'svg');
+      svg.classList.add('pl-map');
+      svg.setAttribute('viewBox', '0 0 1 1');
+      svg.setAttribute('preserveAspectRatio', 'none');
+      svg.setAttribute('aria-hidden', 'true');
+      canvas.append(svg);
       plan.rooms.forEach((r, k) => {
-        if (!r.box) return;
-        const m = document.createElement('button');
-        m.type = 'button'; m.className = 'pl-mark'; m.dataset.i = String(k);
-        m.style.left = (r.box.x * 100) + '%'; m.style.top = (r.box.y * 100) + '%';
-        m.style.width = (r.box.w * 100) + '%'; m.style.height = (r.box.h * 100) + '%';
-        m.innerHTML = '<span><b></b><small></small></span>';
-        paintMark(m, r);
+        if (!r.poly || r.poly.length < 3) return;
+        const m = document.createElementNS(ns, 'polygon');
+        m.setAttribute('points', r.poly.map(p => p[0] + ',' + p[1]).join(' '));
+        m.classList.add('pl-mark'); m.dataset.i = String(k);
+        const midY = r.poly.reduce((s, p) => s + p[1], 0) / r.poly.length;
         if (animate && !reduce) {
-          m.style.setProperty('--d', (0.32 + (r.box.y + r.box.h / 2) * 1.2).toFixed(2) + 's');
+          m.style.setProperty('--d', (0.28 + midY * 1.25).toFixed(2) + 's');
           m.classList.add('in');
         }
-        m.addEventListener('click', e => {
-          e.stopPropagation();
-          const input = roomList.querySelector('li[data-i="' + k + '"] .pl-room-name');
-          if (input) input.focus({ preventScroll: true });
-          setOn(k);
-        });
-        m.addEventListener('mouseenter', () => setOn(k));
-        m.addEventListener('mouseleave', () => { if (onRoom === k && !roomList.querySelector('li[data-i="' + k + '"] input:focus')) setOn(-1); });
-        canvas.append(m);
+        bindMark(m, k);
+        svg.append(m);
+        const tag = document.createElement('button');
+        tag.type = 'button'; tag.className = 'pl-tag'; tag.dataset.i = String(k);
+        const at = r.at || [r.poly.reduce((s, p) => s + p[0], 0) / r.poly.length, midY];
+        tag.style.left = at[0] * 100 + '%'; tag.style.top = at[1] * 100 + '%';
+        tag.innerHTML = '<b></b><small></small>';
+        paintMark(tag, r);
+        if (animate && !reduce) {
+          tag.style.setProperty('--d', (0.28 + midY * 1.25).toFixed(2) + 's');
+          tag.classList.add('in');
+        }
+        bindMark(tag, k);
+        canvas.append(tag);
       });
       if (onRoom >= 0) setOn(onRoom);
     };
@@ -246,7 +267,7 @@
         li.innerHTML = '<input class="pl-room-name" maxlength="80" aria-label="部屋の名前" placeholder="部屋の名前" autocomplete="off"><input class="pl-room-size" maxlength="24" aria-label="広さ" placeholder="広さ" autocomplete="off"><button type="button" aria-label="この部屋を消す">×</button>';
         const name = li.querySelector('.pl-room-name'), size = li.querySelector('.pl-room-size');
         name.value = r.label; size.value = r.size;
-        const sync = () => { r.label = name.value; r.size = size.value; const m = canvas.querySelector('.pl-mark[data-i="' + k + '"]'); if (m) paintMark(m, r); };
+        const sync = () => { r.label = name.value; r.size = size.value; const tag = canvas.querySelector('.pl-tag[data-i="' + k + '"]'); if (tag) paintMark(tag, r); };
         name.addEventListener('input', sync); size.addEventListener('input', sync);
         li.addEventListener('focusin', () => setOn(k));
         li.addEventListener('focusout', () => setTimeout(() => { if (!document.activeElement || !document.activeElement.closest('#pl-room-list li')) setOn(-1); }, 0));
@@ -327,7 +348,7 @@
     drop.addEventListener('drop', e => { e.preventDefault(); load(e.dataTransfer.files[0]); });
     pick.querySelectorAll('.pl-sample').forEach(b => b.addEventListener('click', () => useSample(b.dataset.sample)));
     canvas.addEventListener('click', e => {
-      if (reading || e.target.closest('.pin') || e.target.closest('.pl-mark') || plan.pins.length >= MAXPINS) return;
+      if (reading || e.target.closest('.pin') || e.target.closest('.pl-mark') || e.target.closest('.pl-tag') || plan.pins.length >= MAXPINS) return;
       const r = img.getBoundingClientRect();
       const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
       if (x < 0 || x > 1 || y < 0 || y > 1) return;
@@ -336,7 +357,7 @@
     });
     roomAdd.addEventListener('click', () => {
       if (!Array.isArray(plan.rooms) || plan.rooms.length >= MAXROOMS) return;
-      plan.rooms.push({ label: '', size: '', box: null }); drawRooms(); drawMarks(false);
+      plan.rooms.push({ label: '', size: '', poly: null, at: null }); drawRooms(); drawMarks(false);
       const inputs = roomList.querySelectorAll('.pl-room-name'); inputs[inputs.length - 1].focus({ preventScroll: true });
     });
     $('pl-change').addEventListener('click', () => { resetPlan(); msg.textContent = ''; });
