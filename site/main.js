@@ -173,7 +173,7 @@
         room('Bedroom 3', '約7.5帖', [.633, .655], [[.572, .558], [.694, .558], [.694, .745], [.572, .745]])
       ])
     };
-    const plan = { image: '', pins: [], sample: '', rooms: null }, MAXPINS = 8, MAXROOMS = 12, READ_MS = 2500;
+    const plan = { image: '', pins: [], sample: '', rooms: null }, MAXPINS = 8, MAXROOMS = 12, READ_MS = 2800;
     const drop = $('pl-drop'), file = $('pl-file'), pick = $('pl-pick'), board = $('pl-board'), canvas = $('pl-canvas'), img = $('pl-img'), list = $('pl-list');
     const roomsEl = $('pl-rooms'), roomList = $('pl-room-list'), roomAdd = $('pl-room-add'), readEl = $('pl-read'), scanEl = $('pl-scan'), hint = $('pl-hint');
     let planToken = 0, readTimer = 0, reading = false, onRoom = -1;
@@ -181,7 +181,11 @@
     const setOn = (k) => {
       onRoom = k;
       roomList.querySelectorAll('li').forEach(li => li.classList.toggle('on', li.dataset.i === String(k)));
-      canvas.querySelectorAll('.pl-mark, .pl-tag').forEach(m => m.classList.toggle('on', m.dataset.i === String(k)));
+      canvas.querySelectorAll('.pl-mark, .pl-tag').forEach(m => {
+        const on = m.dataset.i === String(k);
+        m.classList.toggle('on', on);
+        if (on && m.tagName === 'polygon' && m.parentNode) m.parentNode.appendChild(m);
+      });
     };
     const clearMarks = () => canvas.querySelectorAll('.pl-mark, .pl-tag, svg.pl-map').forEach(m => m.remove());
     const paintMark = (m, r) => {
@@ -233,7 +237,7 @@
         m.classList.add('pl-mark'); m.dataset.i = String(k);
         const midY = r.poly.reduce((s, p) => s + p[1], 0) / r.poly.length;
         if (animate && !reduce) {
-          m.style.setProperty('--d', (0.28 + midY * 1.25).toFixed(2) + 's');
+          m.style.setProperty('--d', ((0.12 + midY) * 2.15).toFixed(2) + 's');
           m.classList.add('in');
         }
         bindMark(m, k);
@@ -245,7 +249,7 @@
         tag.innerHTML = '<b></b><small></small>';
         paintMark(tag, r);
         if (animate && !reduce) {
-          tag.style.setProperty('--d', (0.28 + midY * 1.25).toFixed(2) + 's');
+          tag.style.setProperty('--d', ((0.12 + midY) * 2.15).toFixed(2) + 's');
           tag.classList.add('in');
         }
         bindMark(tag, k);
