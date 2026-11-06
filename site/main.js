@@ -181,18 +181,14 @@
     const setOn = (k) => {
       onRoom = k;
       roomList.querySelectorAll('li').forEach(li => li.classList.toggle('on', li.dataset.i === String(k)));
-      canvas.querySelectorAll('.pl-mark, .pl-tag').forEach(m => {
+      canvas.querySelectorAll('.pl-mark').forEach(m => {
         const on = m.dataset.i === String(k);
         m.classList.toggle('on', on);
-        if (on && m.tagName === 'polygon' && m.parentNode) m.parentNode.appendChild(m);
+        if (on && m.parentNode) m.parentNode.appendChild(m);
       });
     };
-    const clearMarks = () => canvas.querySelectorAll('.pl-mark, .pl-tag, svg.pl-map').forEach(m => m.remove());
-    const paintMark = (m, r) => {
-      m.querySelector('b').textContent = r.label.trim() || '部屋';
-      m.querySelector('small').textContent = r.size.trim();
-      m.setAttribute('aria-label', (r.label.trim() || '部屋') + (r.size.trim() ? ' ' + r.size.trim() : ''));
-    };
+    const clearMarks = () => canvas.querySelectorAll('.pl-mark, svg.pl-map').forEach(m => m.remove());
+    const markName = (r) => (r.label.trim() || '部屋') + (r.size.trim() ? ' ' + r.size.trim() : '');
     const bindMark = (el, k) => {
       const pick = () => {
         const input = roomList.querySelector('li[data-i="' + k + '"] .pl-room-name');
@@ -200,6 +196,7 @@
         setOn(k);
       };
       el.addEventListener('click', e => { e.stopPropagation(); pick(); });
+      el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } });
       el.addEventListener('mouseenter', () => setOn(k));
       el.addEventListener('mouseleave', () => { if (onRoom === k && !roomList.querySelector('li[data-i="' + k + '"] input:focus')) setOn(-1); });
     };
@@ -228,13 +225,17 @@
       svg.classList.add('pl-map');
       svg.setAttribute('viewBox', '0 0 1 1');
       svg.setAttribute('preserveAspectRatio', 'none');
-      svg.setAttribute('aria-hidden', 'true');
+      svg.setAttribute('width', '100%');
+      svg.setAttribute('height', '100%');
       canvas.append(svg);
       plan.rooms.forEach((r, k) => {
         if (!r.poly || r.poly.length < 3) return;
         const m = document.createElementNS(ns, 'polygon');
         m.setAttribute('points', r.poly.map(p => p[0] + ',' + p[1]).join(' '));
         m.classList.add('pl-mark'); m.dataset.i = String(k);
+        m.setAttribute('tabindex', '0');
+        m.setAttribute('role', 'button');
+        m.setAttribute('aria-label', markName(r));
         const midY = r.poly.reduce((s, p) => s + p[1], 0) / r.poly.length;
         if (animate && !reduce) {
           m.style.setProperty('--d', ((0.12 + midY) * 2.15).toFixed(2) + 's');
@@ -242,18 +243,6 @@
         }
         bindMark(m, k);
         svg.append(m);
-        const tag = document.createElement('button');
-        tag.type = 'button'; tag.className = 'pl-tag'; tag.dataset.i = String(k);
-        const at = r.at || [r.poly.reduce((s, p) => s + p[0], 0) / r.poly.length, midY];
-        tag.style.left = at[0] * 100 + '%'; tag.style.top = at[1] * 100 + '%';
-        tag.innerHTML = '<b></b><small></small>';
-        paintMark(tag, r);
-        if (animate && !reduce) {
-          tag.style.setProperty('--d', ((0.12 + midY) * 2.15).toFixed(2) + 's');
-          tag.classList.add('in');
-        }
-        bindMark(tag, k);
-        canvas.append(tag);
       });
       if (onRoom >= 0) setOn(onRoom);
     };
@@ -264,14 +253,14 @@
       roomsEl.hidden = false; board.classList.add('has-rooms');
       if (first) {
         roomsEl.classList.remove('arrive'); void roomsEl.offsetWidth; roomsEl.classList.add('arrive');
-        roomsEl.scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
+        roomsEl.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
       }
       plan.rooms.forEach((r, k) => {
         const li = document.createElement('li'); li.dataset.i = String(k);
         li.innerHTML = '<input class="pl-room-name" maxlength="80" aria-label="部屋の名前" placeholder="部屋の名前" autocomplete="off"><input class="pl-room-size" maxlength="24" aria-label="広さ" placeholder="広さ" autocomplete="off"><button type="button" aria-label="この部屋を消す">×</button>';
         const name = li.querySelector('.pl-room-name'), size = li.querySelector('.pl-room-size');
         name.value = r.label; size.value = r.size;
-        const sync = () => { r.label = name.value; r.size = size.value; const tag = canvas.querySelector('.pl-tag[data-i="' + k + '"]'); if (tag) paintMark(tag, r); };
+        const sync = () => { r.label = name.value; r.size = size.value; const m = canvas.querySelector('.pl-mark[data-i="' + k + '"]'); if (m) m.setAttribute('aria-label', markName(r)); };
         name.addEventListener('input', sync); size.addEventListener('input', sync);
         li.addEventListener('focusin', () => setOn(k));
         li.addEventListener('focusout', () => setTimeout(() => { if (!document.activeElement || !document.activeElement.closest('#pl-room-list li')) setOn(-1); }, 0));
@@ -352,7 +341,7 @@
     drop.addEventListener('drop', e => { e.preventDefault(); load(e.dataTransfer.files[0]); });
     pick.querySelectorAll('.pl-sample').forEach(b => b.addEventListener('click', () => useSample(b.dataset.sample)));
     canvas.addEventListener('click', e => {
-      if (reading || e.target.closest('.pin') || e.target.closest('.pl-mark') || e.target.closest('.pl-tag') || plan.pins.length >= MAXPINS) return;
+      if (reading || e.target.closest('.pin') || e.target.closest('.pl-mark') || plan.pins.length >= MAXPINS) return;
       const r = img.getBoundingClientRect();
       const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
       if (x < 0 || x > 1 || y < 0 || y > 1) return;
