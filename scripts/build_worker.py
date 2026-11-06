@@ -68,6 +68,14 @@ async function consult(request, env) {
   const list = v => { const a = pick(v, 12); return a.length ? JSON.stringify(a) : null; };
   const num = v => typeof v === 'number' && v >= 0 && v <= 1 ? Math.round(v * 1000) / 1000 : null;
   const pins = planBytes && Array.isArray(d.pins) ? d.pins.slice(0, 8).map(p => ({ x: num(p && p.x), y: num(p && p.y), note: clip(p && p.note, 120) })).filter(p => p.x !== null && p.y !== null) : [];
+  // planRooms: rooms from a known sample plan, after the visitor edits them.
+  // JSON text in consultations.plan_rooms, or null when the field is absent.
+  // Shape: [{"label":"Living Dining","size":"約30.3帖"}]
+  // An empty array is stored as "[]" (the visitor cleared the list).
+  // Apply schema/2026-11-06-consultations-plan-rooms.sql before shipping this INSERT.
+  const planRooms = Array.isArray(d.planRooms)
+    ? JSON.stringify(d.planRooms.slice(0, 16).map(r => ({ label: clip(r && r.label, 80), size: clip(r && r.size, 24) })).filter(r => r.label || r.size))
+    : null;
   const ip = request.headers.get('cf-connecting-ip') || '';
   const hash = [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode('naus-consult:' + ip)))].map(b => b.toString(16).padStart(2, '0')).join('');
   const recent = await env.DB.prepare("SELECT COUNT(*) AS n FROM consultations WHERE ip_hash = ? AND created_at > datetime('now', '-1 hour')").bind(hash).first();
@@ -76,9 +84,9 @@ async function consult(request, env) {
   if (planBytes) await env.PLANS.put(planKey, planBytes, { metadata: { type: 'image/jpeg' } });
   const refKeys = [];
   for (const [k, b] of refImgs.entries()) { const key = `${id}-ref${k + 1}.jpg`; await env.PLANS.put(key, b, { metadata: { type: 'image/jpeg' } }); refKeys.push(key); }
-  await env.DB.prepare('INSERT INTO consultations (id, room, timing, budget, wish, name, email, ip_hash, user_agent, plan_key, pins, materials, styles, concerns, links, ref_keys) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
+  await env.DB.prepare('INSERT INTO consultations (id, room, timing, budget, wish, name, email, ip_hash, user_agent, plan_key, pins, materials, styles, concerns, links, ref_keys, plan_rooms) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
     .bind(id, row.room, row.timing, row.budget, row.wish, row.name, row.email, hash, clip(request.headers.get('user-agent'), 300), planKey, pins.length ? JSON.stringify(pins) : null,
-      list(d.materials), list(d.styles), list(d.concerns), clip(d.links, 600) || null, refKeys.length ? JSON.stringify(refKeys) : null).run();
+      list(d.materials), list(d.styles), list(d.concerns), clip(d.links, 600) || null, refKeys.length ? JSON.stringify(refKeys) : null, planRooms).run();
   return json({ ok: true }, 201);
 }
 

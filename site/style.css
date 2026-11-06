@@ -213,9 +213,9 @@ html:not(.js) .cf-step[hidden]{display:block}
 .pl-t{font-family:var(--jp);font-size:15px;letter-spacing:.06em}
 .pl-s{font-family:var(--jp);font-size:12px;opacity:.55;letter-spacing:.04em}
 .pl-board.arrive{animation:cf-arrive .8s var(--out) both}
-.pl-canvas{position:relative;line-height:0;background:#fff;cursor:crosshair;touch-action:manipulation;-webkit-user-select:none;user-select:none}
-.pl-canvas img{width:100%;height:auto;max-height:62vh;object-fit:contain;display:block;pointer-events:none}
-.pin{position:absolute;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:var(--ink);color:var(--cream);display:grid;place-items:center;font-size:11px;line-height:1;letter-spacing:0;animation:pin-in .7s var(--out) both}
+.pl-canvas{position:relative;width:100%;line-height:0;background:#fff;cursor:crosshair;touch-action:manipulation;-webkit-user-select:none;user-select:none;box-shadow:0 0 0 1px rgba(42,36,29,.1)}
+.pl-canvas img{width:100%;height:auto;display:block;pointer-events:none}
+.pin{position:absolute;z-index:6;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:var(--ink);color:var(--cream);display:grid;place-items:center;font-size:11px;line-height:1;letter-spacing:0;animation:pin-in .7s var(--out) both}
 .pin::after{content:"";position:absolute;inset:-1px;border-radius:50%;border:1px solid var(--ink);animation:pin-ring 1.4s var(--out) .1s both;pointer-events:none}
 .pin.on{outline:1px solid var(--sand);outline-offset:2px}
 @keyframes pin-in{from{transform:scale(.2);opacity:0}to{transform:none;opacity:1}}
@@ -229,10 +229,61 @@ html:not(.js) .cf-step[hidden]{display:block}
 .pl-list li button:hover{opacity:1}
 .pl-change{display:block;margin:14px 0 0;border:0;border-bottom:1px solid currentColor;border-radius:0;padding:2px 0;background:none!important;color:var(--ink)!important;font-family:var(--jp);font-size:12px;opacity:.6;cursor:pointer}
 .pl-change:hover{opacity:1}
+/* sample plans: a known sheet can show a room list; other uploads stay pin-only */
+.pl-pick[hidden],.pl-rooms[hidden],.pl-read[hidden],.pl-scan[hidden],.pl-add[hidden]{display:none}
+.pl-or{font-family:var(--jp);font-size:11px;letter-spacing:.16em;opacity:.45;margin:28px 0 14px}
+.pl-samples{display:grid;grid-template-columns:1fr 1fr;gap:22px 20px}
+.pl-sample{display:grid;gap:8px;width:100%;padding:0;border:0;border-radius:0;background:none!important;color:var(--ink)!important;font:inherit;text-align:left;cursor:pointer;justify-self:stretch}
+.pl-sample img{width:100%;height:232px;object-fit:contain;background:#fff;border:1px solid rgba(42,36,29,.12);padding:6px;box-sizing:border-box;display:block;transition:border-color .5s var(--io)}
+.pl-sample span{display:grid;gap:3px;font-family:var(--jp);font-size:12px;letter-spacing:.1em;opacity:.62;transition:opacity .45s var(--io)}
+.pl-sample small{font-size:10px;letter-spacing:.08em;opacity:.7}
+.pl-sample:hover img,.pl-sample:focus-visible img{border-color:rgba(42,36,29,.55)}
+.pl-sample:hover span,.pl-sample:focus-visible span{opacity:1}
+.pl-sample:focus-visible{outline:1px solid var(--ink);outline-offset:3px}
+.pl-sample[aria-busy="true"]{opacity:.55}
+.pl-canvas.reading::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:rgba(244,241,234,.1)}
+.pl-scan{position:absolute;left:0;right:0;height:20%;z-index:6;pointer-events:none;background:linear-gradient(180deg,transparent 0%,rgba(42,36,29,.04) 36%,rgba(42,36,29,.16) 47%,rgba(42,36,29,.4) 50%,rgba(42,36,29,.16) 53%,rgba(42,36,29,.04) 64%,transparent 100%);animation:pl-scan 2.6s linear forwards}
+@keyframes pl-scan{from{top:-18%}to{top:98%}}
+.pl-read{position:absolute;left:50%;bottom:12px;z-index:7;transform:translateX(-50%);margin:0;padding:6px 12px;background:rgba(244,241,234,.9);color:var(--ink);font-family:var(--jp);font-size:11px;letter-spacing:.16em;white-space:nowrap;pointer-events:none;box-shadow:0 0 0 1px rgba(42,36,29,.08)}
+.pl-map{position:absolute;inset:0;width:100%;height:100%;z-index:4;display:block;overflow:visible;pointer-events:none}
+.pl-map .pl-mark{fill:rgba(42,36,29,.04);stroke:rgba(42,36,29,.58);stroke-width:1.25px;stroke-linejoin:miter;stroke-miterlimit:2;vector-effect:non-scaling-stroke;cursor:pointer;pointer-events:none;opacity:0;transition:fill .5s var(--io),stroke .5s var(--io),stroke-width .5s var(--io)}
+.pl-mark.in,.pl-tag.in{animation:pl-found .9s var(--out) forwards;animation-delay:var(--d,0s)}
+@keyframes pl-found{from{opacity:0}to{opacity:1}}
+.pl-canvas.ready .pl-mark,.pl-canvas.ready .pl-tag{opacity:1;pointer-events:auto}
+.pl-map .pl-mark:hover,.pl-map .pl-mark.on{fill:rgba(42,36,29,.12);stroke:var(--ink);stroke-width:1.75px}
+.pl-tag{position:absolute;z-index:5;transform:translate(-50%,-50%);margin:0;padding:3px 7px 4px;border:0;border-radius:0;background:rgba(244,241,234,.86)!important;color:var(--ink)!important;box-shadow:0 0 0 1px rgba(42,36,29,.1);display:grid;justify-items:center;gap:1px;font:inherit;letter-spacing:0;cursor:pointer;opacity:0;pointer-events:none;transition:box-shadow .45s var(--io),background-color .45s var(--io)}
+.pl-tag:hover,.pl-tag.on,.pl-tag:focus-visible{background:rgba(244,241,234,.96)!important;box-shadow:0 0 0 1px var(--ink)}
+.pl-tag:focus{outline:none}
+.pl-tag b{font-weight:300;font-family:var(--jp);font-size:10px;letter-spacing:.06em;line-height:1.4;white-space:nowrap}
+.pl-tag small{font-family:var(--jp);font-size:9px;letter-spacing:.04em;opacity:.62;white-space:nowrap}
+.pl-rooms{margin-top:32px}
+.pl-rooms.arrive{animation:cf-arrive .8s var(--out) both}
+.pl-rooms-h{font-family:var(--jp);font-size:12px;letter-spacing:.14em;margin:0;opacity:.55;font-weight:300}
+.pl-rooms-note{font-family:var(--jp);font-size:12px;opacity:.45;margin:6px 0 10px;line-height:1.8}
+.pl-room-list{list-style:none;margin:0;padding:0}
+.pl-room-list li{display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(42,36,29,.1);transition:box-shadow .45s var(--io)}
+.pl-room-list li.on{box-shadow:inset 2px 0 0 var(--ink)}
+.pl-room-list input{min-width:0;border:0;padding:14px 0;font-family:var(--jp);font-size:14px;background:none}
+.pl-room-list .pl-room-name{flex:1.4}
+.pl-room-list .pl-room-size{flex:0 0 7.2em;text-align:right;font-variant-numeric:tabular-nums}
+.pl-room-list button{border:0;background:none!important;color:var(--ink)!important;padding:8px;font-size:16px;opacity:.4;cursor:pointer}
+.pl-room-list button:hover{opacity:1}
+.pl-add{display:inline-block;margin:16px 0 0;border:0;border-bottom:1px solid currentColor;border-radius:0;padding:2px 0;background:none!important;color:var(--ink)!important;font-family:var(--jp);font-size:12px;letter-spacing:.06em;opacity:.5;cursor:pointer}
+.pl-add:hover{opacity:.85}
+@media(max-width:520px){
+  .pl-samples{grid-template-columns:1fr}
+  .pl-sample img{height:240px}
+  .pl-tag b{font-size:9px}
+  .pl-tag small{font-size:8px}
+  .pl-tag{padding:3px 5px 4px}
+}
 
 @media (prefers-reduced-motion:reduce){
-  .cf-step.arrive,.cf-step.leave{animation:none;transition:none;opacity:1;transform:none;filter:none}
+  .cf-step.arrive,.cf-step.leave,.pl-rooms.arrive,.pl-room-list li{animation:none;transition:none;opacity:1;transform:none;filter:none}
   .cf-strip{transition:none}
+  .pl-scan{animation:none;display:none}
+  .pl-mark,.pl-mark.in,.pl-tag,.pl-tag.in{animation:none;transition:none}
+  .pl-canvas.ready .pl-mark,.pl-canvas.ready .pl-tag{opacity:1}
   .hero::before,.cue::after{animation:none}
   html.js [data-split] .ch,html.js .reveal .mi,html.js .fade,html.js .center small,html.js .center .btn,html.js .bar{opacity:1!important;transform:none!important;transition:none!important}
   html.js .grid li b::before,html.js .steps li::before,.roll>span{transform:none!important;transition:none!important}

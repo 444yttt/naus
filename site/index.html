@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300&family=Elms+Sans:wght@100;300;400&family=Noto+Sans+JP:wght@100;300;400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=436b36c88b">
+<link rel="stylesheet" href="style.css?v=d8fbae8f4a">
 </head>
 <body>
 <div class="sb" aria-hidden="true"></div>
@@ -105,14 +105,37 @@
       <fieldset class="cf-step" data-step="plan" hidden>
         <legend><span class="cf-label">FLOOR PLAN</span>間取り図と、気になる場所<span class="cf-opt">任意</span></legend>
         <div class="pl" id="pl">
-          <label class="pl-drop" id="pl-drop">
-            <input type="file" id="pl-file" accept="image/*">
-            <span class="pl-icon" aria-hidden="true"></span>
-            <span class="pl-t">間取り図の画像を選ぶ</span>
-            <span class="pl-s">写真やスクリーンショットで大丈夫です</span>
-          </label>
+          <div class="pl-pick" id="pl-pick">
+            <label class="pl-drop" id="pl-drop">
+              <input type="file" id="pl-file" accept="image/*">
+              <span class="pl-icon" aria-hidden="true"></span>
+              <span class="pl-t">間取り図の画像を選ぶ</span>
+              <span class="pl-s">写真やスクリーンショットで大丈夫です</span>
+            </label>
+            <p class="pl-or">または、図面の例</p>
+            <div class="pl-samples">
+              <button type="button" class="pl-sample" data-sample="harajuku-3ldk">
+                <img src="/media/plans/harajuku-3ldk.jpg" alt="" width="800" height="546" draggable="false">
+                <span>原宿 3LDK<small>LDKと3つの寝室</small></span>
+              </button>
+              <button type="button" class="pl-sample" data-sample="harajuku-3ldk-tight">
+                <img src="/media/plans/harajuku-3ldk-tight.jpg" alt="" width="450" height="400" draggable="false">
+                <span>原宿 3LDK（別図）<small>LDKと3つの寝室</small></span>
+              </button>
+            </div>
+          </div>
           <div class="pl-board" id="pl-board" hidden>
-            <div class="pl-canvas" id="pl-canvas"><img id="pl-img" alt="アップロードした間取り図"></div>
+            <div class="pl-canvas" id="pl-canvas">
+              <img id="pl-img" alt="間取り図">
+              <span class="pl-scan" id="pl-scan" hidden></span>
+              <p class="pl-read" id="pl-read" hidden role="status">間取りを読んでいます</p>
+            </div>
+            <div class="pl-rooms" id="pl-rooms" hidden aria-live="polite">
+              <p class="pl-rooms-h">読み取り結果</p>
+              <p class="pl-rooms-note">違うところは直してください</p>
+              <ul class="pl-room-list" id="pl-room-list"></ul>
+              <button type="button" class="pl-add" id="pl-room-add">部屋を足す</button>
+            </div>
             <p class="pl-hint" id="pl-hint">図の上をタップして、気になる場所に印を付けてください</p>
             <ol class="pl-list" id="pl-list"></ol>
             <button type="button" class="pl-change" id="pl-change">画像を選び直す</button>
@@ -166,6 +189,6 @@
   <span>© NAUS</span>
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
-<script src="main.js?v=ba0de59c49"></script>
+<script src="main.js?v=7a0897f016"></script>
 </body>
 </html>
