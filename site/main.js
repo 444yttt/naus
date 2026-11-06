@@ -152,9 +152,23 @@
     und.addEventListener('click', () => { const on = data.budget !== 'まだ決めていない'; data.budget = on ? 'まだ決めていない' : ''; und.setAttribute('aria-pressed', String(on)); roll(''); range.style.setProperty('--fill', '0%'); save(); msg.textContent = ''; });
     if (data.budget && data.budget !== 'まだ決めていない') { const n = SCALE.findIndex((_, k) => label(k) === data.budget); if (n >= 0) setBudget(n); } else if (data.budget) und.setAttribute('aria-pressed', 'true');
 
-    // floor plan: image is shrunk on the device (this also drops photo metadata), then tapped to place numbered pins
-    const plan = { image: '', pins: [] }, MAXPINS = 8;
-    const drop = $('pl-drop'), file = $('pl-file'), board = $('pl-board'), canvas = $('pl-canvas'), img = $('pl-img'), list = $('pl-list');
+    // floor plan: image is shrunk on the device (this also drops photo metadata), then tapped to place numbered pins.
+    // Known sample sheets also pause on a short read, then show an editable room list (planRooms on submit).
+    const SAMPLE_ROOMS = [
+      { label: 'Living Dining', size: '約30.3帖' },
+      { label: 'Kitchen', size: '約12.6帖' },
+      { label: 'Bedroom 1（WICあり）', size: '約11.5帖' },
+      { label: 'Bedroom 2', size: '約8.7帖' },
+      { label: 'Bedroom 3', size: '約7.5帖' }
+    ];
+    const SAMPLES = {
+      'harajuku-3ldk': { src: '/media/plans/harajuku-3ldk.jpg', name: '原宿 3LDK' },
+      'harajuku-3ldk-tight': { src: '/media/plans/harajuku-3ldk-tight.jpg', name: '原宿 3LDK（別図）' }
+    };
+    const plan = { image: '', pins: [], sample: '', rooms: null }, MAXPINS = 8, MAXROOMS = 12;
+    const drop = $('pl-drop'), file = $('pl-file'), pick = $('pl-pick'), board = $('pl-board'), canvas = $('pl-canvas'), img = $('pl-img'), list = $('pl-list');
+    const roomsEl = $('pl-rooms'), roomList = $('pl-room-list'), roomAdd = $('pl-room-add'), readEl = $('pl-read'), scanEl = $('pl-scan'), hint = $('pl-hint');
+    let planToken = 0, readTimer = 0, reading = false;
     const drawPins = () => {
       canvas.querySelectorAll('.pin').forEach(p => p.remove());
       list.innerHTML = '';
@@ -169,7 +183,29 @@
         li.querySelector('button').addEventListener('click', () => { plan.pins.splice(k, 1); drawPins(); });
         list.append(li);
       });
-      $('pl-hint').textContent = plan.pins.length >= MAXPINS ? '印は' + MAXPINS + 'か所までです' : '図の上をタップして、気になる場所に印を付けてください';
+      hint.hidden = reading;
+      if (!reading) hint.textContent = plan.pins.length >= MAXPINS ? '印は' + MAXPINS + 'か所までです' : '図の上をタップして、気になる場所に印を付けてください';
+    };
+    const drawRooms = () => {
+      roomList.innerHTML = '';
+      if (!plan.sample || !Array.isArray(plan.rooms)) { roomsEl.hidden = true; board.classList.remove('has-rooms'); return; }
+      const first = roomsEl.hidden;
+      roomsEl.hidden = false; board.classList.add('has-rooms');
+      if (first) {
+        roomsEl.classList.remove('arrive'); void roomsEl.offsetWidth; roomsEl.classList.add('arrive');
+        roomsEl.scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
+      }
+      plan.rooms.forEach((r, k) => {
+        const li = document.createElement('li');
+        li.innerHTML = '<input class="pl-room-name" maxlength="80" aria-label="部屋の名前" placeholder="部屋の名前" autocomplete="off"><input class="pl-room-size" maxlength="24" aria-label="広さ" placeholder="広さ" autocomplete="off"><button type="button" aria-label="この部屋を消す">×</button>';
+        const name = li.querySelector('.pl-room-name'), size = li.querySelector('.pl-room-size');
+        name.value = r.label; size.value = r.size;
+        name.addEventListener('input', () => { r.label = name.value; });
+        size.addEventListener('input', () => { r.size = size.value; });
+        li.querySelector('button').addEventListener('click', () => { plan.rooms.splice(k, 1); drawRooms(); });
+        roomList.append(li);
+      });
+      roomAdd.hidden = plan.rooms.length >= MAXROOMS;
     };
     const shrink = (f, max = 1800) => new Promise((ok, ng) => {
       const url = URL.createObjectURL(f), im = new Image();
@@ -182,28 +218,75 @@
       im.onerror = () => { URL.revokeObjectURL(url); ng(new Error('この画像は読み込めませんでした')); };
       im.src = url;
     });
+    const stopRead = () => { clearTimeout(readTimer); reading = false; readEl.hidden = true; scanEl.hidden = true; canvas.classList.remove('reading'); };
+    const resetPlan = () => {
+      planToken++; stopRead();
+      plan.image = ''; plan.pins = []; plan.sample = ''; plan.rooms = null;
+      file.value = ''; img.removeAttribute('src'); img.alt = '間取り図';
+      roomsEl.hidden = true; board.classList.remove('has-rooms'); board.hidden = true; pick.hidden = false;
+      drawPins();
+    };
+    const openBoard = (withRead) => {
+      pick.hidden = true; board.hidden = false; roomsEl.hidden = true; board.classList.remove('has-rooms', 'arrive');
+      void board.offsetWidth; board.classList.add('arrive');
+      if (!withRead) { stopRead(); drawPins(); return; }
+      reading = true; readEl.hidden = false; canvas.classList.add('reading'); drawPins();
+      if (!reduce) { scanEl.hidden = false; scanEl.style.animation = 'none'; void scanEl.offsetWidth; scanEl.style.animation = ''; }
+      const token = planToken;
+      readTimer = setTimeout(() => {
+        if (token !== planToken) return;
+        reading = false; readEl.hidden = true; scanEl.hidden = true; canvas.classList.remove('reading');
+        drawPins(); drawRooms();
+      }, reduce ? 420 : 1500);
+    };
     const load = async f => {
       if (!f) return;
       if (!/^image\//.test(f.type)) { msg.textContent = '画像ファイルを選んでください'; return; }
+      const token = ++planToken; stopRead();
       try {
-        plan.image = await shrink(f); plan.pins = []; img.src = plan.image;
-        drop.hidden = true; board.hidden = false; board.classList.remove('arrive'); void board.offsetWidth; board.classList.add('arrive');
-        drawPins(); msg.textContent = '';
-      } catch (x) { msg.textContent = x.message; }
+        const jpeg = await shrink(f);
+        if (token !== planToken) return;
+        plan.image = jpeg; plan.pins = []; plan.sample = ''; plan.rooms = null;
+        img.alt = 'アップロードした間取り図'; img.src = jpeg;
+        openBoard(false); msg.textContent = '';
+      } catch (x) { if (token === planToken) msg.textContent = x.message; }
+    };
+    const useSample = async (id) => {
+      const sample = SAMPLES[id]; if (!sample) return;
+      const token = ++planToken; stopRead(); msg.textContent = '';
+      const btn = pick.querySelector('[data-sample="' + id + '"]'); if (btn) btn.setAttribute('aria-busy', 'true');
+      try {
+        const res = await fetch(sample.src);
+        if (!res.ok) throw new Error('図面を開けませんでした');
+        const jpeg = await shrink(new File([await res.blob()], 'plan.jpg', { type: 'image/jpeg' }));
+        if (token !== planToken) return;
+        plan.sample = id; plan.rooms = SAMPLE_ROOMS.map(r => ({ label: r.label, size: r.size })); plan.pins = []; plan.image = jpeg;
+        img.alt = sample.name + 'の間取り図'; img.src = jpeg;
+        openBoard(true);
+      } catch (x) {
+        if (token !== planToken) return;
+        resetPlan(); msg.textContent = x.message || '図面を開けませんでした';
+      } finally { if (btn) btn.removeAttribute('aria-busy'); }
     };
     file.addEventListener('change', () => load(file.files[0]));
     ['dragover', 'dragenter'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.add('over'); }));
     ['dragleave', 'drop'].forEach(t => drop.addEventListener(t, () => drop.classList.remove('over')));
     drop.addEventListener('drop', e => { e.preventDefault(); load(e.dataTransfer.files[0]); });
+    pick.querySelectorAll('.pl-sample').forEach(b => b.addEventListener('click', () => useSample(b.dataset.sample)));
     canvas.addEventListener('click', e => {
-      if (e.target.closest('.pin') || plan.pins.length >= MAXPINS) return;
+      if (reading || e.target.closest('.pin') || plan.pins.length >= MAXPINS) return;
       const r = img.getBoundingClientRect();
       const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
       if (x < 0 || x > 1 || y < 0 || y > 1) return;
       plan.pins.push({ x: Math.round(x * 1000) / 1000, y: Math.round(y * 1000) / 1000, note: '' }); drawPins();
       const inputs = list.querySelectorAll('input'); inputs[inputs.length - 1].focus({ preventScroll: true });
     });
-    $('pl-change').addEventListener('click', () => { file.value = ''; file.click(); });
+    roomAdd.addEventListener('click', () => {
+      if (!Array.isArray(plan.rooms) || plan.rooms.length >= MAXROOMS) return;
+      plan.rooms.push({ label: '', size: '' }); drawRooms();
+      const inputs = roomList.querySelectorAll('.pl-room-name'); inputs[inputs.length - 1].focus({ preventScroll: true });
+    });
+    $('pl-change').addEventListener('click', () => { resetPlan(); msg.textContent = ''; });
 
     // text fields
     // taste and concerns: tap to toggle (swatch tiles and word chips)
@@ -274,7 +357,9 @@
       if (i < order.length - 1) { view(i + 1, 1); return; }
       busy = true; next.disabled = true; next.textContent = 'Sending'; msg.textContent = '';
       try {
-        const r = await fetch('/api/consult', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ...data, refs, plan: plan.image, pins: plan.image ? plan.pins.map(p => ({ x: p.x, y: p.y, note: p.note.trim().slice(0, 120) })) : [], website: cf.elements.website.value }) });
+        const body = { ...data, refs, plan: plan.image, pins: plan.image ? plan.pins.map(p => ({ x: p.x, y: p.y, note: p.note.trim().slice(0, 120) })) : [], website: cf.elements.website.value };
+        if (plan.sample && Array.isArray(plan.rooms)) body.planRooms = plan.rooms.map(r => ({ label: r.label.trim().slice(0, 80), size: r.size.trim().slice(0, 24) })).filter(r => r.label || r.size);
+        const r = await fetch('/api/consult', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
         const j = await r.json().catch(() => ({}));
         if (!r.ok) throw new Error(j.error || '送信できませんでした、時間をおいてもう一度お試しください');
         try { localStorage.removeItem(KEY); } catch (e) {}

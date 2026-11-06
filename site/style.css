@@ -229,10 +229,41 @@ html:not(.js) .cf-step[hidden]{display:block}
 .pl-list li button:hover{opacity:1}
 .pl-change{display:block;margin:14px 0 0;border:0;border-bottom:1px solid currentColor;border-radius:0;padding:2px 0;background:none!important;color:var(--ink)!important;font-family:var(--jp);font-size:12px;opacity:.6;cursor:pointer}
 .pl-change:hover{opacity:1}
+/* sample plans: a known sheet can show a room list; other uploads stay pin-only */
+.pl-pick[hidden],.pl-rooms[hidden],.pl-read[hidden],.pl-scan[hidden],.pl-add[hidden]{display:none}
+.pl-or{font-family:var(--jp);font-size:12px;letter-spacing:.12em;opacity:.55;margin:26px 0 12px}
+.pl-samples{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.pl-sample{display:grid;gap:8px;width:100%;padding:0;border:0;border-radius:0;background:none!important;color:var(--ink)!important;font:inherit;text-align:left;cursor:pointer;justify-self:stretch}
+.pl-sample img{width:100%;height:120px;object-fit:contain;background:#fff;border:1px solid rgba(42,36,29,.18);display:block;transition:border-color .4s var(--io)}
+.pl-sample span{font-family:var(--jp);font-size:12px;letter-spacing:.06em;opacity:.7;transition:opacity .4s}
+.pl-sample:hover img,.pl-sample:focus-visible img{border-color:var(--ink)}
+.pl-sample:hover span,.pl-sample:focus-visible span{opacity:1}
+.pl-sample:focus-visible{outline:1px solid var(--ink);outline-offset:3px}
+.pl-sample[aria-busy="true"]{opacity:.55}
+.pl-canvas.reading::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(244,241,234,.04),rgba(244,241,234,.34))}
+.pl-scan{position:absolute;left:0;right:0;top:6%;height:1px;background:var(--ink);opacity:.45;z-index:2;pointer-events:none;animation:pl-scan 1.5s var(--out) forwards}
+@keyframes pl-scan{from{top:6%}to{top:94%}}
+.pl-read{position:absolute;left:50%;bottom:16px;z-index:3;transform:translateX(-50%);margin:0;padding:7px 14px;background:rgba(244,241,234,.92);color:var(--ink);font-family:var(--jp);font-size:12px;letter-spacing:.14em;white-space:nowrap;pointer-events:none}
+.pl-board.has-rooms .pl-canvas img{max-height:min(38vh,340px)}
+.pl-rooms{margin-top:18px}
+.pl-rooms.arrive{animation:cf-arrive .8s var(--out) both}
+.pl-rooms-h{font-family:var(--jp);font-size:13px;letter-spacing:.12em;margin:0}
+.pl-rooms-note{font-family:var(--jp);font-size:12px;opacity:.6;margin:4px 0 2px;line-height:1.8}
+.pl-room-list{list-style:none;margin:0;padding:0}
+.pl-room-list li{display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(42,36,29,.15);animation:cf-arrive .6s var(--out) both}
+.pl-room-list input{min-width:0;border:0;padding:12px 0;font-family:var(--jp);font-size:14px;background:none}
+.pl-room-list .pl-room-name{flex:1.4}
+.pl-room-list .pl-room-size{flex:0 0 7.2em;text-align:right;font-variant-numeric:tabular-nums}
+.pl-room-list button{border:0;background:none!important;color:var(--ink)!important;padding:8px;font-size:16px;opacity:.5;cursor:pointer}
+.pl-room-list button:hover{opacity:1}
+.pl-add{display:inline-block;margin:12px 0 0;border:0;border-bottom:1px solid currentColor;border-radius:0;padding:2px 0;background:none!important;color:var(--ink)!important;font-family:var(--jp);font-size:12px;letter-spacing:.06em;opacity:.7;cursor:pointer}
+.pl-add:hover{opacity:1}
+@media(max-width:520px){.pl-samples{grid-template-columns:1fr}.pl-sample img{height:160px}}
 
 @media (prefers-reduced-motion:reduce){
-  .cf-step.arrive,.cf-step.leave{animation:none;transition:none;opacity:1;transform:none;filter:none}
+  .cf-step.arrive,.cf-step.leave,.pl-rooms.arrive,.pl-room-list li{animation:none;transition:none;opacity:1;transform:none;filter:none}
   .cf-strip{transition:none}
+  .pl-scan{animation:none;display:none}
   .hero::before,.cue::after{animation:none}
   html.js [data-split] .ch,html.js .reveal .mi,html.js .fade,html.js .center small,html.js .center .btn,html.js .bar{opacity:1!important;transform:none!important;transition:none!important}
   html.js .grid li b::before,html.js .steps li::before,.roll>span{transform:none!important;transition:none!important}
