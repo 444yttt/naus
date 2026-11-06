@@ -254,6 +254,15 @@ html:not(.js) .cf-step[hidden]{display:block}
 .pl-room-list li.on .pl-room{opacity:1}
 .pl-room-name{flex:1.4;min-width:0}
 .pl-room-size{flex:0 1 auto;text-align:right;font-variant-numeric:tabular-nums;opacity:.7}
+/* desktop: this step only — plan left, 依頼範囲 right; other questions stay at 620 */
+@media (min-width:900px){
+  .cf:has(.cf-step[data-step="plan"]:not([hidden]) .pl-board:not([hidden]):not(.has-rooms)){max-width:min(840px,100%)}
+  .cf:has(.cf-step[data-step="plan"]:not([hidden]) .pl-board.has-rooms:not([hidden])){max-width:min(1180px,100%)}
+  .pl-board.has-rooms:not([hidden]){display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,300px);grid-template-areas:"canvas rooms" "change rooms";column-gap:clamp(28px,3.6vw,52px);row-gap:8px;align-items:start}
+  .pl-board.has-rooms .pl-canvas{grid-area:canvas;min-width:0}
+  .pl-board.has-rooms .pl-rooms{grid-area:rooms;margin-top:0;min-width:0;position:sticky;top:calc(env(safe-area-inset-top) + 88px)}
+  .pl-board.has-rooms .pl-change{grid-area:change;margin-top:8px}
+}
 @media(max-width:520px){
   .pl-samples{grid-template-columns:1fr}
   .pl-sample img{height:200px}

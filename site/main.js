@@ -288,7 +288,9 @@
     };
     const openBoard = (withRead) => {
       clearMarks();
-      pick.hidden = true; board.hidden = false; roomsEl.hidden = true; board.classList.remove('has-rooms', 'arrive');
+      pick.hidden = true; board.hidden = false; roomsEl.hidden = true;
+      board.classList.toggle('has-rooms', !!withRead);
+      board.classList.remove('arrive');
       canvas.classList.remove('ready');
       void board.offsetWidth; board.classList.add('arrive');
       if (!withRead) { stopRead(); return; }
