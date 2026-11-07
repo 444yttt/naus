@@ -335,3 +335,9 @@ section.light.work{padding-top:0}
 @media(max-width:600px){.work-grid{grid-template-columns:1fr;gap:40px}}
 .pf .cg-note{margin-top:18px;font-family:var(--jp);font-size:12px;line-height:1.9;letter-spacing:.04em;opacity:.6;max-width:560px}
 .pf .ft-note{max-width:760px;margin-top:14px;font-family:var(--jp);font-size:12px;line-height:1.9;letter-spacing:.04em;opacity:.6}
+.pf figcaption.hp{display:grid;grid-template-columns:minmax(0,1fr) clamp(96px,22%,150px);gap:clamp(14px,2vw,28px);align-items:start;max-width:none}
+.pf figcaption.hp .mini{width:100%;height:auto;background:none;opacity:.9}
+.pf .vn{display:block;font-family:var(--sans);font-size:11px;letter-spacing:.2em;opacity:.55;margin-bottom:2px}
+.pf figure.plan{max-width:1000px}
+.pf figure.plan img{background:none}
+@media(max-width:600px){.pf figcaption.hp{grid-template-columns:1fr}.pf figcaption.hp .mini{width:52%;margin-top:4px}}
