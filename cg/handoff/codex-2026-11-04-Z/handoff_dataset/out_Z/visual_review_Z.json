@@ -1,0 +1,41 @@
+{
+  "review_type": "internal original-pixel inspection, not external Claude review",
+  "views": [
+    {
+      "shot": "p09",
+      "native_png_sha256": "96b747fb0a8ce0aa7cc05f665576a64f8efcc3f5ed8d5026e9027bf77ae22871",
+      "contact_visual_pass": true,
+      "reflection_visual_pass": true,
+      "coffee_visual_pass": true,
+      "reviewed_artifacts": [
+        "p09_full_composite.jpg",
+        "p09_native_rug_coffee_crop.png",
+        "delivery/details/p09_Eames_contact_native.png"
+      ],
+      "observations": [
+        "Sofa and coffee-table supports meet opaque rug with visible contact shading.",
+        "Exposed-floor Eames and IVRESSE mirror images attach at the bases; rug-covered supports have no floor mirror showing through.",
+        "Front coffee tops show a broad soft highlight gradient without clipped patches.",
+        "This view does not independently verify the kitchen joint or the TV wall; other views still required."
+      ]
+    },
+    {
+      "shot": "u1",
+      "native_png_sha256": "fb38ee298afe54daa8407081af66524507cf0498cb094878c2fc7464f046d6a2",
+      "contact_visual_pass": true,
+      "reflection_visual_pass": true,
+      "coffee_visual_pass": true,
+      "reviewed_artifacts": [
+        "u1_full_composite.jpg",
+        "delivery/details/u1_contact_native.png"
+      ],
+      "observations": [
+        "Sofa and integrated table supports meet rug; no visible floating gap in original-pixel crop.",
+        "Opaque rug hides original floor, while exposed-floor sofa reflection remains outside its edge.",
+        "Only a narrow strip of the front coffee tops is visible; principal front-top light quality is reviewed in p09.",
+        "Foreground Eames cut-off remains due to original unchanged camera; the separately required08 crop excludes it.",
+        "Detailed window-profile shadow geometry remains unverified; this contact/reflection verdict is not a claim of a surveyed lighting reconstruction."
+      ]
+    }
+  ]
+}

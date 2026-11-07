@@ -1,0 +1,353 @@
+"""Local, editable 3D study driven by approved layout_M.json. No external uploads.
+Official downloaded OBJ: Beolab28, Balance. Other shapes are documented study models.
+"""
+import bpy, math, json, sys, random, bmesh
+from pathlib import Path
+from mathutils import Vector, Matrix
+from mathutils.kdtree import KDTree
+R=Path(__file__).resolve().parent; O=R/'out'/'3d_R'; O.mkdir(exist_ok=True)
+C=json.loads((R/'out/layout_Q.json').read_text(encoding='utf-8-sig'))
+bpy.ops.wm.read_factory_settings(use_empty=True)
+S=bpy.context.scene; S.unit_settings.system='METRIC'; S.render.engine='CYCLES'
+S.cycles.samples=16; S.cycles.use_denoising=True; S.cycles.max_bounces=6
+S.render.resolution_x=1600; S.render.resolution_y=1100; S.render.resolution_percentage=100
+S.view_settings.view_transform='AgX'; S.view_settings.look='AgX - Medium High Contrast'
+S.view_settings.exposure=-.35
+S.render.image_settings.file_format='PNG'; S.render.image_settings.color_mode='RGB'
+S.render.threads_mode='FIXED';S.render.threads=10
+manifest=[];arch=[]
+def mat(name,col,rough=.5,metal=0):
+ m=bpy.data.materials.new(name);m.use_nodes=True;b=m.node_tree.nodes.get('Principled BSDF');b.inputs['Base Color'].default_value=(*col,1);b.inputs['Roughness'].default_value=rough;b.inputs['Metallic'].default_value=metal;return m
+def textured(name,c0,c1,kind='stone',rough=.5):
+ m=mat(name,c0,rough);n=m.node_tree.nodes;l=m.node_tree.links;b=n.get('Principled BSDF');tc=n.new('ShaderNodeTexCoord');mp=n.new('ShaderNodeMapping');l.new(tc.outputs['Generated'],mp.inputs['Vector'])
+ mp.inputs['Scale'].default_value=(1,40,3) if kind=='wood' else (2,2,2)
+ nz=n.new('ShaderNodeTexNoise');nz.inputs['Scale'].default_value=3 if kind!='fabric' else 170;nz.inputs['Detail'].default_value=4;nz.inputs['Roughness'].default_value=.7;l.new(mp.outputs['Vector'],nz.inputs['Vector'])
+ ramp=n.new('ShaderNodeValToRGB');ramp.color_ramp.elements[0].color=(*c0,1);ramp.color_ramp.elements[1].color=(*c1,1);l.new(nz.outputs['Fac'],ramp.inputs[0]);l.new(ramp.outputs[0],b.inputs['Base Color'])
+ if kind=='stone':
+  wave=n.new('ShaderNodeTexWave');wave.inputs['Scale'].default_value=3;wave.inputs['Distortion'].default_value=11;wave.inputs['Detail'].default_value=5;l.new(mp.outputs['Vector'],wave.inputs['Vector']);l.new(nz.outputs['Fac'],ramp.inputs[0]);ramp.color_ramp.elements[0].position=.38;ramp.color_ramp.elements[1].position=.66
+ bump=n.new('ShaderNodeBump');bump.inputs['Strength'].default_value=.13;bump.inputs['Distance'].default_value=.00045 if kind=='fabric' else .001;l.new(nz.outputs['Fac'],bump.inputs['Height']);l.new(bump.outputs[0],b.inputs['Normal'])
+ if kind=='fabric':b.inputs['Sheen Weight'].default_value=.05
+ return m
+CREAM=textured('Shedir02_Burro_colour_study',(.58,.52,.43),(.76,.70,.60),'fabric',.92)
+GREY=textured('AV_grey_fabric_study',(.045,.05,.055),(.09,.10,.11),'fabric',.85)
+CHAIR_GREY=textured('Torii_light_grey_fabric_code_pending',(.32,.34,.35),(.46,.48,.49),'fabric',.85)
+WOOD=textured('Ernest_dark_wood_study',(.008,.004,.003),(.038,.018,.009),'wood',.32)
+FLOOR=textured('Existing_grey_oak_approx',(.10,.085,.07),(.24,.21,.18),'wood',.34)
+STONE=textured('Grigio_Orobico_procedural_not_scan',(.045,.048,.050),(.15,.13,.11),'stone',.23)
+WHITE=textured('Carrara_procedural_not_scan',(.38,.39,.38),(.86,.85,.80),'stone',.24)
+TILE=textured('Natural_stone_tile_unselected',(.24,.21,.17),(.37,.33,.27),'tile',.72)
+RUG=textured('Shindo_Natural_material_study',(.40,.35,.26),(.62,.55,.42),'fabric',.9)
+BLACK=mat('Black_Anthracite',(.022,.025,.028),.30,.78);BRONZE=mat('Golden_Brown',(.16,.105,.055),.27,.70)
+WALL=mat('Warm_white_wall',(.72,.70,.66),.85);FRAME=mat('Window_dark_bronze',(.055,.052,.045),.34,.65)
+def mesh(name,verts,faces,material):
+ me=bpy.data.meshes.new(name);me.from_pydata(verts,[],faces);me.update();ob=bpy.data.objects.new(name,me);S.collection.objects.link(ob);ob.data.materials.append(material);return ob
+def box(name,loc,size,material,bevel=.01):
+ bpy.ops.mesh.primitive_cube_add(size=1,location=loc);o=bpy.context.object;o.name=name;o.dimensions=size;bpy.ops.object.transform_apply(location=False,rotation=False,scale=True);o.data.materials.append(material)
+ if bevel:
+  md=o.modifiers.new('Soft_edges','BEVEL');md.width=bevel;md.segments=5
+  md=o.modifiers.new('Weighted_normals','WEIGHTED_NORMAL')
+ return o
+def cyl(name,loc,r,h,material,r2=None):
+ bpy.ops.mesh.primitive_cone_add(vertices=64,radius1=r,radius2=r if r2 is None else r2,depth=h,location=loc);o=bpy.context.object;o.name=name;o.data.materials.append(material)
+ for p in o.data.polygons:p.use_smooth=True;p.material_index=0
+ md=o.modifiers.new('Edge_radius','BEVEL');md.width=.003;md.segments=3;return o
+def line(name,pts,r,material):
+ cu=bpy.data.curves.new(name,'CURVE');cu.dimensions='3D';cu.resolution_u=2;cu.bevel_depth=r;cu.bevel_resolution=3;sp=cu.splines.new('POLY');sp.points.add(len(pts)-1)
+ for p,v in zip(sp.points,pts):p.co=(*v,1)
+ ob=bpy.data.objects.new(name,cu);S.collection.objects.link(ob);ob.data.materials.append(material);return ob
+def extrude(name,pts,z,h,material):
+ n=len(pts);v=[(x,y,z) for x,y in pts]+[(x,y,z+h) for x,y in pts];f=[tuple(range(n-1,-1,-1)),tuple(range(n,2*n))]+[(i,(i+1)%n,(i+1)%n+n,i+n) for i in range(n)]
+ ob=mesh(name,v,f,material);md=ob.modifiers.new('Edge_radius','BEVEL');md.width=.006;md.segments=3;md=ob.modifiers.new('Normals','WEIGHTED_NORMAL');return ob
+def roundedpts(w,d,r,steps=12):
+ pts=[]
+ for x,y,a in [(w/2-r,d/2-r,0),(-w/2+r,d/2-r,90),(-w/2+r,-d/2+r,180),(w/2-r,-d/2+r,270)]:
+  for i in range(steps+1):t=math.radians(a+90*i/steps);pts.append((x+r*math.cos(t),y+r*math.sin(t)))
+ return pts
+def group(name,start,loc=(0,0,0),angle=0):
+ root=bpy.data.objects.new(name,None);S.collection.objects.link(root)
+ for ob in list(bpy.data.objects):
+  if ob.name not in start and ob!=root and ob.parent is None:ob.parent=root
+ root.location=loc;root.rotation_euler.z=math.radians(angle);return root
+def mark(name,status,source,note=''):manifest.append(dict(item=name,geometry=status,source=source,note=note))
+# Architecture: approximate plan envelope, same M coordinates.
+floorpts=[(0,0),(9.4,0),(9.4,4.4),(7.15,4.4),(7.15,13.1),(4.88,13.1)]
+extrude('LDK_floor',floorpts,-.14,.14,FLOOR)
+arch.append(extrude('Ceiling',floorpts,2.70,.12,WALL))
+# Fine long plank joints along x, 150mm spacing.
+for i in range(88):
+ y=i*.15;left=y*4.88/13.1;right=9.4 if y<4.4 else 7.15
+ if left<right:line('Floor_joint',[(left,y,.001),(right,y,.001)],.0007,mat('joint'+str(i),(.12,.11,.09),.75))
+for i in range(30):
+ y=.075+i*.45;left=y*4.88/13.1;right=9.4 if y<4.4 else 7.15
+ for x in [left+1.6+(i%3)*.6,left+4.0+(i%3)*.6]:
+  if x<right:line('Plank_end',[(x,y-.075,.002),(x,y+.075,.002)],.0007,FRAME)
+arch.append(box('TV_back_wall',(9.48,2.35,1.35),(.16,4.7,2.7),WALL))
+arch.append(box('Kitchen_wall',(7.24,9.1,1.35),(.18,8.0,2.7),WALL))
+arch.append(box('Hall_return',(8.25,4.50,1.35),(2.45,.18,2.7),WALL))
+arch.append(box('Kitchen_top_wall',(6.03,13.2,1.35),(2.3,.18,2.7),WALL))
+# Tile courses, natural stone proposal, no selected manufacturer.
+for iy in range(5):
+ for iz in range(3):box('TV_natural_tile',(9.385,.34+iy*.82,.45+iz*.9),(.02,.815,.895),TILE,.002)
+# Window frames, clear open glazing in the study to keep views readable.
+def glazing(a,b,n):
+ length=(Vector(b)-Vector(a)).length
+ for t in [i/n for i in range(n+1)]:
+  p=Vector(a).lerp(Vector(b),t);box('Glazing_mullion',(p.x,p.y,1.35),(.045,.045,2.7),FRAME,.002)
+ for z in [.025,2.66]:line('Window_rail',[(a[0],a[1],z),(b[0],b[1],z)],.025,FRAME)
+glazing((0,0),(9.4,0),6);glazing((0,0),(4.88,13.1),8)
+# Outside scenery is a context image from the supplied room photo, not a calibrated panorama.
+contextpath=R/'out/3d_M/window_context.jpg'
+if contextpath.exists():
+ m=bpy.data.materials.new('Supplied_photo_outside_context');m.use_nodes=True;n=m.node_tree.nodes;l=m.node_tree.links;n.clear();tex=n.new('ShaderNodeTexImage');tex.image=bpy.data.images.load(str(contextpath));em=n.new('ShaderNodeEmission');em.inputs[1].default_value=.65;out=n.new('ShaderNodeOutputMaterial');l.new(tex.outputs['Color'],em.inputs[0]);l.new(em.outputs[0],out.inputs[0])
+ def context_plane(name,vs):
+  ob=mesh(name,vs,[(0,1,2,3)],m);uv=ob.data.uv_layers.new(name='UVMap')
+  for loop,co in zip(uv.data,[(0,0),(1,0),(1,1),(0,1)]):loop.uv=co
+  ob.visible_shadow=False;return ob
+ context_plane('Balcony_outside_photo',[(25,-6,-1),(-20,-6,-1),(-20,-6,5),(25,-6,5)])
+ context_plane('Diagonal_outside_photo',[(-12,-22,-1),(3,30,-1),(3,30,5),(-12,-22,5)])
+# Kitchen joinery and island footprint from the plan.
+island=[((x-24)/35.2,(473-y)/35.2) for x,y in [(159,230),(201,114),(216,120),(194,242)]]
+extrude('Existing_island_cabinet',island,0,.86,WOOD);extrude('Existing_island_white_top',island,.86,.05,WHITE)
+for i in range(9):box('Kitchen_cabinet',(6.77,6.6+i*.70,.43),(.64,.69,.86),WOOD,.003)
+box('Kitchen_wall_counter',(6.74,9.3,.89),(.72,6.15,.05),WHITE,.005)
+box('Sink',(5.02,8.45,.916),(.43,.65,.016),BLACK,.04)
+line('Faucet',[(5.0,8.48,.92),(5.0,8.48,1.20),(4.94,8.48,1.26),(4.80,8.48,1.26),(4.76,8.48,1.20)],.014,BLACK)
+# Shindo rug. Relief stripe effect, not a scanned product texture.
+x0,y0,x1,y1=C['rug']['rect'];box('Shindo_Natural_3500x4000',((x0+x1)/2,(y0+y1)/2,.008),(x1-x0,y1-y0,.016),RUG,.008)
+for j in range(17):box('Shindo_subtle_woven_band',((x0+x1)/2,y0+.12+j*.23,.017),(x1-x0-.03,.012,.0015),RUG,.001)
+mark('Shindo','dimensioned material study','https://www.poliform.it/us/products/shindo/','3500x4000mm provisional; pattern approximate')
+
+# Dealer-distributed FBX modules, verified CRC, arrangement from approved plan.
+with bpy.data.libraries.load(str(R/'models/ernest_sofa_mesmetric/source.blend'),link=False) as (src,dst):
+ dst.objects=['ERNEST_sofa_80','ERNEST_sofa_pouff_small']
+templates={}
+for ob in dst.objects:
+ if ob:
+  templates[ob.name]=ob
+  S.collection.objects.link(ob)
+  bpy.context.view_layer.update()
+  ob.data=ob.data.copy()
+  ob.data.transform(ob.matrix_world)
+  ob.animation_data_clear();ob.matrix_world=Matrix.Identity(4)
+  old=[m.name.lower() if m else '' for m in ob.data.materials]
+  oldindices=[p.material_index for p in ob.data.polygons]
+  ob.data.materials.clear()
+  for name in old:ob.data.materials.append(BLACK if 'feet' in name else CREAM)
+  for poly,idx in zip(ob.data.polygons,oldindices):poly.material_index=idx
+sofa=next(i for i in C['items'] if i['id']=='sofa')
+for m in sofa['modules']:
+ x0,y0,x1,y1=m['rect'];cx=(x0+x1)/2;cy=(y0+y1)/2
+ if m['id']=='F':
+  box('Ernest_rear_table',(cx,cy,.36),(x1-x0,y1-y0,.045),WOOD,.045)
+  box('Rear_table_support',(cx,cy,.18),(.16,.62,.36),WOOD,.025)
+  continue
+ src=templates['ERNEST_sofa_80' if m['id'] in 'ABC' else 'ERNEST_sofa_pouff_small']
+ ob=src.copy();ob.animation_data_clear();ob.data=src.data.copy();S.collection.objects.link(ob);ob.name='Ernest_DEALER_FBX_module_'+m['id']
+ vs=[v.co.copy() for v in ob.data.vertices];lo=Vector(tuple(min(v[i] for v in vs) for i in range(3)));hi=Vector(tuple(max(v[i] for v in vs) for i in range(3)))
+ # Source fronts -Y. Rotate 90 degrees so fronts face TV (+X).
+ for v in ob.data.vertices:
+  xx=(v.co.x-(lo.x+hi.x)/2)/(hi.x-lo.x)*(y1-y0)
+  yy=(v.co.y-(lo.y+hi.y)/2)/(hi.y-lo.y)*(x1-x0)
+  v.co=Vector((-yy,xx,v.co.z-lo.z))
+ ob.location=(cx,cy,0)
+for src in templates.values():bpy.data.objects.remove(src,do_unlink=True)
+mark('Ernest sofa','DEALER-DISTRIBUTED FBX modules','https://mesmetric.com/en/modular/35938-ernest.html','Source Poliform-ERNEST-sofa.fbx; imported mesh. XY fitted by approx 1-2% to selected module envelope; rear table reconstructed; materials recreated.')
+
+# Dealer-distributed manufacturer-named table meshes. Fit orientation to approved outline.
+with bpy.data.libraries.load(str(R/'models/ernest_tables_mesmetric/source.blend'),link=False) as (src,dst):
+ dst.objects=['ERNEST_coffeetable_1200x900','ERNEST_coffeetable_1200x700']
+tabletemplates={}
+for ob in dst.objects:
+ tabletemplates[ob.name]=ob;S.collection.objects.link(ob);bpy.context.view_layer.update();ob.data=ob.data.copy();ob.data.transform(ob.matrix_world);ob.animation_data_clear();ob.matrix_world=Matrix.Identity(4)
+ ob.data.materials.clear();ob.data.materials.append(WOOD);ob.data.materials.append(WOOD)
+for j,t in enumerate(C['living_tables']['items']):
+ src=tabletemplates['ERNEST_coffeetable_1200x900' if j==0 else 'ERNEST_coffeetable_1200x700']
+ ob=src.copy();ob.animation_data_clear();ob.data=src.data.copy();S.collection.objects.link(ob);ob.name='Ernest_DEALER_FBX_table_'+str(j)
+ vs=[v.co.copy() for v in ob.data.vertices]
+ lo=Vector(tuple(min(v[i] for v in vs) for i in range(3)));hi=Vector(tuple(max(v[i] for v in vs) for i in range(3)))
+ goal=t['outline_xy'];gx0=min(v[0] for v in goal);gx1=max(v[0] for v in goal);gy0=min(v[1] for v in goal);gy1=max(v[1] for v in goal)
+ # Eight orientations/reflections; closest to the approved notched outline wins.
+ options=[]
+ for swap in [False,True]:
+  for fx in [-1,1]:
+   for fy in [-1,1]:
+    def xy(v):
+     a=(v.x-lo.x)/(hi.x-lo.x);b=(v.y-lo.y)/(hi.y-lo.y)
+     if swap:a,b=b,a
+     if fx<0:a=1-a
+     if fy<0:b=1-b
+     return (gx0+a*(gx1-gx0),gy0+b*(gy1-gy0))
+    vv=[xy(v) for v in vs if v.z>hi.z-.004]
+    kd=KDTree(len(vv))
+    for k,(x,y) in enumerate(vv):kd.insert((x,y,0),k)
+    kd.balance();score=sum(kd.find((x,y,0))[2]**2 for x,y in goal)/len(goal)
+    options.append((score,swap,fx,fy))
+ score,swap,fx,fy=min(options)
+ for v in ob.data.vertices:
+  aa=(v.co.x-lo.x)/(hi.x-lo.x);bb=(v.co.y-lo.y)/(hi.y-lo.y)
+  if swap:aa,bb=bb,aa
+  if fx<0:aa=1-aa
+  if fy<0:bb=1-bb
+  v.co=(gx0+aa*(gx1-gx0),gy0+bb*(gy1-gy0),(v.co.z-lo.z)/(hi.z-lo.z)*.30)
+ ob.data.update();print('TABLE_OUTLINE_FIT',j,score,swap,fx,fy,flush=True)
+for src in tabletemplates.values():bpy.data.objects.remove(src,do_unlink=True)
+mark('Ernest coffee tables','DEALER-DISTRIBUTED FBX','https://mesmetric.com/en/other/35943-ernest.html','1200x900 +1200x700 genuine notched models; fitted to approved plan outlines; dark-wood material recreated.')
+
+# Third-party Linha product model from 3D Warehouse. Keep selected footprint.
+di=next(i for i in C['items'] if i['id']=='dining');st=set(bpy.data.objects.keys())
+L_STONE=mat('Linha_downloaded_marble_image_not_verified_slab',(.12,.12,.12),.24)
+n=L_STONE.node_tree.nodes;l=L_STONE.node_tree.links
+tex=n.new('ShaderNodeTexImage');tex.image=bpy.data.images.load(str(R/'models/linha_warehouse/extracted/model/MARBLE.jpg'))
+tc=n.new('ShaderNodeTexCoord');l.new(tc.outputs['Generated'],tex.inputs['Vector']);l.new(tex.outputs['Color'],n.get('Principled BSDF').inputs['Base Color'])
+with bpy.data.libraries.load(str(R/'models/linha_warehouse/source.blend'),link=False) as (src,dst):
+ dst.objects=[name for name in src.objects if name.startswith('group_0')]
+tableobs=[]
+for ob in dst.objects:
+ if ob and ob.type=='MESH':
+  S.collection.objects.link(ob);bpy.context.view_layer.update();world=ob.matrix_world.copy()
+  ob.data=ob.data.copy();ob.data.transform(world);ob.parent=None;ob.animation_data_clear();ob.matrix_world=Matrix.Identity(4)
+  ma=L_STONE if ob.name in ['group_0','group_0.001'] else BLACK if ob.name=='group_0.002' else BRONZE
+  ob.data.materials.clear();ob.data.materials.append(ma)
+  for p in ob.data.polygons:p.material_index=0
+  tableobs.append(ob)
+pts=[v.co for ob in tableobs for v in ob.data.vertices];lo=Vector(tuple(min(v[i] for v in pts) for i in range(3)));hi=Vector(tuple(max(v[i] for v in pts) for i in range(3)))
+sx=2.60/(hi.x-lo.x);sy=1.15/(hi.y-lo.y);sz=.74/(hi.z-lo.z);cx=(lo.x+hi.x)/2;cy=(lo.y+hi.y)/2
+for ob in tableobs:
+ xs=[v.co.x for v in ob.data.vertices];mx=(min(xs)+max(xs))/2;thin=(max(xs)-min(xs)<.04)
+ for v in ob.data.vertices:
+  xx=(mx-cx)*sx+(v.co.x-mx) if thin else (v.co.x-cx)*sx
+  v.co=(xx,(v.co.y-cy)*sy,(v.co.z-lo.z)*sz)
+ ob.data.update()
+ # Collada supplies coincident front/back triangles. Remove duplicate faces.
+ bm=bmesh.new();bm.from_mesh(ob.data);bmesh.ops.remove_doubles(bm,verts=list(bm.verts),dist=.000001)
+ bm.verts.index_update();seen=set();dups=[]
+ for f in bm.faces:
+  key=tuple(sorted(v.index for v in f.verts))
+  if key in seen:dups.append(f)
+  else:seen.add(key)
+ if dups:bmesh.ops.delete(bm,geom=dups,context='FACES_ONLY')
+ bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.to_mesh(ob.data);bm.free()
+ ob.data.update();ob.name='Linha_Warehouse_'+ob.name
+group('Linha_Dining_THIRDPARTY_260',st,(*di['center'],0),di['angle'])
+mark('Linha Dining','THIRD-PARTY downloaded Collada, adapted','https://3dwarehouse.sketchup.com/model/5c6e68ad-e323-452e-b19f-bb94ddd2aaad/Minotti-Linha-Dining-table','Author Nikhil G. Source3300mm length adjusted to2600mm. Thin side plate thickness preserved. Downloaded marble image is a visual reference, not a manufacturer slab scan.')
+
+# User-linked third-party Torii mesh. Preserve original dimensions and fit six placements.
+with bpy.data.libraries.load(str(R/'models/torii_user_warehouse/source.blend'),link=False) as (src,dst):
+ dst.objects=[name for name in src.objects if name.startswith('C-')]
+torii_templates=[]
+for ob in dst.objects:
+ if ob and ob.type=='MESH':
+  S.collection.objects.link(ob);bpy.context.view_layer.update();world=ob.matrix_world.copy()
+  ob.data=ob.data.copy();ob.data.transform(world);ob.parent=None;ob.animation_data_clear();ob.matrix_world=Matrix.Identity(4)
+  leg=(ob.name=='C-TORII_SMAL')
+  ob.data.materials.clear();ob.data.materials.append(BRONZE if leg else CHAIR_GREY);ob.data.materials.append(BLACK)
+  for p in ob.data.polygons:
+   p.material_index=1 if leg and max(ob.data.vertices[i].co.z for i in p.vertices)<.03 else 0
+   p.use_smooth=True
+  bm=bmesh.new();bm.from_mesh(ob.data);bmesh.ops.remove_doubles(bm,verts=list(bm.verts),dist=.000001)
+  bm.verts.index_update();seen=set();dups=[]
+  for f in bm.faces:
+   key=tuple(sorted(v.index for v in f.verts))
+   if key in seen:dups.append(f)
+   else:seen.add(key)
+  if dups:bmesh.ops.delete(bm,geom=dups,context='FACES_ONLY')
+  bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.to_mesh(ob.data);bm.free();ob.data.update()
+  torii_templates.append(ob)
+pts=[v.co for ob in torii_templates for v in ob.data.vertices];lo=Vector(tuple(min(v[i] for v in pts) for i in range(3)));hi=Vector(tuple(max(v[i] for v in pts) for i in range(3)));center=Vector(((lo.x+hi.x)/2,(lo.y+hi.y)/2,lo.z))
+for ob in torii_templates:
+ for v in ob.data.vertices:v.co-=center
+for j,ch in enumerate(C['chairs']['items']):
+ root=bpy.data.objects.new('Torii_USER_MODEL_'+str(j),None);S.collection.objects.link(root)
+ root.location=(*ch['center'],0);root.rotation_euler.z=math.radians(di['angle']+(180 if ch['side_sign']<0 else 0))
+ for src in torii_templates:
+  ob=src.copy();ob.data=src.data;S.collection.objects.link(ob);ob.parent=root
+for ob in torii_templates:bpy.data.objects.remove(ob,do_unlink=True)
+mark('Torii dining-area chairs x6','THIRD-PARTY user-linked SKP; original mesh dimensions','https://3dwarehouse.sketchup.com/model/d8bb7e13-a21f-456b-855e-796e4aa4c55f/MINOTTI-TORII-CHAIR','Author Maria Jose V. Measured envelope692x660x877mm. Light grey material recreated; legs share the exact Golden_Brown material with Linha. Standard/Large subtype and actual swivel mechanism not authenticated; CG reference, not manufacturer CAD.')
+# Manufacturer-provided Eames Lounge Chair SKP, converted locally. Ottoman omitted.
+ch=C['lounge']['chairs'][0];st=set(bpy.data.objects.keys())
+LEATHER=mat('Eames_ivory_leather_PROVISIONAL',(.62,.56,.46),.42)
+with bpy.data.libraries.load(str(R/'models/eames_official/chair_only.blend'),link=False) as (src,dst):
+ dst.objects=list(src.objects)
+obs=[]
+for ob in dst.objects:
+ if ob and ob.type=='MESH':
+  S.collection.objects.link(ob);bpy.context.view_layer.update()
+  ob.data=ob.data.copy();ob.data.transform(ob.matrix_world.copy());ob.parent=None;ob.animation_data_clear();ob.matrix_world=Matrix.Identity(4)
+  ma=LEATHER if 'FABRIC' in ob.name else WOOD if 'SHELL' in ob.name else BLACK
+  ob.data.materials.clear();ob.data.materials.append(ma)
+  for poly in ob.data.polygons:poly.material_index=0;poly.use_smooth=True
+  obs.append(ob)
+pts=[v.co for ob in obs for v in ob.data.vertices];lo=Vector(tuple(min(v[i] for v in pts) for i in range(3)));hi=Vector(tuple(max(v[i] for v in pts) for i in range(3)))
+center=Vector(((lo.x+hi.x)/2,(lo.y+hi.y)/2,lo.z))
+for ob in obs:
+ for v in ob.data.vertices:v.co-=center
+group('Eames_OFFICIAL_window_facing',st,(*ch['center'],0),180)
+mark('Eames Lounge Chair - Classic','OFFICIAL SKP, local conversion','https://www.hermanmiller.com/resources/3d-models-and-planning-tools/product-models/individual/eames-lounge-chair-classic/','Chair only, supplied ottoman omitted; original geometry retained. Light leather/dark wood PROVISIONAL.')
+# IVRESSE side table, radial undulating metal blades.
+tx,ty=C['lounge']['table']['center'];cyl('IVRESSE_Carrara_top',(tx,ty,.535),.30,.03,WHITE)
+cyl('IVRESSE_black_chrome_base',(tx,ty,.013),.205,.026,BLACK)
+for j in range(8):
+ th=j*math.pi/4;v=[]
+ for z,r in [(0.03,.16),(.13,.085),(.30,.065),(.43,.10),(.52,.16)]:v.extend([(tx,ty,z),(tx+r*math.cos(th),ty+r*math.sin(th),z)])
+ ob=mesh('IVRESSE_radial_blade',v,[(k,k+1,k+3,k+2) for k in range(0,8,2)],BLACK);md=ob.modifiers.new('Steel_thickness','SOLIDIFY');md.thickness=.005
+mark('IVRESSE','technical/reference reconstruction','https://technicals.roche-bobois.com/M66231103/TSv_IVRESSE_2017(2).pdf','600x550mm white Carrara')
+
+# User-selected 97-inch class study, exact enclosure/product pending.
+tvw=2.1473878083674647;tvh=1.207905642206699;tvz=1.15
+box('TV_97inch_class',(9.345,2.35,tvz),(.03,tvw,tvh),BLACK,.008)
+screen=mat('OLED_screen_off',(.005,.008,.012),.10,.18)
+box('OLED_glass',(9.326,2.35,tvz),(.003,tvw-.014,tvh-.014),screen,.004)
+mark('97-inch TV','97-inch 16:9 dimensional study','User confirmed 97-inch class and lower mounting','Screen approx2148x1208mm; center1150mm above floor; enclosure/model/price unconfirmed.')
+# Official B&O mesh imports. OBJ units mm, Y up. All parts share assembly origin.
+def import_obj(path,material):
+ bpy.ops.wm.obj_import(filepath=str(path),forward_axis='NEGATIVE_Z',up_axis='Y',global_scale=.001)
+ obs=list(bpy.context.selected_objects)
+ for o in obs:
+  if o.type=='MESH':
+   o.data.materials.clear();o.data.materials.append(material)
+   for p in o.data.polygons:p.use_smooth=True;p.material_index=0
+ return obs
+basepath=R/'models/beolab28/Beolab 28/obj';DARKWOOD=textured('Charcoal_stained_oak',(.016,.014,.012),(.07,.06,.045),'wood',.40)
+spobs=[]
+for fn,ma in [('beolab-28_woofer_floor.obj',BLACK),('beolab-28_tube_basic.obj',BLACK),('beolab-28_fabric_curtain_off.obj',GREY),('beolab-28_wooden_curtain_off.obj',DARKWOOD)]:spobs+=import_obj(basepath/fn,ma)
+for j,it in enumerate([i for i in C['items'] if i['id'].startswith('speaker')]):
+ root=bpy.data.objects.new('Beolab28_OFFICIAL_'+str(j),None);S.collection.objects.link(root);root.location=(*it['center'],0);root.rotation_euler.z=math.radians(-90)
+ for src in spobs:
+  o=src.copy();o.data=src.data;S.collection.objects.link(o);o.parent=root
+for src in spobs:bpy.data.objects.remove(src,do_unlink=True)
+mark('Beolab28 pair','OFFICIAL OBJ','https://support.bang-olufsen.com/hc/en-us/articles/360020100498-Beolab-28','Floor/tube/fabric/wood supplied assemblies; materials recreated')
+balancefiles=[p for p in (R/'models/balance').rglob('*.obj') if not p.name.startswith('._')]
+if balancefiles:
+ obs=import_obj(balancefiles[0],GREY);bpy.context.view_layer.update()
+ bounds=[o.matrix_world@Vector(v) for o in obs for v in o.bound_box];lo=Vector(tuple(min(p[i] for p in bounds) for i in range(3)));hi=Vector(tuple(max(p[i] for p in bounds) for i in range(3)));scale=.38/(hi.z-lo.z)
+ root=bpy.data.objects.new('Beosound_Balance_OFFICIAL',None);S.collection.objects.link(root)
+ for ob in obs:ob.location-=Vector(((lo.x+hi.x)/2,(lo.y+hi.y)/2,lo.z));ob.parent=root
+ root.scale=(scale,scale,scale);root.location=(5.12,10.13,.91)
+ mark('Beosound Balance','OFFICIAL OBJ','https://support.bang-olufsen.com/hc/en-us/articles/360041238491-Beosound-Balance','Finish not selected, temporary grey')
+# Soft lighting through both window walls.
+world=bpy.data.worlds.new('Daylight');world.use_nodes=True;world.node_tree.nodes['Background'].inputs[0].default_value=(.72,.80,.92,1);world.node_tree.nodes['Background'].inputs[1].default_value=.45;S.world=world
+def area(name,loc,target,power,size):
+ ld=bpy.data.lights.new(name,'AREA');ld.energy=power;ld.shape='DISK';ld.size=size;ob=bpy.data.objects.new(name,ld);S.collection.objects.link(ob);ob.location=loc;ob.rotation_euler=(Vector(target)-ob.location).to_track_quat('-Z','Y').to_euler()
+area('Balcony_daylight',(4.5,-3,4.2),(5,4,0),1600,7)
+area('Diagonal_daylight',(-1,6.5,4.8),(5,4,.5),1800,8)
+area('Ceiling_bounce',(5,5,5),(5,4,0),700,6)
+ld=bpy.data.lights.new('Morning_sun','SUN');ld.energy=1.4;ld.angle=.06;ob=bpy.data.objects.new('Morning_sun',ld);S.collection.objects.link(ob);ob.rotation_euler=(math.radians(28),math.radians(-22),math.radians(-30))
+def camera(name,loc,target,lens=26,ortho=None):
+ data=bpy.data.cameras.new(name);data.lens=lens;ob=bpy.data.objects.new(name,data);S.collection.objects.link(ob);ob.location=loc;ob.rotation_euler=(Vector(target)-ob.location).to_track_quat('-Z','Y').to_euler()
+ if ortho:data.type='ORTHO';data.ortho_scale=ortho
+ return ob
+cameras=[camera('01_living_TV',(2.75,5.6,1.65),(7.45,2.2,1.0),22),camera('02_living_windows',(8.6,4.1,1.65),(3.7,2.1,.9),22),camera('03_dining',(6.85,8.6,1.8),(3.816,5.089,.78),38),camera('04_lounge',(3.8,3.45,1.4),(1.65,1.25,.65),34),camera('05_plan_axon',(-10,-14,17),(5.0,5.0,.5),ortho=17)]
+cameras.append(camera('06_seated_TV',(6.30,2.35,1.10),(9.345,2.35,1.15),35))
+S.camera=cameras[0]
+(O/'model_manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf8')
+bpy.ops.file.pack_all()
+bpy.ops.wm.save_as_mainfile(filepath=str(O/'Harajuku_LDK_R.blend'))
+if '--build-only' not in sys.argv:
+ cams=[cameras[2]] if '--preview' in sys.argv else [cameras[i] for i in [2,0]]
+ if '--preview' in sys.argv:S.render.resolution_percentage=50;S.cycles.samples=12
+ for cam in cams:
+  S.camera=cam
+  for ob in arch:ob.hide_render=(cam.name=='05_plan_axon')
+  S.render.filepath=str(O/(cam.name+('_preview' if '--preview' in sys.argv else '')+'.png'));bpy.ops.render.render(write_still=True)
+print('SCENE_COMPLETE',len(bpy.data.objects),flush=True)
+

@@ -1,0 +1,37 @@
+[
+  {
+    "shot": "u1",
+    "W_repaired_cushion_geometry_identical": true,
+    "unchanged_existing_lights": true,
+    "unexpected_pose_changes": [],
+    "camera_delta": 0.0
+  },
+  {
+    "shot": "u2",
+    "W_repaired_cushion_geometry_identical": true,
+    "unchanged_existing_lights": true,
+    "unexpected_pose_changes": [],
+    "camera_delta": 1.6628036499023438
+  },
+  {
+    "shot": "p09",
+    "W_repaired_cushion_geometry_identical": true,
+    "unchanged_existing_lights": true,
+    "unexpected_pose_changes": [],
+    "camera_delta": 0.0
+  },
+  {
+    "shot": "p01",
+    "W_repaired_cushion_geometry_identical": true,
+    "unchanged_existing_lights": true,
+    "unexpected_pose_changes": [],
+    "camera_delta": 0.0
+  },
+  {
+    "shot": "p13",
+    "W_repaired_cushion_geometry_identical": true,
+    "unchanged_existing_lights": true,
+    "unexpected_pose_changes": [],
+    "camera_delta": 0.3784599304199219
+  }
+]

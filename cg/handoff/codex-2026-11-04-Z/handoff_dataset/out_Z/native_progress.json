@@ -1,0 +1,25 @@
+{
+  "started": 1793769150.8897567,
+  "completed": [
+    "p09",
+    "u1",
+    "u2"
+  ],
+  "state": "stopped_for_claude_handoff",
+  "description": "all-five new native renders; original photos preserved, common lighting/layout and restored common Shindo rug",
+  "shot": "p01",
+  "phase": "foreground",
+  "stopped_at": "2026-11-04T06:06:20.865344+00:00",
+  "stopped_reason": "User requested full handoff to Claude; implementation and render queues stopped.",
+  "unfinished": [
+    "p01",
+    "p13"
+  ],
+  "verified_native": [
+    "p09",
+    "u1"
+  ],
+  "unreviewed_native": [
+    "u2"
+  ]
+}

@@ -1,0 +1,107 @@
+[
+  {
+    "shot": "u1",
+    "rug_sha256": "e241d2fd8ee5368d5cc5c063fbbd0f0008d1da99c244d3a1cf442671b3426b18",
+    "changed_existing_mesh_poses": [],
+    "rug_count": 1,
+    "rect": [
+      5.199999809265137,
+      0.3499999940395355,
+      8.699999809265137,
+      4.349999904632568
+    ],
+    "height_range_m": [
+      0.00015112105756998062,
+      0.004800000227987766
+    ],
+    "official_finish_packed": true,
+    "full_foreground_has_rug": true,
+    "common_sofa_sheen_weight": 0.44999998807907104,
+    "common_diagonal_sky_W": 800.0,
+    "common_warm_return_W": 200.0
+  },
+  {
+    "shot": "u2",
+    "rug_sha256": "e241d2fd8ee5368d5cc5c063fbbd0f0008d1da99c244d3a1cf442671b3426b18",
+    "changed_existing_mesh_poses": [],
+    "rug_count": 1,
+    "rect": [
+      5.199999809265137,
+      0.3499999940395355,
+      8.699999809265137,
+      4.349999904632568
+    ],
+    "height_range_m": [
+      0.00015112105756998062,
+      0.004800000227987766
+    ],
+    "official_finish_packed": true,
+    "full_foreground_has_rug": true,
+    "common_sofa_sheen_weight": 0.44999998807907104,
+    "common_diagonal_sky_W": 800.0,
+    "common_warm_return_W": 200.0
+  },
+  {
+    "shot": "p09",
+    "rug_sha256": "e241d2fd8ee5368d5cc5c063fbbd0f0008d1da99c244d3a1cf442671b3426b18",
+    "changed_existing_mesh_poses": [],
+    "rug_count": 1,
+    "rect": [
+      5.199999809265137,
+      0.3499999940395355,
+      8.699999809265137,
+      4.349999904632568
+    ],
+    "height_range_m": [
+      0.00015112105756998062,
+      0.004800000227987766
+    ],
+    "official_finish_packed": true,
+    "full_foreground_has_rug": true,
+    "common_sofa_sheen_weight": 0.44999998807907104,
+    "common_diagonal_sky_W": 800.0,
+    "common_warm_return_W": 200.0
+  },
+  {
+    "shot": "p01",
+    "rug_sha256": "e241d2fd8ee5368d5cc5c063fbbd0f0008d1da99c244d3a1cf442671b3426b18",
+    "changed_existing_mesh_poses": [],
+    "rug_count": 1,
+    "rect": [
+      5.199999809265137,
+      0.3499999940395355,
+      8.699999809265137,
+      4.349999904632568
+    ],
+    "height_range_m": [
+      0.00015112105756998062,
+      0.004800000227987766
+    ],
+    "official_finish_packed": true,
+    "full_foreground_has_rug": true,
+    "common_sofa_sheen_weight": 0.44999998807907104,
+    "common_diagonal_sky_W": 800.0,
+    "common_warm_return_W": 200.0
+  },
+  {
+    "shot": "p13",
+    "rug_sha256": "e241d2fd8ee5368d5cc5c063fbbd0f0008d1da99c244d3a1cf442671b3426b18",
+    "changed_existing_mesh_poses": [],
+    "rug_count": 1,
+    "rect": [
+      5.199999809265137,
+      0.3499999940395355,
+      8.699999809265137,
+      4.349999904632568
+    ],
+    "height_range_m": [
+      0.00015112105756998062,
+      0.004800000227987766
+    ],
+    "official_finish_packed": true,
+    "full_foreground_has_rug": true,
+    "common_sofa_sheen_weight": 0.44999998807907104,
+    "common_diagonal_sky_W": 800.0,
+    "common_warm_return_W": 200.0
+  }
+]

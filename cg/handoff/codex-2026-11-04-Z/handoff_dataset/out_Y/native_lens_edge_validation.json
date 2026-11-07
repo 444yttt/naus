@@ -1,0 +1,88 @@
+{
+  "purpose": "independent plumb-line validation: a lower fitted point RMS does not justify adding false optical curvature",
+  "edges": [
+    {
+      "edge": "black_frame_upper_edge",
+      "source_segment_ids": [
+        3,
+        1,
+        0
+      ],
+      "native_photo_straightness": {
+        "rms_px": 0.26289887590473665,
+        "max_px": 0.5713450487764931
+      },
+      "models": [
+        {
+          "model": "brown",
+          "raw_affine_normalized_straightness": {
+            "rms_px": 0.2628988746286816,
+            "max_px": 0.571371214921669
+          },
+          "undistorted_straightness": {
+            "rms_px": 1.9115682333893989,
+            "max_px": 5.404931706295713
+          },
+          "no_degradation_gate": false,
+          "independence": "long original-photo beam edges were not part of camera point fitting; endpoints extracted before evaluating model"
+        },
+        {
+          "model": "general_brown",
+          "raw_affine_normalized_straightness": {
+            "rms_px": 0.2595599994576596,
+            "max_px": 0.564096037290426
+          },
+          "undistorted_straightness": {
+            "rms_px": 1.86114444252435,
+            "max_px": 5.574130995321241
+          },
+          "no_degradation_gate": false,
+          "independence": "long original-photo beam edges were not part of camera point fitting; endpoints extracted before evaluating model"
+        }
+      ]
+    },
+    {
+      "edge": "lower_glazing_gasket_edge",
+      "source_segment_ids": [
+        28,
+        29,
+        32,
+        27,
+        30
+      ],
+      "native_photo_straightness": {
+        "rms_px": 0.3456108565188003,
+        "max_px": 1.1051258186926134
+      },
+      "models": [
+        {
+          "model": "brown",
+          "raw_affine_normalized_straightness": {
+            "rms_px": 0.3456108576166043,
+            "max_px": 1.1050864626560895
+          },
+          "undistorted_straightness": {
+            "rms_px": 1.3455557426351035,
+            "max_px": 3.860275816580554
+          },
+          "no_degradation_gate": false,
+          "independence": "long original-photo beam edges were not part of camera point fitting; endpoints extracted before evaluating model"
+        },
+        {
+          "model": "general_brown",
+          "raw_affine_normalized_straightness": {
+            "rms_px": 0.3412220227201074,
+            "max_px": 1.0910626414735702
+          },
+          "undistorted_straightness": {
+            "rms_px": 1.183625768869942,
+            "max_px": 3.3562904461900587
+          },
+          "no_degradation_gate": false,
+          "independence": "long original-photo beam edges were not part of camera point fitting; endpoints extracted before evaluating model"
+        }
+      ]
+    }
+  ],
+  "status": "diagnostic; production retains pinhole unless every independent edge passes"
+}

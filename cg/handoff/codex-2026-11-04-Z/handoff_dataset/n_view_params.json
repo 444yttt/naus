@@ -1,0 +1,61 @@
+{
+  "sun_strength": 35.0,
+  "exposure_by_shot": {
+    "n03": -1.547,
+    "n04": -1.441
+  },
+  "mullion_x": [
+    3.25,
+    4.15,
+    5.43,
+    7.44
+  ],
+  "glazing_ends_x": [
+    2.24,
+    8.52
+  ],
+  "handrail_y": -1.1,
+  "handrail_z": 1.09,
+  "derivation": "Per-photo sun (photos taken at a different time than the five originals and ~minutes apart from each other). Azimuth: mullion-shadow floor lines through the fixed mullion feet (n03 slope dX/dY=0.17, n04 0.301 jointly fitted with the n04 camera). Elevation: 0.7 m overhang edge at z 2.7 ends the sunlit floor at Y=4.59 (n03) / 4.20 (n04). Handrail band Y=1.07/0.83 gives a rail at Y=-1.07/-1.15 (used -1.10). Mullion feet from n03 shadows and visible frames (3.25,4.15,5.43,7.44), confirmed in n04 (4.18,5.50,7.45). Sun strength from photographed thin-mullion stripe contrast (linear 2.5-4.9) against the CG non-sun light at the same floor. n03 camera refit (Z3b) gives slope 0.179 and sunlit far edge Y=4.74 (elevation 26.0 deg). Mullion widths from stripe depth (sliding-door meeting frames at 5.43/7.44 are wider). Solid wall outside the glazing ends (X<2.18, X>8.58) blocks sun as photographed.",
+  "sun_toward_by_shot": {
+    "n03": [
+      -0.1583,
+      -0.8844,
+      0.439
+    ],
+    "n04": [
+      -0.2549,
+      -0.8469,
+      0.4667
+    ]
+  },
+  "light_gain_rgb_by_shot": {
+    "n03": [
+      1.212,
+      1.0,
+      0.877
+    ],
+    "n04": [
+      1.178,
+      1.0,
+      0.906
+    ]
+  },
+  "colour_calibration": "white ceiling: (photo/CG) for each new photo divided by the same ratio in u1 (Z2 lighting), after the per-photo sun; gain normalised to G applied to all light colours and the world; G applied as view exposure. The listing photos are warm-graded; the photo pixels are not changed.",
+  "mullion_width": [
+    0.07,
+    0.07,
+    0.11,
+    0.14
+  ],
+  "solid_wall_spans_x": [
+    [
+      0.0,
+      2.18
+    ],
+    [
+      8.58,
+      9.4
+    ]
+  ]
+}

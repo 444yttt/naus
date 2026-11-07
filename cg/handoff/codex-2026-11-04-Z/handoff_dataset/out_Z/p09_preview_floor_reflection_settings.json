@@ -1,0 +1,21 @@
+{
+  "mode": "preview",
+  "resolution_percentage": 25,
+  "samples_by_pass": {
+    "furniture": 48,
+    "opacity": 40,
+    "environment": 48,
+    "environment_occluded": 48,
+    "white_reference": 8
+  },
+  "source_size": [
+    3024,
+    4032
+  ],
+  "physical_floor_reflection": true,
+  "roughness": 0.1,
+  "coat_roughness": 0.09,
+  "IOR": 1.5,
+  "method": "five-pass glossy response: new furniture radiance, weighted coverage, photographic environment before/after new-object occlusion, unit-white BRDF; directional radiance loss where photometrically aligned, unweighted coverage fallback; diffuse shadow separated",
+  "status": "photo-estimated BRDF; not measured"
+}

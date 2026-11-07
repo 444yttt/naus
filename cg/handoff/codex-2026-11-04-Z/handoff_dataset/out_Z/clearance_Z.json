@@ -1,0 +1,15 @@
+{
+  "table_island_shortest_edge_clearance_m": 0.003514282436519798,
+  "closest_points_world": [
+    [
+      4.829545454545454,
+      6.562499999999999
+    ],
+    [
+      4.828405687536509,
+      6.5591756786844595
+    ]
+  ],
+  "furniture_moved": "dining table + six chairs only",
+  "status": "approximate raster plan; not survey"
+}

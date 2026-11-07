@@ -1,0 +1,86 @@
+{
+  "repository": "444yttt/naus",
+  "release_id": 433583298,
+  "release_tag": "harajuku-cg-handoff-z-2026-11-04",
+  "assets": [
+    {
+      "name": "Claude_handoff_project.zip.001",
+      "uploaded": true,
+      "size_matches": true,
+      "sha256_matches": true,
+      "state": "uploaded"
+    },
+    {
+      "name": "Claude_handoff_project.zip.002",
+      "uploaded": true,
+      "size_matches": true,
+      "sha256_matches": true,
+      "state": "uploaded"
+    },
+    {
+      "name": "Claude_handoff_project.zip.003",
+      "uploaded": true,
+      "size_matches": true,
+      "sha256_matches": true,
+      "state": "uploaded"
+    },
+    {
+      "name": "release_parts.json",
+      "uploaded": true,
+      "size_matches": true,
+      "sha256_matches": true,
+      "state": "uploaded"
+    },
+    {
+      "name": "restore_release.py",
+      "uploaded": true,
+      "size_matches": true,
+      "sha256_matches": true,
+      "state": "uploaded"
+    },
+    {
+      "name": "Claude_handoff_documents.zip",
+      "uploaded": true,
+      "size_matches": true,
+      "sha256_matches": true,
+      "state": "uploaded"
+    }
+  ],
+  "expected_assets": [
+    {
+      "name": "Claude_handoff_project.zip.001",
+      "bytes": 1073741824,
+      "sha256": "0a1ed604e1648be9bf9898ff64c7e41ad225055f89b154236508ddaee4eb7e57"
+    },
+    {
+      "name": "Claude_handoff_project.zip.002",
+      "bytes": 1073741824,
+      "sha256": "d63bd6503ab47d78122e0ca972f6f8f344d3b55df0e6a0e5908aa8ec964f4ab5"
+    },
+    {
+      "name": "Claude_handoff_project.zip.003",
+      "bytes": 759998475,
+      "sha256": "4a7ec1963520c6a9bf3febfdf7b1293e189a77fa0686b737ab6b54c57d42fd01"
+    },
+    {
+      "name": "release_parts.json",
+      "bytes": 714,
+      "sha256": "423a1264ace26e5e6013e3e9d350e2e4bb8b24491dd7c8a2648ce2c3a7203d24"
+    },
+    {
+      "name": "restore_release.py",
+      "bytes": 1901,
+      "sha256": "e1bf770a54fba63f5630ba2a5cb9d2e693af07d5c08ce505b50be478463b141b"
+    },
+    {
+      "name": "Claude_handoff_documents.zip",
+      "bytes": 185862,
+      "sha256": "ce64d436619767e685dc0b878e4374a03be555c2d6ff22678774c787ceeb5022"
+    }
+  ],
+  "archive_sha256": "38a0ed501e7e11067f0000f396a6c73b4b4b0d4d74d1f8135b401b98573dfa25",
+  "original_zip_crc_verified": true,
+  "reassembled_zip_sha256_verified": true,
+  "source_files_missing_from_git": [],
+  "image_quality_completion_claim": false
+}

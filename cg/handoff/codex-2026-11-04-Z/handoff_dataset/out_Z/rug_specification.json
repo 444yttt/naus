@@ -1,0 +1,29 @@
+{
+  "brand": "Poliform",
+  "model": "Shindo",
+  "colour": "Natural",
+  "rect": [
+    5.2,
+    0.35,
+    8.7,
+    4.35
+  ],
+  "size_mm": [
+    4000,
+    3500
+  ],
+  "size_status": "restored previously approved provisional layout; not a confirmed stock size",
+  "geometry_status": "dimensioned study mesh, not official manufacturer 3D",
+  "official_reference": "https://www.poliform.it/en/products/shindo/",
+  "finish_image_source": "https://s3.poliform.it/2025/07/Poliform_tappeti_SHINDO_finiture_1300x1740px_natural.jpg",
+  "pile_reference_mm": [
+    3,
+    4
+  ],
+  "total_top_height_m": 0.0048,
+  "border_optical_motif_width_m": 0.15,
+  "contact_compression_points": 1958,
+  "furniture_pose_changes": 0,
+  "existing_camera_changes": 0,
+  "purpose": "opaque rug occludes original floor and its existing reflected light; all new contact/reflection passes rerendered"
+}

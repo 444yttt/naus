@@ -1,0 +1,9 @@
+{
+  "method": "robust photographic reflection-contrast fit",
+  "environment_gain": 2.205036105757036,
+  "contrast_correlation": 0.12961494477213847,
+  "existing_reflection_occlusion": "directional environment before/after opaque new-furniture occlusion; luminance-normalized radiance loss to preserve the photographed floor chroma",
+  "coverage": "opacity divided by unit-white BRDF response; existing reflection blocked by directional radiance loss where calibrated, otherwise geometric coverage, not double Fresnel",
+  "shadow": "diffuse component only; existing reflection retained outside occlusion",
+  "status": "photographic estimate, not measured HDR inverse rendering"
+}

@@ -1,0 +1,32 @@
+[
+  {
+    "shot": "p09",
+    "rug_interior_pixels": 243244,
+    "opaque_alpha_minimum": 1.0,
+    "mean_difference_BGR_8bit": [
+      0.0005481565021909773,
+      0.0018101822352036834,
+      0.0005048405728302896
+    ],
+    "rmse_8bit": 1.286125898361206,
+    "expected_camera_grain_sigma_8bit": 1.2500000442378223,
+    "rmse_tolerance_grain_plus_quantization": 1.7875000508734953,
+    "pass_no_floor_leakage": true,
+    "definition": "eroded rug material-ID interior; final composite must equal fresh rug foreground apart from camera grain and 8bit quantization; existing floor/mirror pattern cannot show through opaque interior"
+  },
+  {
+    "shot": "u1",
+    "rug_interior_pixels": 49705,
+    "opaque_alpha_minimum": 1.0,
+    "mean_difference_BGR_8bit": [
+      0.0013771357480436563,
+      0.0006525064236484468,
+      0.0024613901041448116
+    ],
+    "rmse_8bit": 0.8047749996185303,
+    "expected_camera_grain_sigma_8bit": 0.74128981330432,
+    "rmse_tolerance_grain_plus_quantization": 1.2024832852999678,
+    "pass_no_floor_leakage": true,
+    "definition": "eroded rug material-ID interior; final composite must equal fresh rug foreground apart from camera grain and 8bit quantization; existing floor/mirror pattern cannot show through opaque interior"
+  }
+]
