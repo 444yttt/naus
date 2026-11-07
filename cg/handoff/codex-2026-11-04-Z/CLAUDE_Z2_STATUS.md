@@ -31,3 +31,7 @@
 - Z5：植物3鉢（ユーザー提供モデル、図面の緑位置）、Beosound Balance撤去、テーブルのベース色の茶色みを下げる、ダイニング6席にエルメスH Déco（ユーザー提供、FBX6は`assets_Z5/import6.py`で直接読み込み）とユーザー提供カトラリー＋レザーマット、Panthella型ランプ3灯、コーヒーテーブル上の小物。全7視点を原寸で再レンダー。未加工領域の誤差は最大2/255（`metrics_Z5.json`）。
 - 外部アセット（植物・H Déco・カトラリー）はこのリポジトリに含めない。再現には `assets_Z5/` のスクリプトで `/work/plant2/plants_lib.blend`、`/work/herm/tableware_lib.blend` を作り直す。
 - 納品：ブランチ `harajuku-cg-delivery-z2` に `Harajuku_3LDK_delivery_Z5.zip`（226,940,938 bytes、SHA256 44cde763…）の分割3つ。
+
+## Z6（2026-11-07）
+- 植物を1.7〜2m級に：モンステラ約1.75m、パキラ（Poly Haven「Pachira Aquatica 01」CC0、マットな石のプランター）約2.0m×2（キッチン奥・窓際）。フィカスとスパティフィラムは撤去。全7視点を再レンダー。
+- 間取り図を座標から描き直し（plan_drawing/）。画像一式はブランチ harajuku-cg-images。
