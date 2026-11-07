@@ -320,3 +320,14 @@ html:not(.js) .cmp input,html:not(.js) .cmp-h,html:not(.js) .cmp-k{display:none}
 .pf .ft .pr{padding-right:0}
 @media(max-width:600px){.pf .ft table{font-size:12.5px}.pf .ft tbody th{white-space:normal}.pf .ft th,.pf .ft td{padding:10px 10px 10px 0}}
 .pf .ft tfoot th,.pf .ft tfoot td{border-bottom:0;border-top:1px solid var(--ink);padding-top:16px;font-size:15px;letter-spacing:.06em}
+
+/* home: portfolio teaser */
+section.light.work{padding-top:0}
+.work-card{display:block;margin-top:clamp(36px,5vw,64px);max-width:960px}
+.work-card img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;background:#e2ddd3;transition:transform 1.4s var(--out)}
+.work-card{overflow:hidden}
+.work-card:hover img{transform:scale(1.015)}
+.work-cap{display:block;margin-top:14px;font-family:var(--jp);font-size:13px;line-height:1.9;letter-spacing:.04em;opacity:.75;max-width:640px}
+.work-cap b{display:block;font-family:var(--sans);font-weight:400;letter-spacing:.08em;opacity:1}
+.work .more{margin-top:28px}
+.pf .cg-note{margin-top:18px;font-family:var(--jp);font-size:12px;line-height:1.9;letter-spacing:.04em;opacity:.6;max-width:560px}

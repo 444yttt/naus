@@ -4,3 +4,4 @@ node_modules
 dist
 cg/tex/*.jpg
 __pycache__/
+deliverables/
