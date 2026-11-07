@@ -334,3 +334,4 @@ section.light.work{padding-top:0}
 .work-cap b{display:block;font-family:var(--sans);font-size:clamp(18px,1.6vw,22px);font-weight:300;letter-spacing:.02em;opacity:1;margin-bottom:2px}
 @media(max-width:600px){.work-grid{grid-template-columns:1fr;gap:40px}}
 .pf .cg-note{margin-top:18px;font-family:var(--jp);font-size:12px;line-height:1.9;letter-spacing:.04em;opacity:.6;max-width:560px}
+.pf .ft-note{max-width:760px;margin-top:14px;font-family:var(--jp);font-size:12px;line-height:1.9;letter-spacing:.04em;opacity:.6}
